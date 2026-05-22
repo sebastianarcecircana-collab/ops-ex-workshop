@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INCOMING TRANSMISSION</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500&family=JetBrains+Mono:wght@300;400;500;700&family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-0: #050507;
+      --bg-1: #0e0e10;
+      --bg-2: #16161a;
+      --bg-3: #1d1d22;
+      --bg-deep: #0a0a0d;
+      --border: #25252c;
+      --border-strong: #3a3a44;
+      --text-1: #ececef;
+      --text-2: #94949f;
+      --text-3: #5a5a64;
+      --accent: #d92525;
+      --accent-bright: #ff3838;
+      --accent-dim: #5a1414;
+      --accent-faint: rgba(217, 37, 37, 0.08);
+      --green: #58c97e;
+      --amber: #e0a838;
+      --font-display: 'Oswald', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-serif: 'Cormorant Garamond', serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-0);
+      color: var(--text-1);
+      font-family: var(--font-mono);
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 32px;
+      background-image:
+        radial-gradient(ellipse 60% 40% at 50% 30%, rgba(217, 37, 37, 0.10), transparent 70%),
+        radial-gradient(circle at 80% 90%, rgba(217, 37, 37, 0.06), transparent 50%),
+        linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 100% 3px;
+    }
+
+    .frame {
+      max-width: 980px;
+      margin: 0 auto;
+      position: relative;
+      border: 1px solid var(--border);
+      background: var(--bg-1);
+    }
+
+    .frame::before, .frame::after,
+    .corner-bl, .corner-br {
+      content: '';
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      border: 2px solid var(--accent);
+      pointer-events: none;
+    }
+    .frame::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+    .frame::after  { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+    .corner-bl { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+    .corner-br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+    /* Incoming banner */
+    .incoming-banner {
+      padding: 14px 32px;
+      background: var(--accent);
+      color: var(--bg-0);
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      animation: banner-pulse 3s ease-in-out infinite;
+    }
+    @keyframes banner-pulse {
+      0%, 100% { background: var(--accent); }
+      50% { background: var(--accent-bright); }
+    }
+    .incoming-banner .left { display: flex; align-items: center; gap: 14px; }
+    .incoming-banner .left::before {
+      content: '';
+      width: 8px; height: 8px;
+      background: var(--bg-0);
+      border-radius: 50%;
+      animation: blink 0.9s ease-in-out infinite;
+    }
+    @keyframes blink {
+      0%, 60% { opacity: 1; }
+      61%, 100% { opacity: 0.15; }
+    }
+
+    /* Channel metadata */
+    .channel-meta {
+      padding: 20px 32px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .cm-field { display: flex; gap: 10px; }
+    .cm-field .v { color: var(--text-1); font-weight: 500; }
+    .cm-field .v.alert { color: var(--accent); }
+
+    /* Decryption status */
+    .decryption {
+      padding: 18px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .decrypt-bar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--green);
+    }
+    .decrypt-bar .progress {
+      width: 240px;
+      height: 4px;
+      background: var(--bg-deep);
+      position: relative;
+      overflow: hidden;
+    }
+    .decrypt-bar .progress::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, var(--green), rgba(88,201,126,0.3));
+      width: 100%;
+    }
+    .decrypt-bar .pct { color: var(--text-1); font-weight: 500; }
+
+    .decrypt-source {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .decrypt-source .v { color: var(--text-2); }
+
+    /* Mission ID block */
+    .mission-id-block {
+      padding: 46px 32px 30px;
+      text-align: center;
+      position: relative;
+    }
+    .mission-id-block::before,
+    .mission-id-block::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 1px;
+      background: var(--accent-dim);
+    }
+    .mission-id-block::before { top: 18px; }
+    .mission-id-block::after { bottom: 18px; }
+
+    .mid-label {
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 14px;
+    }
+    .mid-name {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 56px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      line-height: 1;
+      color: var(--text-1);
+    }
+    .mid-name .accent { color: var(--accent); }
+    .mid-subtitle {
+      margin-top: 18px;
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-2);
+    }
+
+    /* Briefing dossier triplet */
+    .dossier-strip {
+      padding: 24px 32px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+    .ds-card {
+      background: var(--bg-1);
+      padding: 20px 22px;
+    }
+    .ds-label {
+      font-family: var(--font-display);
+      font-size: 9px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 10px;
+    }
+    .ds-value {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 19px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-1);
+      line-height: 1.2;
+    }
+    .ds-value.accent { color: var(--accent); }
+    .ds-detail {
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--text-2);
+      letter-spacing: 0.06em;
+      line-height: 1.5;
+    }
+
+    /* The briefing */
+    .briefing {
+      padding: 38px 32px 32px;
+    }
+    .briefing-header {
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .briefing-header .from { color: var(--accent); }
+    .briefing-header .line { flex: 1; height: 1px; background: var(--border); }
+
+    .cipher-message {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 24px;
+      line-height: 1.65;
+      color: var(--text-1);
+      border-left: 2px solid var(--accent);
+      padding: 4px 0 4px 26px;
+      max-width: 780px;
+    }
+    .cipher-message p { margin-bottom: 16px; }
+    .cipher-message p:last-child { margin-bottom: 0; }
+    .cipher-message .em { color: var(--accent); font-style: italic; font-weight: 500; }
+
+    /* Self-destruct strip */
+    .destruct-strip {
+      margin-top: 38px;
+      padding: 18px 22px;
+      border: 1px solid var(--accent-dim);
+      background: rgba(217, 37, 37, 0.03);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .destruct-label {
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .destruct-label .dot {
+      width: 8px; height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: blink 0.9s ease-in-out infinite;
+      box-shadow: 0 0 10px var(--accent);
+    }
+    .destruct-countdown {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 24px;
+      letter-spacing: 0.12em;
+      color: var(--text-1);
+    }
+    .destruct-countdown .v { color: var(--accent); }
+
+    /* Acceptance */
+    .acceptance {
+      padding: 30px 32px 38px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+    .acceptance-note {
+      font-size: 11px;
+      color: var(--text-3);
+      letter-spacing: 0.12em;
+      font-style: italic;
+      max-width: 360px;
+      line-height: 1.55;
+    }
+    .accept-actions { display: flex; gap: 12px; align-items: center; }
+
+    .btn-decline {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 10px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      background: transparent;
+      color: var(--text-3);
+      border: none;
+      padding: 14px 18px;
+      cursor: pointer;
+      transition: color 0.15s ease;
+    }
+    .btn-decline:hover { color: var(--text-2); }
+
+    .btn-accept {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      background: var(--accent);
+      color: var(--text-1);
+      border: none;
+      padding: 20px 44px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+    .btn-accept:hover {
+      background: var(--accent-bright);
+      transform: translateY(-1px);
+    }
+    .btn-accept::after { content: ' →'; }
+
+    /* Classified */
+    .classified-strip {
+      padding: 12px 32px;
+      border-top: 1px solid var(--border);
+      background: var(--bg-0);
+      display: flex;
+      justify-content: space-between;
+      font-size: 9px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .classified-strip .red { color: var(--accent); margin-right: 6px; }
+
+    @media (max-width: 800px) {
+      .dossier-strip { grid-template-columns: 1fr; }
+      .mid-name { font-size: 38px; }
+      .channel-meta { flex-direction: column; gap: 8px; }
+      .acceptance { flex-direction: column; align-items: stretch; }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <span class="corner-bl"></span>
+    <span class="corner-br"></span>
+
+    <div class="incoming-banner">
+      <span class="left">Incoming Transmission · Channel Omega · Encrypted</span>
+      <span>Priority 01</span>
+    </div>
+
+    <div class="channel-meta">
+      <div class="cm-field"><span>Source</span><span class="v">IMF // SUBSTATION-G7</span></div>
+      <div class="cm-field"><span>Route</span><span class="v">DARK-LINK 04</span></div>
+      <div class="cm-field"><span>Signature</span><span class="v">Cipher</span></div>
+      <div class="cm-field"><span>Authentication</span><span class="v alert">Verified · Tk-7</span></div>
+    </div>
+
+    <div class="decryption">
+      <div class="decrypt-bar">
+        <span>Decryption</span>
+        <div class="progress"></div>
+        <span class="pct">100%</span>
+        <span style="color: var(--green);">Complete</span>
+      </div>
+      <div class="decrypt-source">Latency <span class="v">42 ms</span> · Loss <span class="v">0.00%</span></div>
+    </div>
+
+    <div class="mission-id-block">
+      <div class="mid-label">Operation Designation</div>
+      <div class="mid-name">Quick<span class="accent">silver</span></div>
+      <div class="mid-subtitle">Counter-Acquisition · Tier I · 72-Hour Window</div>
+    </div>
+
+    <div class="dossier-strip">
+      <div class="ds-card">
+        <div class="ds-label">Target Asset</div>
+        <div class="ds-value accent">Helios</div>
+        <div class="ds-detail">Experimental model · autonomous targeting capability · classified since 2023</div>
+      </div>
+      <div class="ds-card">
+        <div class="ds-label">Target Location</div>
+        <div class="ds-value">Hôtel Hermitage</div>
+        <div class="ds-detail">Monte Carlo · 43.7384°N · 7.4246°E · private auction floor</div>
+      </div>
+      <div class="ds-card">
+        <div class="ds-label">Time Window</div>
+        <div class="ds-value">72:00:00</div>
+        <div class="ds-detail">Counting from acceptance · auction commences at T-0</div>
+      </div>
+    </div>
+
+    <div class="briefing">
+      <div class="briefing-header">
+        <span>Briefing</span>
+        <span>//</span>
+        <span class="from">From Cipher</span>
+        <span class="line"></span>
+        <span>17:00:00 UTC</span>
+      </div>
+
+      <div class="cipher-message">
+        <p>Agent. The Syndicate has acquired <span class="em">Helios</span> — an experimental model we have tracked for eighteen months. They are auctioning it in seventy-two hours at the Hôtel Hermitage to a buyer we cannot yet identify. Your team is the only one in position.</p>
+        <p>You will build a cover. You will gather intelligence. You will find the weakness. You will tell me how this ends.</p>
+        <p>The Secretary will disavow you if anything goes wrong. As always, should any member of your team be caught or compromised, our office will deny all knowledge of your actions.</p>
+      </div>
+
+      <div class="destruct-strip">
+        <div class="destruct-label">
+          <span class="dot"></span>
+          <span>Self-Destruct Engaged</span>
+        </div>
+        <div class="destruct-countdown">00:00:<span class="v">04</span></div>
+      </div>
+    </div>
+
+    <div class="acceptance">
+      <div class="acceptance-note">
+        Acceptance binds your team to operational secrecy under Subsection 4-A of the Charter. Decline returns no record of this transmission.
+      </div>
+      <div class="accept-actions">
+        <button class="btn-decline">Decline</button>
+        <button class="btn-accept">Accept Mission</button>
+      </div>
+    </div>
+
+    <div class="classified-strip">
+      <span><span class="red">●</span>Classified // Internal Use Only</span>
+      <span>Pre-Session · Awaiting Acceptance</span>
+      <span>This message will self-destruct</span>
+    </div>
+  </div>
+</body>
+</html>

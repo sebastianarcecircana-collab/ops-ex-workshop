@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EYES ONLY — Encrypted Burst</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500&family=JetBrains+Mono:wght@300;400;500;700&family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-0: #050507;
+      --bg-1: #0e0e10;
+      --bg-deep: #0a0a0d;
+      --border: #25252c;
+      --border-strong: #3a3a44;
+      --text-1: #ececef;
+      --text-2: #94949f;
+      --text-3: #5a5a64;
+      --accent: #d92525;
+      --accent-bright: #ff3838;
+      --accent-dim: #5a1414;
+      --amber: #e0a838;
+      --font-display: 'Oswald', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-serif: 'Cormorant Garamond', serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-0);
+      color: var(--text-1);
+      font-family: var(--font-mono);
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 32px;
+      background-image:
+        radial-gradient(ellipse at center, rgba(217, 37, 37, 0.05), transparent 70%),
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 3px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Subtle vertical scan line moving down the page */
+    body::after {
+      content: '';
+      position: fixed;
+      left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(217, 37, 37, 0.5), transparent);
+      animation: vscan 9s linear infinite;
+      pointer-events: none;
+      z-index: 100;
+    }
+    @keyframes vscan {
+      0% { top: -10px; opacity: 0; }
+      5% { opacity: 1; }
+      95% { opacity: 1; }
+      100% { top: 100%; opacity: 0; }
+    }
+
+    .frame {
+      max-width: 880px;
+      margin: 0 auto;
+      position: relative;
+      border: 1px solid var(--border);
+      background: var(--bg-1);
+    }
+
+    .frame::before, .frame::after,
+    .corner-bl, .corner-br {
+      content: '';
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      border: 2px solid var(--accent);
+      pointer-events: none;
+    }
+    .frame::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+    .frame::after  { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+    .corner-bl { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+    .corner-br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+    /* Classification banner */
+    .classification {
+      padding: 16px 32px;
+      background: var(--accent);
+      color: var(--text-1);
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      text-align: center;
+      position: relative;
+    }
+    .classification span { margin: 0 14px; }
+    .classification::before, .classification::after {
+      content: '◢ ◣';
+      letter-spacing: 0.5em;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 10px;
+    }
+
+    /* Sub-header */
+    .recording-strip {
+      padding: 14px 36px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-deep);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .rec-status { display: flex; align-items: center; gap: 10px; color: var(--accent); }
+    .rec-status .dot {
+      width: 8px; height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: rec-pulse 1.4s infinite;
+      box-shadow: 0 0 8px rgba(217, 37, 37, 0.7);
+    }
+    @keyframes rec-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    .rec-meta { display: flex; gap: 28px; }
+    .rec-meta .field { display: flex; gap: 8px; }
+    .rec-meta .k { color: var(--text-3); }
+    .rec-meta .v { color: var(--text-1); }
+
+    /* Main content */
+    .content {
+      padding: 56px 64px 44px;
+    }
+
+    .preamble {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+    .preamble .frequency {
+      font-family: var(--font-display);
+      font-size: 10px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 12px;
+    }
+    .preamble .mission-id {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 16px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-2);
+      margin-bottom: 8px;
+    }
+    .preamble .mission-name {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 48px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-1);
+      line-height: 1;
+    }
+    .preamble .mission-name .codename { color: var(--accent); }
+
+    .preamble .recipient {
+      margin-top: 20px;
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      color: var(--text-3);
+      text-transform: uppercase;
+    }
+    .preamble .recipient .name { color: var(--text-1); }
+
+    /* Audio waveform suggestion */
+    .audio-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      margin: 0 auto 28px;
+      height: 32px;
+      max-width: 320px;
+    }
+    .audio-bar .bar {
+      width: 3px;
+      background: var(--text-3);
+      animation: wave 1.6s ease-in-out infinite;
+    }
+    .audio-bar .bar:nth-child(1) { height: 30%; animation-delay: -0.1s; }
+    .audio-bar .bar:nth-child(2) { height: 70%; animation-delay: -0.3s; }
+    .audio-bar .bar:nth-child(3) { height: 50%; animation-delay: -0.5s; }
+    .audio-bar .bar:nth-child(4) { height: 85%; animation-delay: -0.2s; background: var(--accent); }
+    .audio-bar .bar:nth-child(5) { height: 100%; animation-delay: -0.4s; background: var(--accent); }
+    .audio-bar .bar:nth-child(6) { height: 75%; animation-delay: -0.6s; background: var(--accent); }
+    .audio-bar .bar:nth-child(7) { height: 60%; animation-delay: -0.1s; }
+    .audio-bar .bar:nth-child(8) { height: 45%; animation-delay: -0.3s; }
+    .audio-bar .bar:nth-child(9) { height: 80%; animation-delay: -0.5s; }
+    .audio-bar .bar:nth-child(10) { height: 35%; animation-delay: -0.2s; }
+    .audio-bar .bar:nth-child(11) { height: 65%; animation-delay: -0.4s; }
+    .audio-bar .bar:nth-child(12) { height: 50%; animation-delay: -0.6s; }
+    .audio-bar .bar:nth-child(13) { height: 30%; animation-delay: -0.3s; }
+
+    @keyframes wave {
+      0%, 100% { transform: scaleY(0.5); opacity: 0.4; }
+      50% { transform: scaleY(1); opacity: 1; }
+    }
+
+    /* Transcript */
+    .transcript-label {
+      font-family: var(--font-display);
+      font-size: 10px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .transcript-label::before, .transcript-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .transcript {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 23px;
+      line-height: 1.7;
+      color: var(--text-1);
+      padding: 0 24px;
+      margin-bottom: 40px;
+    }
+    .transcript p { margin-bottom: 18px; }
+    .transcript p:last-child { margin-bottom: 0; }
+    .transcript .pause {
+      display: inline-block;
+      color: var(--text-3);
+      letter-spacing: 0.2em;
+      font-style: normal;
+      font-size: 18px;
+      margin: 0 4px;
+    }
+    .transcript .stress { color: var(--accent); font-style: italic; }
+
+    /* Self-destruct sequence */
+    .destruct {
+      border-top: 1px dashed var(--border-strong);
+      padding-top: 28px;
+      text-align: center;
+    }
+    .destruct-warning {
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .destruct-warning::before, .destruct-warning::after {
+      content: '◇';
+      font-size: 9px;
+      color: var(--accent);
+    }
+    .countdown {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 56px;
+      letter-spacing: 0.1em;
+      color: var(--text-1);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .countdown .blink {
+      animation: blink 1s infinite;
+      color: var(--accent);
+    }
+    @keyframes blink {
+      0%, 60% { opacity: 1; }
+      61%, 100% { opacity: 0.2; }
+    }
+    .countdown-label {
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+
+    /* Actions */
+    .actions {
+      padding: 28px 64px 36px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+    }
+    .btn {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 13px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      padding: 18px 40px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--text-1);
+    }
+    .btn-primary:hover { background: var(--accent-bright); transform: translateY(-1px); }
+    .btn-primary::after { content: ' →'; }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-2);
+      border: 1px solid var(--border-strong);
+    }
+    .btn-ghost:hover { color: var(--text-1); border-color: var(--text-2); }
+
+    /* Footer */
+    .classified-strip {
+      padding: 12px 32px;
+      background: var(--bg-0);
+      display: flex;
+      justify-content: space-between;
+      font-size: 9px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .classified-strip .red { color: var(--accent); margin-right: 6px; }
+
+    @media (max-width: 700px) {
+      body { padding: 16px; }
+      .content { padding: 36px 24px 28px; }
+      .actions { padding: 24px; flex-direction: column; }
+      .preamble .mission-name { font-size: 34px; }
+      .transcript { font-size: 18px; padding: 0; }
+      .countdown { font-size: 42px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <span class="corner-bl"></span>
+    <span class="corner-br"></span>
+
+    <div class="classification">
+      <span>Eyes Only</span>
+      <span>·</span>
+      <span>Cosmic Clearance</span>
+      <span>·</span>
+      <span>Athena-7</span>
+    </div>
+
+    <div class="recording-strip">
+      <div class="rec-status"><span class="dot"></span>Decrypted · Playback Active</div>
+      <div class="rec-meta">
+        <div class="field"><span class="k">FREQ</span><span class="v">04.711 MHz</span></div>
+        <div class="field"><span class="k">BURST</span><span class="v">14.2s</span></div>
+        <div class="field"><span class="k">SOURCE</span><span class="v">Cipher</span></div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="preamble">
+        <div class="frequency">Encrypted Voice Burst · 2026-05-18 11:59 UTC</div>
+        <div class="mission-id">Operation</div>
+        <div class="mission-name"><span class="codename">Quicksilver</span></div>
+        <div class="recipient">For the eyes of <span class="name">Night Arrow</span> only</div>
+      </div>
+
+      <div class="audio-bar" aria-hidden="true">
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+
+      <div class="transcript-label">Transcript</div>
+      <div class="transcript">
+        <p>Agent. The Syndicate has acquired <span class="stress">Helios</span> — an experimental model we have tracked for eighteen months. They are auctioning it in seventy-two hours at the Hôtel Hermitage, Monaco, to a buyer we cannot yet identify.</p>
+        <p>Your team is the only one in position.</p>
+        <p>You will build a cover.<span class="pause"> // </span>You will gather intelligence.<span class="pause"> // </span>You will find the weakness.<span class="pause"> // </span>You will tell me how this ends.</p>
+        <p>As always, should you or any of your team be caught or killed, the Secretary will disavow all knowledge of your actions.</p>
+      </div>
+
+      <div class="destruct">
+        <div class="destruct-warning">This message will self-destruct</div>
+        <div class="countdown">00<span class="blink">:</span>05</div>
+        <div class="countdown-label">Seconds Remaining</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-ghost">Replay Briefing</button>
+      <button class="btn btn-primary">Accept Mission</button>
+    </div>
+
+    <div class="classified-strip">
+      <span><span class="red">●</span>Classified // IMF Internal</span>
+      <span>Session a4f-9201-7b</span>
+      <span>One-Time Transmission</span>
+    </div>
+  </div>
+</body>
+</html>

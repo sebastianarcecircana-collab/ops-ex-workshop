@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PHASE 01 — Build the Legend</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500&family=JetBrains+Mono:wght@300;400;500;700&family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-0: #050507;
+      --bg-1: #0e0e10;
+      --bg-2: #16161a;
+      --bg-3: #1d1d22;
+      --bg-deep: #0a0a0d;
+      --border: #25252c;
+      --border-strong: #3a3a44;
+      --text-1: #ececef;
+      --text-2: #94949f;
+      --text-3: #5a5a64;
+      --accent: #d92525;
+      --accent-bright: #ff3838;
+      --accent-dim: #5a1414;
+      --accent-faint: rgba(217, 37, 37, 0.08);
+      --green: #58c97e;
+      --green-dim: rgba(88, 201, 126, 0.2);
+      --amber: #e0a838;
+      --gray: #6b6b76;
+      --font-display: 'Oswald', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-serif: 'Cormorant Garamond', serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-0);
+      color: var(--text-1);
+      font-family: var(--font-mono);
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 32px;
+      background-image:
+        radial-gradient(ellipse at top, rgba(217, 37, 37, 0.04), transparent 60%),
+        linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 3px;
+    }
+
+    .frame {
+      max-width: 1280px;
+      margin: 0 auto;
+      position: relative;
+      border: 1px solid var(--border);
+      background: var(--bg-1);
+    }
+
+    .frame::before, .frame::after,
+    .corner-bl, .corner-br {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--accent);
+      pointer-events: none;
+    }
+    .frame::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+    .frame::after  { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+    .corner-bl { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+    .corner-br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+    /* Header */
+    .header {
+      padding: 18px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .header-left { display: flex; align-items: center; gap: 22px; }
+    .breadcrumb {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      color: var(--text-2);
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 6px 12px;
+      border: 1px solid var(--border-strong);
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+    .breadcrumb:hover { color: var(--text-1); border-color: var(--text-2); }
+    .breadcrumb::before { content: '← '; }
+    .phase-tag {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      color: var(--text-3);
+      text-transform: uppercase;
+    }
+    .phase-title {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 22px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-1);
+    }
+    .phase-title .accent { color: var(--accent); }
+
+    .header-right { display: flex; align-items: center; gap: 28px; }
+    .timer { display: flex; align-items: baseline; gap: 10px; }
+    .timer-label {
+      font-size: 10px;
+      color: var(--text-3);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+    .timer-value {
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--text-1);
+      letter-spacing: 0.06em;
+    }
+    .timer-value .blink {
+      color: var(--accent);
+      animation: blink 1.2s infinite;
+    }
+    @keyframes blink {
+      0%, 60% { opacity: 1; }
+      61%, 100% { opacity: 0.15; }
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--green);
+      padding: 5px 11px;
+      border: 1px solid rgba(88, 201, 126, 0.3);
+    }
+    .status-pill .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+      box-shadow: 0 0 8px rgba(88, 201, 126, 0.6);
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    /* Transmission */
+    .transmission {
+      padding: 30px 32px 26px;
+      border-bottom: 1px solid var(--border);
+    }
+    .transmission-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 18px;
+    }
+    .transmission-header .from { color: var(--accent); }
+    .transmission-header .ts { color: var(--text-2); margin-left: auto; letter-spacing: 0.1em; }
+    .cipher-msg {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 22px;
+      line-height: 1.55;
+      color: var(--text-1);
+      max-width: 860px;
+      border-left: 2px solid var(--accent);
+      padding-left: 22px;
+    }
+
+    /* Section label */
+    .section-label {
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .section-label .badge { color: var(--text-2); letter-spacing: 0.18em; }
+    .section-label .badge.accent { color: var(--accent); }
+
+    /* Construction chain workspace */
+    .workspace {
+      padding: 28px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .chain-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* Chain step base */
+    .chain-step {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--border-strong);
+      position: relative;
+      transition: all 0.2s ease;
+    }
+    .chain-step.completed { border-left-color: var(--green); }
+    .chain-step.active {
+      border-left-color: var(--accent);
+      background: linear-gradient(90deg, rgba(217, 37, 37, 0.04), transparent 30%);
+    }
+    .chain-step.sealed { opacity: 0.5; }
+
+    .step-header {
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .step-header-left { display: flex; align-items: baseline; gap: 16px; }
+    .step-number {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-2);
+    }
+    .chain-step.active .step-number { color: var(--accent); }
+    .chain-step.completed .step-number { color: var(--green); }
+
+    .step-title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 14px;
+      letter-spacing: 0.18em;
+      color: var(--text-2);
+      text-transform: uppercase;
+    }
+    .step-status {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--text-3);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .step-status::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--text-3);
+      border-radius: 50%;
+    }
+    .chain-step.completed .step-status { color: var(--green); }
+    .chain-step.completed .step-status::before { background: var(--green); }
+    .chain-step.active .step-status { color: var(--accent); }
+    .chain-step.active .step-status::before { background: var(--accent); animation: pulse 2s infinite; }
+
+    /* Completed step summary */
+    .step-summary {
+      padding: 0 22px 18px;
+    }
+    .summary-output {
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--green-dim);
+      padding: 12px 16px;
+      font-size: 12px;
+      color: var(--text-2);
+      line-height: 1.6;
+      font-style: italic;
+    }
+    .summary-output .label {
+      display: block;
+      font-family: var(--font-display);
+      font-style: normal;
+      font-size: 9px;
+      letter-spacing: 0.28em;
+      color: var(--text-3);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    /* Active step body */
+    .step-body { padding: 4px 22px 20px; }
+
+    .inherited-input {
+      background: var(--bg-deep);
+      border: 1px dashed var(--border-strong);
+      padding: 12px 16px;
+      margin-bottom: 22px;
+      position: relative;
+    }
+    .ii-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .ii-label {
+      font-family: var(--font-display);
+      font-size: 9px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--amber);
+    }
+    .ii-source {
+      font-size: 9px;
+      color: var(--text-3);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .ii-content {
+      font-size: 12px;
+      color: var(--text-2);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    /* Triplet */
+    .triplet { display: flex; flex-direction: column; gap: 4px; }
+
+    .triplet-section {
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      padding: 14px 16px;
+    }
+    .ts-label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      gap: 12px;
+    }
+    .ts-label .name {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--text-1);
+    }
+    .ts-label .role-tag {
+      font-family: var(--font-display);
+      font-size: 9px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border: 1px solid var(--border-strong);
+      color: var(--text-3);
+    }
+    .ts-label .role-tag.meta { color: var(--amber); border-color: rgba(224, 168, 56, 0.3); }
+    .ts-label .role-tag.gen { color: var(--accent); border-color: var(--accent-dim); }
+    .ts-label .role-tag.out { color: var(--green); border-color: rgba(88, 201, 126, 0.3); }
+    .ts-help {
+      font-size: 10px;
+      color: var(--text-3);
+      font-style: italic;
+      letter-spacing: 0.02em;
+    }
+
+    .ts-textarea {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: var(--text-1);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.65;
+      padding: 4px 0 0;
+      letter-spacing: 0.02em;
+      resize: vertical;
+      outline: none;
+      min-height: 60px;
+    }
+    .ts-textarea::placeholder {
+      color: var(--text-3);
+      font-style: italic;
+    }
+
+    /* Connector between triplet sections */
+    .triplet-connector {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 2px 16px;
+      font-family: var(--font-display);
+      font-size: 9px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .triplet-connector .arrow { color: var(--accent); font-size: 11px; }
+    .triplet-connector .line { flex: 1; height: 1px; background: var(--border); }
+
+    /* Sealed step */
+    .chain-step.sealed .step-header {
+      padding-bottom: 18px;
+    }
+    .sealed-note {
+      font-size: 10px;
+      color: var(--text-3);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-style: italic;
+    }
+
+    /* Step footer (actions) */
+    .step-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding-top: 16px;
+      margin-top: 14px;
+      border-top: 1px dashed var(--border-strong);
+    }
+    .btn-small {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 10px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-small.primary {
+      background: var(--accent);
+      color: var(--text-1);
+      border: none;
+    }
+    .btn-small.primary:hover { background: var(--accent-bright); }
+    .btn-small.ghost {
+      background: transparent;
+      color: var(--text-2);
+      border: 1px solid var(--border-strong);
+    }
+    .btn-small.ghost:hover { color: var(--text-1); border-color: var(--text-2); }
+
+    /* Step-to-step connector */
+    .step-bridge {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 8px 0 8px 14px;
+      margin-left: 11px;
+    }
+    .bridge-line {
+      width: 2px;
+      height: 24px;
+      background: linear-gradient(180deg, var(--green), var(--border-strong));
+    }
+    .step-bridge.active-bridge .bridge-line {
+      background: linear-gradient(180deg, var(--accent), var(--border-strong));
+    }
+    .step-bridge.pending .bridge-line {
+      background: var(--border-strong);
+    }
+    .bridge-label {
+      font-family: var(--font-display);
+      font-size: 9px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .step-bridge.active-bridge .bridge-label { color: var(--accent); }
+
+    /* Extend chain button */
+    .extend-chain {
+      margin-top: 14px;
+      padding: 14px;
+      background: transparent;
+      border: 1px dashed var(--border-strong);
+      color: var(--text-2);
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+    .extend-chain:hover { color: var(--accent); border-color: var(--accent-dim); }
+    .extend-chain::before { content: '+ '; }
+
+    /* Cover dossier */
+    .dossier-block {
+      padding: 30px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dossier-card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .dossier-header {
+      padding: 18px 24px;
+      border-bottom: 1px dashed var(--border-strong);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .dh-title {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 13px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--text-1);
+    }
+    .dh-id {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .dh-id .strong { color: var(--accent); }
+
+    .dossier-grid {
+      padding: 22px 24px 18px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .field-full { grid-column: 1 / -1; }
+
+    .form-field { margin-bottom: 4px; }
+    .field-label {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .field-label .req { color: var(--accent); }
+    .field-label .auto {
+      color: var(--green);
+      font-style: italic;
+      text-transform: none;
+      letter-spacing: 0.02em;
+      font-weight: 400;
+    }
+    .field-input,
+    .field-textarea {
+      width: 100%;
+      background: var(--bg-deep);
+      border: 1px solid var(--border-strong);
+      color: var(--text-1);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 500;
+      padding: 10px 14px;
+      letter-spacing: 0.04em;
+      transition: all 0.15s ease;
+      outline: none;
+    }
+    .field-input::placeholder,
+    .field-textarea::placeholder {
+      color: var(--text-3);
+      font-weight: 400;
+      font-style: italic;
+    }
+    .field-input:focus,
+    .field-textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-faint);
+    }
+    .field-textarea {
+      min-height: 72px;
+      resize: vertical;
+      font-weight: 400;
+      line-height: 1.55;
+    }
+
+    /* Actions */
+    .actions-bar {
+      padding: 22px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .draft-status {
+      font-size: 10px;
+      color: var(--text-3);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .draft-status::before {
+      content: '';
+      width: 5px; height: 5px;
+      background: var(--text-3);
+      border-radius: 50%;
+    }
+    .actions { display: flex; gap: 12px; }
+    .btn {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      padding: 14px 30px;
+      background: var(--accent);
+      color: var(--text-1);
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn:hover { background: var(--accent-bright); }
+    .btn::after { content: ' →'; }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-2);
+      border: 1px solid var(--border-strong);
+    }
+    .btn-ghost:hover { color: var(--text-1); border-color: var(--text-2); }
+    .btn-ghost::after { content: ''; }
+
+    /* Classified */
+    .classified-strip {
+      padding: 12px 32px;
+      background: var(--bg-0);
+      display: flex;
+      justify-content: space-between;
+      font-size: 9px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .classified-strip .red { color: var(--accent); margin-right: 6px; }
+
+    @media (max-width: 900px) {
+      .dossier-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 700px) {
+      body { padding: 16px; }
+      .header, .transmission, .workspace, .dossier-block, .actions-bar, .classified-strip {
+        padding-left: 18px; padding-right: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <span class="corner-bl"></span>
+    <span class="corner-br"></span>
+
+    <div class="header">
+      <div class="header-left">
+        <a class="breadcrumb">Mission Hub</a>
+        <div>
+          <div class="phase-tag">Phase 01</div>
+          <div class="phase-title">Build the <span class="accent">Legend</span></div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="timer">
+          <span class="timer-label">T-Minus</span>
+          <span class="timer-value">71:42<span class="blink">:</span>18</span>
+        </div>
+        <div class="status-pill"><span class="dot"></span>Channel Secure</div>
+      </div>
+    </div>
+
+    <div class="transmission">
+      <div class="transmission-header">
+        <span>Transmission</span>
+        <span>//</span>
+        <span class="from">From Cipher</span>
+        <span class="ts">12:00:01 UTC</span>
+      </div>
+      <div class="cipher-msg">
+        Your operative needs a face. Build the cover through a chain of prompts —
+        each output feeds the next. Use AI to write the prompts themselves.
+        I want the chain, not just the result.
+      </div>
+    </div>
+
+    <div class="workspace">
+      <div class="section-label">Construction Chain <span class="badge accent">02 / 04 Sealed</span></div>
+
+      <div class="chain-stack">
+
+        <!-- STEP 01: completed -->
+        <div class="chain-step completed">
+          <div class="step-header">
+            <div class="step-header-left">
+              <span class="step-number">Step 01</span>
+              <span class="step-title">Persona Background</span>
+            </div>
+            <span class="step-status">Sealed</span>
+          </div>
+          <div class="step-summary">
+            <div class="summary-output">
+              <span class="label">Output Captured</span>
+              Marcus Vale, 47. Born Geneva, 1978. EPFL-educated in materials science; pivoted to art finance in 2009.
+              Operates from a converted townhouse in Carouge. Known for low-profile acquisitions of post-war
+              European sculpture. Speaks French, German, English; passable Italian.
+            </div>
+          </div>
+        </div>
+
+        <div class="step-bridge">
+          <div class="bridge-line"></div>
+          <span class="bridge-label">Output feeds Step 02</span>
+        </div>
+
+        <!-- STEP 02: ACTIVE -->
+        <div class="chain-step active">
+          <div class="step-header">
+            <div class="step-header-left">
+              <span class="step-number">Step 02</span>
+              <span class="step-title">Employer + Credentials</span>
+            </div>
+            <span class="step-status">In Progress</span>
+          </div>
+
+          <div class="step-body">
+            <div class="inherited-input">
+              <div class="ii-header">
+                <span class="ii-label">↳ Inherited Input</span>
+                <span class="ii-source">From Step 01 · Persona Background</span>
+              </div>
+              <div class="ii-content">
+                Marcus Vale, 47, Geneva-based art finance specialist. Low-profile acquirer of post-war European
+                sculpture. Operates from Carouge. Multilingual.
+              </div>
+            </div>
+
+            <div class="triplet">
+              <div class="triplet-section">
+                <div class="ts-label">
+                  <span class="name">Meta-Prompt</span>
+                  <span class="role-tag meta">Authored by you</span>
+                </div>
+                <div class="ts-help">How you asked AI to write the next prompt — not what you want produced.</div>
+                <textarea class="ts-textarea">Using the persona from Step 01, write me a prompt I can run to generate a credible employer and credential set for this individual. The prompt should ensure the employer is consistent with the persona's background and provides plausible references that would survive a 30-second background check by a discreet host.</textarea>
+              </div>
+
+              <div class="triplet-connector">
+                <span class="arrow">↓</span>
+                <span>Used to write</span>
+                <span class="line"></span>
+              </div>
+
+              <div class="triplet-section">
+                <div class="ts-label">
+                  <span class="name">Generated Prompt</span>
+                  <span class="role-tag gen">AI-generated</span>
+                </div>
+                <div class="ts-help">The prompt AI wrote for you. Paste it as-is, then run it elsewhere.</div>
+                <textarea class="ts-textarea">"Generate a fictional but credible employer for Marcus Vale, a 47-year-old Geneva-based art finance specialist (EPFL-trained, focused on post-war European sculpture). Include: company name, year founded, headquarters, business model, recent notable transactions, two reference contacts with titles, and Vale's current role. The employer should plausibly send him to a private auction in Monaco."</textarea>
+              </div>
+
+              <div class="triplet-connector">
+                <span class="arrow">↓</span>
+                <span>Produced</span>
+                <span class="line"></span>
+              </div>
+
+              <div class="triplet-section">
+                <div class="ts-label">
+                  <span class="name">AI Output</span>
+                  <span class="role-tag out">Captured</span>
+                </div>
+                <div class="ts-help">Paste the full result. This output becomes Step 03's inherited input.</div>
+                <textarea class="ts-textarea">Lumière Capital Partners — private investment firm, Geneva, founded 2007. Specializes in tangible-asset advisory for HNW clients in Western Europe. Quiet but well-regarded; rarely seeks press. Vale joined in 2014 as Director of Acquisitions Advisory. Recent transactions include the discreet placement of three Marini bronzes at private estates in Zürich and Antwerp. References: Élise Marchand (Managing Partner), Henri Roussel (Head of Provenance).</textarea>
+              </div>
+            </div>
+
+            <div class="step-footer">
+              <button class="btn-small ghost">Save Draft</button>
+              <button class="btn-small primary">Seal Step</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-bridge pending">
+          <div class="bridge-line"></div>
+          <span class="bridge-label">Pending Step 02 Seal</span>
+        </div>
+
+        <!-- STEP 03: sealed/locked -->
+        <div class="chain-step sealed">
+          <div class="step-header">
+            <div class="step-header-left">
+              <span class="step-number">Step 03</span>
+              <span class="step-title">Mannerisms + Speech Patterns</span>
+            </div>
+            <span class="sealed-note">Awaiting upstream completion</span>
+          </div>
+        </div>
+
+        <div class="step-bridge pending">
+          <div class="bridge-line"></div>
+          <span class="bridge-label">Pending</span>
+        </div>
+
+        <!-- STEP 04: sealed/locked -->
+        <div class="chain-step sealed">
+          <div class="step-header">
+            <div class="step-header-left">
+              <span class="step-number">Step 04</span>
+              <span class="step-title">Pretext for Attendance</span>
+            </div>
+            <span class="sealed-note">Awaiting upstream completion</span>
+          </div>
+        </div>
+
+        <button class="extend-chain">Extend Chain</button>
+      </div>
+    </div>
+
+    <!-- Cover dossier -->
+    <div class="dossier-block">
+      <div class="section-label">Cover Dossier <span class="badge accent">REQ · Submission Manifest</span></div>
+
+      <div class="dossier-card">
+        <div class="dossier-header">
+          <div class="dh-title">Identity Document — L-Series</div>
+          <div class="dh-id">Auto-Distilled from Chain · <span class="strong">Editable</span></div>
+        </div>
+
+        <div class="dossier-grid">
+          <div class="form-field">
+            <div class="field-label"><span>Codename</span><span class="auto">from chain</span></div>
+            <input class="field-input" type="text" value="Marcus Vale" />
+          </div>
+          <div class="form-field">
+            <div class="field-label"><span>Employer</span><span class="auto">from chain</span></div>
+            <input class="field-input" type="text" value="Lumière Capital Partners" />
+          </div>
+
+          <div class="form-field field-full">
+            <div class="field-label"><span>Background</span><span class="req">Required</span></div>
+            <textarea class="field-textarea" placeholder="Two to three sentences. The version your operative could deliver at the door without hesitation.">Geneva-based art finance specialist, EPFL-trained, twelve years at Lumière. Quiet acquirer of post-war European sculpture for HNW clients. Carouge-based; operates with discretion.</textarea>
+          </div>
+
+          <div class="form-field field-full">
+            <div class="field-label"><span>Mannerisms</span><span class="req">Required</span></div>
+            <textarea class="field-textarea" placeholder="Awaiting Step 03 output."></textarea>
+          </div>
+
+          <div class="form-field field-full">
+            <div class="field-label"><span>Pretext for Attendance</span><span class="req">Required</span></div>
+            <textarea class="field-textarea" placeholder="Awaiting Step 04 output."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions-bar">
+      <div class="draft-status">Draft autosaved · 12:51 UTC</div>
+      <div class="actions">
+        <button class="btn-ghost btn">Save Draft</button>
+        <button class="btn">Transmit Cover Identity</button>
+      </div>
+    </div>
+
+    <div class="classified-strip">
+      <span><span class="red">●</span>Classified // Internal Use Only</span>
+      <span>Session a4f-9201-7b // Phase 01</span>
+      <span>End-to-End Encrypted</span>
+    </div>
+  </div>
+</body>
+</html>

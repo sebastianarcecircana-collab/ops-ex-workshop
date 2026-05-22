@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRANSMISSION RECEIVED — Cipher Response</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500&family=JetBrains+Mono:wght@300;400;500;700&family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-0: #050507;
+      --bg-1: #0e0e10;
+      --bg-2: #16161a;
+      --bg-3: #1d1d22;
+      --bg-deep: #0a0a0d;
+      --border: #25252c;
+      --border-strong: #3a3a44;
+      --text-1: #ececef;
+      --text-2: #94949f;
+      --text-3: #5a5a64;
+      --accent: #d92525;
+      --accent-bright: #ff3838;
+      --accent-dim: #5a1414;
+      --accent-faint: rgba(217, 37, 37, 0.08);
+      --green: #58c97e;
+      --amber: #e0a838;
+      --font-display: 'Oswald', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-serif: 'Cormorant Garamond', serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-0);
+      color: var(--text-1);
+      font-family: var(--font-mono);
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 32px;
+      background-image:
+        radial-gradient(ellipse at top, rgba(217, 37, 37, 0.04), transparent 60%),
+        linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 3px;
+    }
+
+    .frame {
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+      border: 1px solid var(--border);
+      background: var(--bg-1);
+    }
+
+    .frame::before, .frame::after,
+    .corner-bl, .corner-br {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--accent);
+      pointer-events: none;
+    }
+    .frame::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+    .frame::after  { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+    .corner-bl { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+    .corner-br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+    /* Header */
+    .header {
+      padding: 18px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header-left { display: flex; align-items: baseline; gap: 22px; }
+    .phase-tag {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      color: var(--text-3);
+      text-transform: uppercase;
+    }
+    .phase-title {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 19px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-1);
+    }
+    .phase-title .accent { color: var(--accent); }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--green);
+      padding: 5px 11px;
+      border: 1px solid rgba(88, 201, 126, 0.3);
+    }
+    .status-pill .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px rgba(88, 201, 126, 0.6);
+    }
+
+    /* Receipt banner */
+    .receipt-banner {
+      padding: 14px 32px;
+      background: rgba(88, 201, 126, 0.05);
+      border-bottom: 1px solid rgba(88, 201, 126, 0.18);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+    }
+    .receipt-banner .left {
+      color: var(--green);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .receipt-banner .left::before {
+      content: '';
+      width: 7px; height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+    }
+    .receipt-banner .right { color: var(--text-3); }
+
+    /* Submission summary */
+    .submission-summary {
+      padding: 22px 32px;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    .ss-cell {
+      border-left: 1px solid var(--border);
+      padding-left: 16px;
+    }
+    .ss-cell:first-child { border-left: none; padding-left: 0; }
+    .ss-label {
+      font-family: var(--font-display);
+      font-size: 9px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 6px;
+    }
+    .ss-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-1);
+      letter-spacing: 0.04em;
+    }
+    .ss-detail {
+      font-size: 10px;
+      color: var(--text-2);
+      margin-top: 4px;
+      letter-spacing: 0.04em;
+      font-style: italic;
+    }
+
+    /* Cipher response — the main event */
+    .response-area {
+      padding: 56px 32px 30px;
+      position: relative;
+      background: var(--bg-1);
+    }
+    .response-area::before {
+      content: '';
+      position: absolute;
+      top: 24px;
+      left: 32px;
+      width: 38px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .response-header {
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .response-header .from { color: var(--accent); }
+    .response-header .ts { color: var(--text-2); margin-left: auto; letter-spacing: 0.1em; }
+
+    .cipher-response {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 28px;
+      line-height: 1.55;
+      color: var(--text-1);
+      max-width: 880px;
+      padding-left: 26px;
+      border-left: 2px solid var(--accent);
+    }
+    .cipher-response p { margin-bottom: 18px; }
+    .cipher-response p:last-child { margin-bottom: 0; }
+    .cipher-response .em { color: var(--accent); font-style: italic; font-weight: 500; }
+
+    /* Marks (annotations) */
+    .marks-block {
+      padding: 30px 32px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-deep);
+    }
+    .section-label {
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .marks-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-width: 880px;
+    }
+    .mark {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      gap: 22px;
+      align-items: baseline;
+      padding-bottom: 14px;
+      border-bottom: 1px dashed var(--border-strong);
+    }
+    .mark:last-child { border-bottom: none; padding-bottom: 0; }
+    .mark-tag {
+      font-family: var(--font-display);
+      font-size: 10px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .mark-tag.strong { color: var(--green); }
+    .mark-tag.gap { color: var(--accent); }
+    .mark-tag.note { color: var(--amber); }
+    .mark-text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-1);
+      letter-spacing: 0.02em;
+    }
+    .mark-text .em { color: var(--text-2); font-style: italic; }
+
+    /* Operational status */
+    .operational-status {
+      padding: 22px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+    }
+    .os-left {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .os-readout {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .os-key {
+      font-family: var(--font-display);
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .os-val {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-1);
+    }
+    .os-val.stable { color: var(--green); }
+    .os-val.watch { color: var(--amber); }
+    .os-val.risk { color: var(--accent); }
+    .os-divider {
+      width: 1px;
+      height: 22px;
+      background: var(--border);
+    }
+    .os-note {
+      font-size: 11px;
+      color: var(--text-3);
+      font-style: italic;
+      letter-spacing: 0.04em;
+      max-width: 360px;
+      text-align: right;
+    }
+
+    /* Actions */
+    .actions-bar {
+      padding: 24px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .next-phase {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+    }
+    .np-label {
+      font-family: var(--font-display);
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .np-value {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 15px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-1);
+    }
+    .np-value .accent { color: var(--accent); }
+
+    .actions { display: flex; gap: 12px; }
+    .btn {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      padding: 14px 30px;
+      background: var(--accent);
+      color: var(--text-1);
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn:hover { background: var(--accent-bright); }
+    .btn::after { content: ' →'; }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-2);
+      border: 1px solid var(--border-strong);
+    }
+    .btn-ghost:hover { color: var(--text-1); border-color: var(--text-2); }
+    .btn-ghost::after { content: ''; }
+
+    /* Classified */
+    .classified-strip {
+      padding: 12px 32px;
+      background: var(--bg-0);
+      display: flex;
+      justify-content: space-between;
+      font-size: 9px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .classified-strip .red { color: var(--accent); margin-right: 6px; }
+
+    @media (max-width: 800px) {
+      body { padding: 16px; }
+      .header, .receipt-banner, .submission-summary, .response-area,
+      .marks-block, .operational-status, .actions-bar, .classified-strip {
+        padding-left: 18px; padding-right: 18px;
+      }
+      .submission-summary { grid-template-columns: 1fr 1fr; gap: 16px; }
+      .cipher-response { font-size: 22px; }
+      .mark { grid-template-columns: 1fr; gap: 6px; }
+      .operational-status { flex-direction: column; align-items: stretch; }
+      .actions-bar { flex-direction: column; align-items: stretch; }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <span class="corner-bl"></span>
+    <span class="corner-br"></span>
+
+    <div class="header">
+      <div class="header-left">
+        <div>
+          <div class="phase-tag">Phase 01 // Evaluation</div>
+          <div class="phase-title">Build the <span class="accent">Legend</span></div>
+        </div>
+      </div>
+      <div class="status-pill"><span class="dot"></span>Channel Secure</div>
+    </div>
+
+    <div class="receipt-banner">
+      <span class="left">Transmission Received · Artifact Logged</span>
+      <span class="right">Reference Q-A4F-7B / 01</span>
+    </div>
+
+    <div class="submission-summary">
+      <div class="ss-cell">
+        <div class="ss-label">Chain Length</div>
+        <div class="ss-value">4 steps sealed</div>
+        <div class="ss-detail">Meta-prompted throughout</div>
+      </div>
+      <div class="ss-cell">
+        <div class="ss-label">Cover Codename</div>
+        <div class="ss-value">Marcus Vale</div>
+        <div class="ss-detail">Lumière Capital Partners</div>
+      </div>
+      <div class="ss-cell">
+        <div class="ss-label">Dossier Fields</div>
+        <div class="ss-value">5 / 5 complete</div>
+        <div class="ss-detail">Auto-distilled · operator-reviewed</div>
+      </div>
+      <div class="ss-cell">
+        <div class="ss-label">Transit Time</div>
+        <div class="ss-value">48m 22s</div>
+        <div class="ss-detail">Submitted 12:51 UTC</div>
+      </div>
+    </div>
+
+    <div class="response-area">
+      <div class="response-header">
+        <span>Response</span>
+        <span>//</span>
+        <span class="from">From Cipher</span>
+        <span class="ts">12:53:09 UTC</span>
+      </div>
+
+      <div class="cipher-response">
+        <p>Cover holds for a casual entrance. Vale reads. Lumière is a name they could verify in five minutes and walk away convinced.</p>
+        <p>But your pretext leans on <span class="em">art finance</span>, and the bidder list will include people who actually work in that. If anyone presses, the operative needs to know two clients Lumière hasn't placed in the last five years.</p>
+        <p>Move.</p>
+      </div>
+    </div>
+
+    <div class="marks-block">
+      <div class="section-label">Cipher's Marks</div>
+      <div class="marks-list">
+        <div class="mark">
+          <span class="mark-tag strong">Held</span>
+          <span class="mark-text">Chain is tight. <span class="em">Meta-prompting evident at each link — particularly Step 02's framing.</span></span>
+        </div>
+        <div class="mark">
+          <span class="mark-tag strong">Held</span>
+          <span class="mark-text">Mannerisms register as Geneva. Acceptable.</span>
+        </div>
+        <div class="mark">
+          <span class="mark-tag gap">Exposed</span>
+          <span class="mark-text">Pretext invites scrutiny from anyone in art finance. <span class="em">No fallback for an interrogation about Lumière's recent transactions.</span></span>
+        </div>
+        <div class="mark">
+          <span class="mark-tag note">Noted</span>
+          <span class="mark-text">No physical description of the operative anywhere in the dossier. <span class="em">Not required, but other gates may need it.</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="operational-status">
+      <div class="os-left">
+        <div class="os-readout">
+          <span class="os-key">Cover Integrity</span>
+          <span class="os-val stable">Stable</span>
+        </div>
+        <div class="os-divider"></div>
+        <div class="os-readout">
+          <span class="os-key">Exposure Surface</span>
+          <span class="os-val watch">Watch · Art Finance</span>
+        </div>
+      </div>
+      <div class="os-note">Risk surface carries into later phases. Strong dossier intel on the bidder list may compensate.</div>
+    </div>
+
+    <div class="actions-bar">
+      <div class="next-phase">
+        <span class="np-label">Next</span>
+        <span class="np-value">Phase 02 // <span class="accent">The Dossier</span></span>
+      </div>
+      <div class="actions">
+        <button class="btn-ghost btn">Review Submission</button>
+        <button class="btn">Acknowledge · Proceed</button>
+      </div>
+    </div>
+
+    <div class="classified-strip">
+      <span><span class="red">●</span>Classified // Internal Use Only</span>
+      <span>Session a4f-9201-7b // Evaluation Log</span>
+      <span>End-to-End Encrypted</span>
+    </div>
+  </div>
+</body>
+</html>

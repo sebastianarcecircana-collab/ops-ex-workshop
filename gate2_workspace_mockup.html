@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PHASE 02 — The Dossier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500&family=JetBrains+Mono:wght@300;400;500;700&family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-0: #050507;
+      --bg-1: #0e0e10;
+      --bg-2: #16161a;
+      --bg-3: #1d1d22;
+      --bg-deep: #0a0a0d;
+      --border: #25252c;
+      --border-strong: #3a3a44;
+      --text-1: #ececef;
+      --text-2: #94949f;
+      --text-3: #5a5a64;
+      --accent: #d92525;
+      --accent-bright: #ff3838;
+      --accent-dim: #5a1414;
+      --accent-faint: rgba(217, 37, 37, 0.08);
+      --green: #58c97e;
+      --green-dim: rgba(88, 201, 126, 0.2);
+      --amber: #e0a838;
+      --amber-dim: rgba(224, 168, 56, 0.3);
+      --font-display: 'Oswald', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-serif: 'Cormorant Garamond', serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-0);
+      color: var(--text-1);
+      font-family: var(--font-mono);
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 32px;
+      background-image:
+        radial-gradient(ellipse at top, rgba(217, 37, 37, 0.04), transparent 60%),
+        linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 3px;
+    }
+
+    .frame {
+      max-width: 1280px;
+      margin: 0 auto;
+      position: relative;
+      border: 1px solid var(--border);
+      background: var(--bg-1);
+    }
+
+    .frame::before, .frame::after,
+    .corner-bl, .corner-br {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--accent);
+      pointer-events: none;
+    }
+    .frame::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+    .frame::after  { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+    .corner-bl { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+    .corner-br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+    /* Header */
+    .header {
+      padding: 18px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .header-left { display: flex; align-items: center; gap: 22px; }
+    .breadcrumb {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      color: var(--text-2);
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 6px 12px;
+      border: 1px solid var(--border-strong);
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+    .breadcrumb:hover { color: var(--text-1); border-color: var(--text-2); }
+    .breadcrumb::before { content: '← '; }
+    .phase-tag {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      color: var(--text-3);
+      text-transform: uppercase;
+    }
+    .phase-title {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 22px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-1);
+    }
+    .phase-title .accent { color: var(--accent); }
+
+    .header-right { display: flex; align-items: center; gap: 28px; }
+    .timer { display: flex; align-items: baseline; gap: 10px; }
+    .timer-label {
+      font-size: 10px;
+      color: var(--text-3);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+    .timer-value {
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--text-1);
+      letter-spacing: 0.06em;
+    }
+    .timer-value .blink {
+      color: var(--accent);
+      animation: blink 1.2s infinite;
+    }
+    @keyframes blink {
+      0%, 60% { opacity: 1; }
+      61%, 100% { opacity: 0.15; }
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--green);
+      padding: 5px 11px;
+      border: 1px solid rgba(88, 201, 126, 0.3);
+    }
+    .status-pill .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+      box-shadow: 0 0 8px rgba(88, 201, 126, 0.6);
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    /* Transmission */
+    .transmission {
+      padding: 30px 32px 26px;
+      border-bottom: 1px solid var(--border);
+    }
+    .transmission-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 18px;
+    }
+    .transmission-header .from { color: var(--accent); }
+    .transmission-header .ts { color: var(--text-2); margin-left: auto; letter-spacing: 0.1em; }
+    .cipher-msg {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 22px;
+      line-height: 1.55;
+      color: var(--text-1);
+      max-width: 860px;
+      border-left: 2px solid var(--accent);
+      padding-left: 22px;
+    }
+
+    /* Field team roster */
+    .roster {
+      padding: 20px 32px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-deep);
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .roster-label {
+      font-family: var(--font-display);
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      white-space: nowrap;
+    }
+    .roster-agents {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .agent-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 14px 7px 11px;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+    }
+    .agent-chip .ac-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--text-3);
+    }
+    .agent-chip.working .ac-dot { background: var(--accent); animation: pulse 2s infinite; }
+    .agent-chip.done .ac-dot { background: var(--green); }
+    .agent-chip.idle .ac-dot { background: var(--text-3); }
+    .agent-chip .ac-name {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-1);
+    }
+    .agent-chip .ac-task {
+      font-size: 10px;
+      color: var(--text-3);
+      letter-spacing: 0.06em;
+      padding-left: 10px;
+      border-left: 1px solid var(--border-strong);
+    }
+    .agent-chip.working .ac-task { color: var(--text-2); }
+
+    /* Section label */
+    .section-label {
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .section-label .badge { color: var(--accent); letter-spacing: 0.18em; }
+
+    /* Assignment grid */
+    .assignments {
+      padding: 28px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    .assignment-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    .assignment {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--border-strong);
+      padding: 20px 22px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .assignment:hover { background: var(--bg-3); }
+    .assignment.done { border-left-color: var(--green); }
+    .assignment.active {
+      border-left-color: var(--accent);
+      background: linear-gradient(90deg, rgba(217,37,37,0.05), transparent 40%);
+    }
+    .assignment.active::after {
+      content: 'OPEN';
+      position: absolute;
+      top: 18px; right: 20px;
+      font-family: var(--font-display);
+      font-size: 9px;
+      letter-spacing: 0.28em;
+      color: var(--accent);
+    }
+    .assignment.unclaimed { border-left-color: var(--border-strong); }
+
+    .asg-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 6px;
+    }
+    .asg-area {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 18px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-1);
+    }
+    .asg-code {
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+
+    .asg-assignee {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 18px;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+    }
+    .asg-assignee .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--text-3);
+    }
+    .assignment.done .asg-assignee .dot { background: var(--green); }
+    .assignment.active .asg-assignee .dot { background: var(--accent); animation: pulse 2s infinite; }
+    .asg-assignee .name {
+      font-family: var(--font-display);
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-2);
+    }
+    .asg-assignee .name.unassigned { color: var(--text-3); font-style: italic; }
+
+    /* Required fields checklist */
+    .asg-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      padding-top: 16px;
+      border-top: 1px dashed var(--border-strong);
+    }
+    .asg-field {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      color: var(--text-3);
+    }
+    .asg-field .check {
+      font-size: 11px;
+      line-height: 1;
+      color: var(--text-3);
+      width: 12px;
+    }
+    .asg-field.filled { color: var(--text-1); }
+    .asg-field.filled .check { color: var(--green); }
+    .asg-field.flagged .tag {
+      margin-left: auto;
+      font-family: var(--font-display);
+      font-size: 8px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--amber);
+      border: 1px solid var(--amber-dim);
+      padding: 1px 6px;
+    }
+
+    .asg-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--border-strong);
+    }
+    .asg-progress {
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .assignment.done .asg-progress { color: var(--green); }
+    .asg-sources {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--text-3);
+    }
+    .asg-sources .n { color: var(--text-2); }
+
+    .claim-btn {
+      width: 100%;
+      margin-top: 4px;
+      padding: 11px;
+      background: transparent;
+      border: 1px dashed var(--border-strong);
+      color: var(--text-2);
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .claim-btn:hover { color: var(--accent); border-color: var(--accent-dim); }
+
+    /* Working panel */
+    .working-panel {
+      padding: 30px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    .wp-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+    .wp-title {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 16px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-1);
+    }
+    .wp-title .accent { color: var(--accent); }
+    .wp-assignee {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .wp-assignee .name { color: var(--text-2); }
+
+    .wp-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 24px;
+    }
+
+    .wp-fields { display: flex; flex-direction: column; gap: 18px; }
+
+    .field-block { }
+    .field-label {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .field-label .req { color: var(--accent); }
+    .field-label .flag-toggle {
+      font-family: var(--font-display);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--amber);
+      border: 1px solid var(--amber-dim);
+      padding: 2px 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .field-label .flag-toggle:hover { background: rgba(224,168,56,0.08); }
+    .field-label .flag-toggle.active {
+      background: var(--amber);
+      color: var(--bg-0);
+    }
+    .field-textarea {
+      width: 100%;
+      background: var(--bg-deep);
+      border: 1px solid var(--border-strong);
+      color: var(--text-1);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 11px 14px;
+      letter-spacing: 0.02em;
+      resize: vertical;
+      outline: none;
+      min-height: 78px;
+      transition: all 0.15s ease;
+    }
+    .field-textarea::placeholder { color: var(--text-3); font-style: italic; }
+    .field-textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-faint);
+    }
+    .field-textarea.flagged { border-left: 2px solid var(--amber); }
+
+    /* Sources sidebar */
+    .sources {
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      padding: 18px 18px 14px;
+      align-self: start;
+    }
+    .sources-label {
+      font-family: var(--font-display);
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+    }
+    .sources-label .n { color: var(--text-2); }
+    .source-item {
+      padding: 9px 0;
+      border-bottom: 1px dashed var(--border-strong);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+    .source-item:last-of-type { border-bottom: none; }
+    .source-item .s-title {
+      color: var(--text-1);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .source-item .s-url {
+      color: var(--text-3);
+      font-size: 10px;
+      letter-spacing: 0.02em;
+      word-break: break-all;
+    }
+    .source-item .s-verify {
+      display: inline-block;
+      margin-top: 4px;
+      font-family: var(--font-display);
+      font-size: 8px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--green);
+    }
+    .source-item .s-verify.unverified { color: var(--amber); }
+    .add-source {
+      width: 100%;
+      margin-top: 12px;
+      padding: 9px;
+      background: transparent;
+      border: 1px dashed var(--border-strong);
+      color: var(--text-2);
+      font-family: var(--font-display);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .add-source:hover { color: var(--text-1); border-color: var(--text-2); }
+    .add-source::before { content: '+ '; }
+
+    .wp-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 22px;
+    }
+    .btn-small {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 10px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      padding: 9px 20px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-small.primary { background: var(--accent); color: var(--text-1); border: none; }
+    .btn-small.primary:hover { background: var(--accent-bright); }
+    .btn-small.ghost { background: transparent; color: var(--text-2); border: 1px solid var(--border-strong); }
+    .btn-small.ghost:hover { color: var(--text-1); border-color: var(--text-2); }
+
+    /* Actions bar */
+    .actions-bar {
+      padding: 22px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .compile-status {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .compile-meter {
+      display: flex;
+      gap: 4px;
+    }
+    .compile-meter .seg {
+      width: 28px; height: 4px;
+      background: var(--border-strong);
+    }
+    .compile-meter .seg.filled { background: var(--green); }
+    .compile-status .label .done { color: var(--text-1); }
+    .actions { display: flex; gap: 12px; }
+    .btn {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      padding: 14px 30px;
+      background: var(--accent);
+      color: var(--text-1);
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn:hover { background: var(--accent-bright); }
+    .btn::after { content: ' →'; }
+    .btn.disabled {
+      background: var(--bg-2);
+      color: var(--text-3);
+      cursor: not-allowed;
+    }
+    .btn.disabled:hover { background: var(--bg-2); }
+    .btn.disabled::after { content: ''; }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-2);
+      border: 1px solid var(--border-strong);
+    }
+    .btn-ghost:hover { color: var(--text-1); border-color: var(--text-2); }
+    .btn-ghost::after { content: ''; }
+
+    /* Classified */
+    .classified-strip {
+      padding: 12px 32px;
+      background: var(--bg-0);
+      display: flex;
+      justify-content: space-between;
+      font-size: 9px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .classified-strip .red { color: var(--accent); margin-right: 6px; }
+
+    @media (max-width: 1024px) {
+      .wp-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 820px) {
+      .assignment-grid { grid-template-columns: 1fr; }
+      .roster { flex-direction: column; align-items: flex-start; gap: 14px; }
+    }
+    @media (max-width: 700px) {
+      body { padding: 16px; }
+      .header, .transmission, .roster, .assignments, .working-panel, .actions-bar, .classified-strip {
+        padding-left: 18px; padding-right: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <span class="corner-bl"></span>
+    <span class="corner-br"></span>
+
+    <!-- Header -->
+    <div class="header">
+      <div class="header-left">
+        <a class="breadcrumb">Mission Hub</a>
+        <div>
+          <div class="phase-tag">Phase 02</div>
+          <div class="phase-title">The <span class="accent">Dossier</span></div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="timer">
+          <span class="timer-label">T-Minus</span>
+          <span class="timer-value">70:31<span class="blink">:</span>47</span>
+        </div>
+        <div class="status-pill"><span class="dot"></span>Channel Secure</div>
+      </div>
+    </div>
+
+    <!-- Transmission -->
+    <div class="transmission">
+      <div class="transmission-header">
+        <span>Transmission</span>
+        <span>//</span>
+        <span class="from">From Cipher</span>
+        <span class="ts">13:14:55 UTC</span>
+      </div>
+      <div class="cipher-msg">
+        Cover's holding. Now we need the room. The Hôtel Hermitage, the host, the bidders, the security.
+        I want a dossier I can read in five minutes that tells me where to put my people. Split the work. Move.
+      </div>
+    </div>
+
+    <!-- Field team roster -->
+    <div class="roster">
+      <span class="roster-label">Field Team</span>
+      <div class="roster-agents">
+        <div class="agent-chip working">
+          <span class="ac-dot"></span><span class="ac-name">Nightingale</span><span class="ac-task">The Venue</span>
+        </div>
+        <div class="agent-chip done">
+          <span class="ac-dot"></span><span class="ac-name">Sparrow</span><span class="ac-task">The Host</span>
+        </div>
+        <div class="agent-chip working">
+          <span class="ac-dot"></span><span class="ac-name">Falcon</span><span class="ac-task">The Bidders</span>
+        </div>
+        <div class="agent-chip idle">
+          <span class="ac-dot"></span><span class="ac-name">Wren</span><span class="ac-task">Unassigned</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Assignment grid -->
+    <div class="assignments">
+      <div class="section-label">Intel Assignments <span class="badge">1 / 4 Complete</span></div>
+      <div class="assignment-grid">
+
+        <!-- The Venue: ACTIVE -->
+        <div class="assignment active">
+          <div class="asg-head">
+            <span class="asg-area">The Venue</span>
+            <span class="asg-code">INT-V</span>
+          </div>
+          <div class="asg-assignee">
+            <span class="dot"></span><span class="name">Nightingale</span>
+          </div>
+          <div class="asg-fields">
+            <div class="asg-field filled"><span class="check">●</span>Layout Notes</div>
+            <div class="asg-field filled flagged"><span class="check">●</span>Security Features<span class="tag">Exploitable</span></div>
+            <div class="asg-field"><span class="check">○</span>Ingress / Egress</div>
+          </div>
+          <div class="asg-footer">
+            <span class="asg-progress">2 / 3 Fields</span>
+            <span class="asg-sources"><span class="n">4</span> sources</span>
+          </div>
+        </div>
+
+        <!-- The Host: DONE -->
+        <div class="assignment done">
+          <div class="asg-head">
+            <span class="asg-area">The Host</span>
+            <span class="asg-code">INT-H</span>
+          </div>
+          <div class="asg-assignee">
+            <span class="dot"></span><span class="name">Sparrow</span>
+          </div>
+          <div class="asg-fields">
+            <div class="asg-field filled"><span class="check">●</span>Background</div>
+            <div class="asg-field filled"><span class="check">●</span>Known Patterns</div>
+            <div class="asg-field filled flagged"><span class="check">●</span>Vulnerabilities<span class="tag">Exploitable</span></div>
+          </div>
+          <div class="asg-footer">
+            <span class="asg-progress">3 / 3 Fields · Sealed</span>
+            <span class="asg-sources"><span class="n">6</span> sources</span>
+          </div>
+        </div>
+
+        <!-- The Bidders: IN PROGRESS -->
+        <div class="assignment">
+          <div class="asg-head">
+            <span class="asg-area">The Bidders</span>
+            <span class="asg-code">INT-B</span>
+          </div>
+          <div class="asg-assignee">
+            <span class="dot"></span><span class="name">Falcon</span>
+          </div>
+          <div class="asg-fields">
+            <div class="asg-field filled"><span class="check">●</span>Profile 01 — "The Belgian"</div>
+            <div class="asg-field"><span class="check">○</span>Profile 02</div>
+            <div class="asg-field"><span class="check">○</span>Profile 03 <span style="color:var(--text-3);opacity:0.7;">(min. 3 required)</span></div>
+          </div>
+          <div class="asg-footer">
+            <span class="asg-progress">1 / 3 Profiles</span>
+            <span class="asg-sources"><span class="n">3</span> sources</span>
+          </div>
+        </div>
+
+        <!-- Security: UNCLAIMED -->
+        <div class="assignment unclaimed">
+          <div class="asg-head">
+            <span class="asg-area">Security</span>
+            <span class="asg-code">INT-S</span>
+          </div>
+          <div class="asg-assignee">
+            <span class="dot"></span><span class="name unassigned">Unclaimed</span>
+          </div>
+          <div class="asg-fields" style="margin-bottom: 16px;">
+            <div class="asg-field"><span class="check">○</span>Protocols</div>
+            <div class="asg-field"><span class="check">○</span>Personnel</div>
+            <div class="asg-field"><span class="check">○</span>Weak Points</div>
+          </div>
+          <button class="claim-btn">Claim Assignment</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Working panel: The Venue -->
+    <div class="working-panel">
+      <div class="wp-header">
+        <span class="wp-title">Working — The <span class="accent">Venue</span></span>
+        <span class="wp-assignee">Agent <span class="name">Nightingale</span></span>
+      </div>
+
+      <div class="wp-grid">
+        <div class="wp-fields">
+          <div class="field-block">
+            <div class="field-label"><span>Layout Notes</span><span class="req">Required</span></div>
+            <textarea class="field-textarea">Belle Époque hotel on Place Beaumarchais. Auction floor on level 2 (Salle Belle Époque), accessed via the grand stair or the east service elevator. Glass-domed winter garden adjoins the salon. Kitchens and staging on the ground floor; storage and the secured room one level below.</textarea>
+          </div>
+
+          <div class="field-block">
+            <div class="field-label">
+              <span>Security Features</span>
+              <span class="flag-toggle active">⚑ Flagged Exploitable</span>
+            </div>
+            <textarea class="field-textarea flagged">Camera coverage across public areas and the main stair. Coverage gap reported in the service corridor linking the kitchen to the east stair — staff use it as a shortcut between courses, and it is not on the guest circulation map. Likely unmonitored between service windows.</textarea>
+          </div>
+
+          <div class="field-block">
+            <div class="field-label">
+              <span>Ingress / Egress</span>
+              <span class="flag-toggle">⚑ Flag Exploitable</span>
+            </div>
+            <textarea class="field-textarea" placeholder="Document all entry and exit routes — main, service, emergency. Note timing, staffing, and which align with the cover identity. Cite a source for each claim where possible."></textarea>
+          </div>
+        </div>
+
+        <!-- Sources -->
+        <div class="sources">
+          <div class="sources-label"><span>Sources</span><span class="n">04</span></div>
+
+          <div class="source-item">
+            <span class="s-title">Hôtel Hermitage — venue floorplans</span>
+            <span class="s-url">hotelhermitagemontecarlo.com/meetings</span>
+            <span class="s-verify">✓ Verified</span>
+          </div>
+          <div class="source-item">
+            <span class="s-title">Monaco events press archive</span>
+            <span class="s-url">monaco-tribune.example / events-2025</span>
+            <span class="s-verify">✓ Verified</span>
+          </div>
+          <div class="source-item">
+            <span class="s-title">Copilot synthesis — staff circulation</span>
+            <span class="s-url">internal note · cross-check pending</span>
+            <span class="s-verify unverified">⚠ Unverified</span>
+          </div>
+
+          <button class="add-source">Add Source</button>
+        </div>
+      </div>
+
+      <div class="wp-footer">
+        <button class="btn-small ghost">Save Draft</button>
+        <button class="btn-small primary">Seal Assignment</button>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions-bar">
+      <div class="compile-status">
+        <div class="compile-meter">
+          <span class="seg filled"></span>
+          <span class="seg"></span>
+          <span class="seg"></span>
+          <span class="seg"></span>
+        </div>
+        <span class="label"><span class="done">1</span> of 4 assignments sealed · Dossier locked until complete</span>
+      </div>
+      <div class="actions">
+        <button class="btn-ghost btn">Save Draft</button>
+        <button class="btn disabled">Transmit Dossier</button>
+      </div>
+    </div>
+
+    <!-- Classified -->
+    <div class="classified-strip">
+      <span><span class="red">●</span>Classified // Internal Use Only</span>
+      <span>Session a4f-9201-7b // Phase 02</span>
+      <span>End-to-End Encrypted</span>
+    </div>
+  </div>
+</body>
+</html>

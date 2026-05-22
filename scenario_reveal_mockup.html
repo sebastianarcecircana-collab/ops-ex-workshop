@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MISSION OUTCOME — Operation Quicksilver</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@300;400;500;700&family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-0: #050507;
+      --bg-1: #0e0e10;
+      --bg-2: #16161a;
+      --bg-3: #1d1d22;
+      --bg-deep: #0a0a0d;
+      --border: #25252c;
+      --border-strong: #3a3a44;
+      --text-1: #ececef;
+      --text-2: #94949f;
+      --text-3: #5a5a64;
+      --accent: #d92525;
+      --accent-bright: #ff3838;
+      --accent-dim: #5a1414;
+      --accent-faint: rgba(217, 37, 37, 0.08);
+      --green: #58c97e;
+      --amber: #e0a838;
+      --font-display: 'Oswald', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-serif: 'Cormorant Garamond', serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-0);
+      color: var(--text-1);
+      font-family: var(--font-mono);
+      font-weight: 400;
+      font-size: 13px;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 32px;
+      background-image:
+        radial-gradient(ellipse at top, rgba(217, 37, 37, 0.04), transparent 60%),
+        linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 3px;
+    }
+
+    .frame {
+      max-width: 1280px;
+      margin: 0 auto;
+      position: relative;
+      border: 1px solid var(--border);
+      background: var(--bg-1);
+    }
+
+    .frame::before, .frame::after,
+    .corner-bl, .corner-br {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--accent);
+      pointer-events: none;
+    }
+    .frame::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+    .frame::after  { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+    .corner-bl { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+    .corner-br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+    /* Header */
+    .header {
+      padding: 18px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header-left { display: flex; align-items: baseline; gap: 22px; }
+    .phase-tag {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      color: var(--text-3);
+      text-transform: uppercase;
+    }
+    .phase-title {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 22px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-1);
+    }
+    .phase-title .accent { color: var(--accent); }
+
+    .live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding: 6px 12px;
+      border: 1px solid var(--accent-dim);
+    }
+    .live-pill .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--accent);
+      animation: blink 0.9s ease-in-out infinite;
+      box-shadow: 0 0 8px var(--accent);
+    }
+    @keyframes blink {
+      0%, 60% { opacity: 1; }
+      61%, 100% { opacity: 0.15; }
+    }
+
+    /* Act progression */
+    .acts-progression {
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-deep);
+    }
+    .ap-label {
+      font-family: var(--font-display);
+      font-size: 10px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 14px;
+    }
+    .ap-track {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+    }
+    .ap-step {
+      position: relative;
+      padding-top: 18px;
+    }
+    .ap-step::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0; right: 0;
+      height: 3px;
+      background: var(--border);
+    }
+    .ap-step.complete::before { background: var(--green); }
+    .ap-step.live::before {
+      background: linear-gradient(90deg, var(--accent), var(--accent-dim));
+      animation: live-bar 2.2s ease-in-out infinite;
+    }
+    @keyframes live-bar {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .ap-num {
+      font-family: var(--font-display);
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 4px;
+    }
+    .ap-step.complete .ap-num { color: var(--green); }
+    .ap-step.live .ap-num { color: var(--accent); }
+
+    .ap-title {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-2);
+      line-height: 1.2;
+    }
+    .ap-step.complete .ap-title { color: var(--text-1); }
+    .ap-step.live .ap-title { color: var(--text-1); }
+    .ap-step.sealed .ap-title { color: var(--text-3); }
+
+    .ap-status {
+      margin-top: 8px;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .ap-step.complete .ap-status { color: var(--green); }
+    .ap-step.live .ap-status { color: var(--accent); }
+
+    /* Main reading area split */
+    .reading-area {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 0;
+    }
+
+    .narrative {
+      padding: 38px 38px 30px;
+      border-right: 1px solid var(--border);
+      min-height: 600px;
+    }
+
+    /* Act block */
+    .act {
+      margin-bottom: 42px;
+      max-width: 660px;
+    }
+    .act:last-child { margin-bottom: 0; }
+
+    .act-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 22px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .act-tag {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 10px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .act-title {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 22px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-1);
+    }
+    .act-time {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      color: var(--text-3);
+      margin-left: auto;
+    }
+
+    .act-prose {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: 17px;
+      line-height: 1.78;
+      color: var(--text-1);
+      letter-spacing: 0.005em;
+    }
+    .act-prose p { margin-bottom: 16px; }
+    .act-prose p:last-child { margin-bottom: 0; }
+    .act-prose .ref {
+      color: var(--accent);
+      font-weight: 500;
+      font-style: normal;
+    }
+    .act-prose .em {
+      font-style: italic;
+      color: var(--text-2);
+    }
+
+    /* Live act */
+    .act.live .act-tag { color: var(--accent); animation: pulse-tag 1.8s ease-in-out infinite; }
+    @keyframes pulse-tag {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .act.live .act-prose {
+      position: relative;
+    }
+    .typing-cursor {
+      display: inline-block;
+      width: 9px;
+      height: 18px;
+      background: var(--accent);
+      vertical-align: -2px;
+      margin-left: 2px;
+      animation: cursor 0.7s steps(1) infinite;
+    }
+    @keyframes cursor {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    /* Sealed act */
+    .act-sealed {
+      padding: 24px 26px;
+      border: 1px dashed var(--border-strong);
+      background: var(--bg-deep);
+      max-width: 660px;
+      margin-bottom: 42px;
+    }
+    .act-sealed-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+    .act-sealed-header .tag {
+      font-family: var(--font-display);
+      font-size: 10px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .act-sealed-header .title {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 17px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .act-sealed-note {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      font-style: italic;
+    }
+
+    /* Sidebar: operational assets */
+    .sidebar {
+      padding: 38px 24px 30px;
+      background: var(--bg-deep);
+    }
+
+    .sidebar-section {
+      margin-bottom: 28px;
+    }
+    .sidebar-section:last-child { margin-bottom: 0; }
+
+    .sb-label {
+      font-family: var(--font-display);
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sb-label .badge {
+      float: right;
+      color: var(--accent);
+      letter-spacing: 0.18em;
+    }
+
+    .asset-card {
+      background: var(--bg-1);
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--accent);
+      padding: 12px 14px;
+      margin-bottom: 10px;
+    }
+    .asset-card:last-child { margin-bottom: 0; }
+    .ac-key {
+      font-family: var(--font-display);
+      font-size: 9px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 4px;
+    }
+    .ac-value {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-1);
+      letter-spacing: 0.04em;
+      line-height: 1.4;
+    }
+    .ac-detail {
+      font-size: 11px;
+      color: var(--text-2);
+      margin-top: 4px;
+      letter-spacing: 0.02em;
+      line-height: 1.5;
+      font-style: italic;
+    }
+
+    .asset-card.intel { border-left-color: var(--amber); }
+    .asset-card.finding { border-left-color: var(--green); }
+
+    .signal-readout {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .sr-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .sr-key {
+      font-size: 11px;
+      color: var(--text-2);
+      letter-spacing: 0.04em;
+    }
+    .sr-val {
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-1);
+    }
+    .sr-val.honored { color: var(--green); }
+    .sr-val.exposed { color: var(--accent); }
+    .sr-val.untested { color: var(--text-3); }
+
+    /* Footer / outcome pending */
+    .outcome-bar {
+      padding: 24px 32px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      background: var(--bg-1);
+    }
+    .outcome-left {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .outcome-label {
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .outcome-status {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 15px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .outcome-status::before {
+      content: '';
+      width: 8px; height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: blink 0.9s ease-in-out infinite;
+    }
+    .outcome-actions { display: flex; gap: 12px; }
+    .btn {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      padding: 13px 26px;
+      background: var(--accent);
+      color: var(--text-1);
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn:hover { background: var(--accent-bright); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-2);
+      border: 1px solid var(--border-strong);
+    }
+    .btn-ghost:hover { color: var(--text-1); border-color: var(--text-2); }
+    .btn-disabled {
+      background: var(--bg-2);
+      color: var(--text-3);
+      cursor: not-allowed;
+    }
+    .btn-disabled:hover { background: var(--bg-2); }
+
+    /* Classified */
+    .classified-strip {
+      padding: 12px 32px;
+      background: var(--bg-0);
+      display: flex;
+      justify-content: space-between;
+      font-size: 9px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .classified-strip .red { color: var(--accent); margin-right: 6px; }
+
+    @media (max-width: 1024px) {
+      .reading-area { grid-template-columns: 1fr; }
+      .sidebar { border-top: 1px solid var(--border); }
+    }
+    @media (max-width: 700px) {
+      body { padding: 16px; }
+      .header, .acts-progression, .outcome-bar, .classified-strip {
+        padding-left: 18px; padding-right: 18px;
+      }
+      .narrative { padding: 24px 20px; }
+      .ap-track { grid-template-columns: repeat(2, 1fr); }
+      .act-prose { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <span class="corner-bl"></span>
+    <span class="corner-br"></span>
+
+    <div class="header">
+      <div class="header-left">
+        <div>
+          <div class="phase-tag">Operation Quicksilver // Outcome</div>
+          <div class="phase-title">The <span class="accent">Run</span></div>
+        </div>
+      </div>
+      <div class="live-pill"><span class="dot"></span>Live Reveal</div>
+    </div>
+
+    <div class="acts-progression">
+      <div class="ap-label">Mission Acts · 3 of 5 Revealed</div>
+      <div class="ap-track">
+        <div class="ap-step complete">
+          <div class="ap-num">Act 01</div>
+          <div class="ap-title">Insertion</div>
+          <div class="ap-status">Revealed</div>
+        </div>
+        <div class="ap-step complete">
+          <div class="ap-num">Act 02</div>
+          <div class="ap-title">First Contact</div>
+          <div class="ap-status">Revealed</div>
+        </div>
+        <div class="ap-step live">
+          <div class="ap-num">Act 03</div>
+          <div class="ap-title">The Window</div>
+          <div class="ap-status">Transmitting</div>
+        </div>
+        <div class="ap-step sealed">
+          <div class="ap-num">Act 04</div>
+          <div class="ap-title">The Take</div>
+          <div class="ap-status">Sealed</div>
+        </div>
+        <div class="ap-step sealed">
+          <div class="ap-num">Act 05</div>
+          <div class="ap-title">Extraction</div>
+          <div class="ap-status">Sealed</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reading-area">
+      <div class="narrative">
+
+        <div class="act">
+          <div class="act-header">
+            <span class="act-tag">Act 01</span>
+            <span class="act-title">Insertion</span>
+            <span class="act-time">T-04:12:00</span>
+          </div>
+          <div class="act-prose">
+            <p>At 19:14 local, <span class="ref">Marcus Vale</span> walked through the south service entrance of the Hôtel Hermitage. The cover held. The floor manager glanced at the <span class="ref">Lumière</span> credentials, asked a single question about the firm's recent placements — a Marini bronze, quietly handled, Antwerp — and waved him through.</p>
+            <p>The team filtered in across the next eighty minutes, each operative arriving by a different ingress your dossier had mapped. The service elevator on the east face. The kitchen access via the staff yard. The discreet stair from the lower bar that staff used between courses.</p>
+            <p>None of you came through the front. <span class="em">As planned.</span></p>
+          </div>
+        </div>
+
+        <div class="act">
+          <div class="act-header">
+            <span class="act-tag">Act 02</span>
+            <span class="act-title">First Contact</span>
+            <span class="act-time">T-02:43:00</span>
+          </div>
+          <div class="act-prose">
+            <p>By 20:30, Vale was in the upper salon. The host — known to your team from the dossier as <span class="ref">Antoine Renoux</span> — recognized him from a Geneva auction your research had flagged in week three. Two short sentences of mutual recall and Vale was inside the room's confidence.</p>
+            <p>The art-finance probe Cipher warned about did surface. A Belgian collector asked Vale's opinion on the recent Marini sale at Sotheby's Zurich. Vale's prepared response held — <span class="em">just</span> — though Renoux watched the exchange closely afterward and did not look away for some time. The collector's name had not appeared in your bidder dossier.</p>
+            <p>Cipher transmitted, low channel, into Vale's ear: <span class="em">"Watch the Belgian. He wasn't on the list."</span></p>
+          </div>
+        </div>
+
+        <div class="act live">
+          <div class="act-header">
+            <span class="act-tag">Act 03</span>
+            <span class="act-title">The Window</span>
+            <span class="act-time">T-00:13:00</span>
+          </div>
+          <div class="act-prose">
+            <p>At 21:47, the moment you'd identified arrived.</p>
+            <p><span class="ref">Badge 4471</span> — the courier, exactly as your analysis predicted — entered the vault corridor through the staff elevator on the second floor. The transfer was beginning. Three minutes ahead of the schedule the bidder list had implied, and through a route only your team had flagged<span class="typing-cursor"></span></p>
+          </div>
+        </div>
+
+        <div class="act-sealed">
+          <div class="act-sealed-header">
+            <span class="tag">Act 04</span>
+            <span class="title">The Take</span>
+          </div>
+          <div class="act-sealed-note">Sealed · awaiting upstream transmission</div>
+        </div>
+
+        <div class="act-sealed">
+          <div class="act-sealed-header">
+            <span class="tag">Act 05</span>
+            <span class="title">Extraction</span>
+          </div>
+          <div class="act-sealed-note">Sealed · awaiting upstream transmission</div>
+        </div>
+
+      </div>
+
+      <div class="sidebar">
+        <div class="sidebar-section">
+          <div class="sb-label">Cover Identity <span class="badge">P1</span></div>
+          <div class="asset-card">
+            <div class="ac-key">Codename</div>
+            <div class="ac-value">Marcus Vale</div>
+            <div class="ac-detail">47 · Geneva · Lumière Capital Partners</div>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sb-label">Key Intel <span class="badge">P2</span></div>
+          <div class="asset-card intel">
+            <div class="ac-key">Venue</div>
+            <div class="ac-value">South service entrance</div>
+            <div class="ac-detail">Unguarded after 19:00 · floor manager checks credentials</div>
+          </div>
+          <div class="asset-card intel">
+            <div class="ac-key">Host</div>
+            <div class="ac-value">Antoine Renoux</div>
+            <div class="ac-detail">Geneva auction history · pattern of close observation</div>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sb-label">The Finding <span class="badge">P3</span></div>
+          <div class="asset-card finding">
+            <div class="ac-key">Window</div>
+            <div class="ac-value">21:47 · Vault Corridor</div>
+            <div class="ac-detail">Badge 4471 · courier · staff elevator route</div>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sb-label">Plan Signals <span class="badge">P4</span></div>
+          <div class="signal-readout">
+            <div class="sr-row"><span class="sr-key">Cover Used</span><span class="sr-val honored">Honored</span></div>
+            <div class="sr-row"><span class="sr-key">Intel Used</span><span class="sr-val honored">Honored</span></div>
+            <div class="sr-row"><span class="sr-key">Window Used</span><span class="sr-val honored">Honored</span></div>
+            <div class="sr-row"><span class="sr-key">Pretext Risk</span><span class="sr-val exposed">Tested</span></div>
+            <div class="sr-row"><span class="sr-key">Contingencies</span><span class="sr-val untested">Untested</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="outcome-bar">
+      <div class="outcome-left">
+        <span class="outcome-label">Outcome</span>
+        <span class="outcome-status">Pending · 2 Acts Remaining</span>
+      </div>
+      <div class="outcome-actions">
+        <button class="btn-ghost btn">Pause Reveal</button>
+        <button class="btn-disabled btn">Debrief Locked</button>
+      </div>
+    </div>
+
+    <div class="classified-strip">
+      <span><span class="red">●</span>Classified // Internal Use Only</span>
+      <span>Session a4f-9201-7b // Outcome Reveal</span>
+      <span>End-to-End Encrypted</span>
+    </div>
+  </div>
+</body>
+</html>
