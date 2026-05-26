@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getGateSpec, getTeamState, submitGate, GateSpec, TeamState } from '../api/client';
+import { getGateSpec, getStoredTeamId, getTeamState, submitGate, GateSpec, TeamState } from '../api/client';
+import { useGateAutosave, loadGateDraft } from '../hooks/useGateAutosave';
 import styles from './Gate4Page.module.css';
 
 interface SeqRow { time: string; step: string; owner: string; }
@@ -45,33 +46,41 @@ function buildAssetsFromState(state: TeamState) {
   return assets;
 }
 
+type Gate4Draft = {
+  objective: string; approach: string; exfil: string;
+  biggestRisk: string; aiPartnership: string;
+  sequence: SeqRow[]; roles: RoleRow[]; contingencies: ContRow[];
+};
+
 export default function Gate4Page() {
   const navigate = useNavigate();
   const [spec, setSpec] = useState<GateSpec | null>(null);
   const [teamState, setTeamState] = useState<TeamState | null>(null);
 
-  const [objective, setObjective] = useState('');
-  const [approach, setApproach] = useState('');
-  const [exfil, setExfil] = useState('');
-  const [biggestRisk, setBiggestRisk] = useState('');
-  const [aiPartnership, setAiPartnership] = useState('');
+  const [objective, setObjective] = useState(() => loadGateDraft<Gate4Draft>(4, getStoredTeamId())?.objective ?? '');
+  const [approach, setApproach] = useState(() => loadGateDraft<Gate4Draft>(4, getStoredTeamId())?.approach ?? '');
+  const [exfil, setExfil] = useState(() => loadGateDraft<Gate4Draft>(4, getStoredTeamId())?.exfil ?? '');
+  const [biggestRisk, setBiggestRisk] = useState(() => loadGateDraft<Gate4Draft>(4, getStoredTeamId())?.biggestRisk ?? '');
+  const [aiPartnership, setAiPartnership] = useState(() => loadGateDraft<Gate4Draft>(4, getStoredTeamId())?.aiPartnership ?? '');
 
-  const [sequence, setSequence] = useState<SeqRow[]>([
+  const [sequence, setSequence] = useState<SeqRow[]>(() => loadGateDraft<Gate4Draft>(4, getStoredTeamId())?.sequence ?? [
     { time: '', step: '', owner: '' },
     { time: '', step: '', owner: '' },
     { time: '', step: '', owner: '' },
   ]);
-  const [roles, setRoles] = useState<RoleRow[]>([
+  const [roles, setRoles] = useState<RoleRow[]>(() => loadGateDraft<Gate4Draft>(4, getStoredTeamId())?.roles ?? [
     { agent: '', role: '' },
     { agent: '', role: '' },
   ]);
-  const [contingencies, setContingencies] = useState<ContRow[]>([
+  const [contingencies, setContingencies] = useState<ContRow[]>(() => loadGateDraft<Gate4Draft>(4, getStoredTeamId())?.contingencies ?? [
     { failure: '', response: '' },
     { failure: '', response: '' },
   ]);
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+
+  const { savedLabel, clearSave } = useGateAutosave(4, { objective, approach, exfil, biggestRisk, aiPartnership, sequence, roles, contingencies });
 
   useEffect(() => {
     getGateSpec(4).then(setSpec).catch(console.error);
@@ -102,6 +111,7 @@ export default function Gate4Page() {
         biggest_risk: biggestRisk,
         ai_partnership: aiPartnership,
       });
+      clearSave();
       navigate('/feedback/4');
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Submission failed');
@@ -318,6 +328,7 @@ export default function Gate4Page() {
             </div>
           </div>
           <div className={styles.actions}>
+            {savedLabel && <span className={styles.autosaveLabel}>{savedLabel}</span>}
             <button className={styles.submitBtn} disabled={!canSubmit || submitting} onClick={handleSubmit}>
               {submitting ? 'Transmitting…' : 'Transmit Final Plan →'}
             </button>

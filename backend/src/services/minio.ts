@@ -71,3 +71,8 @@ export async function getPresignedUrl(objectKey: string, expirySeconds = 3600): 
   const client = getClient();
   return client.presignedGetObject(BUCKET, objectKey, expirySeconds);
 }
+
+export async function getMinioStream(objectKey: string): Promise<NodeJS.ReadableStream> {
+  const client = getClient();
+  return client.getObject(BUCKET, objectKey);
+}

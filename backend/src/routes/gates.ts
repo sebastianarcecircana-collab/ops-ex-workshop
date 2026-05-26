@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import { requireAuth } from '../middleware/auth';
 import { getGate } from '../services/missionSpec';
 import { createSubmission, getSubmission, advanceTeamGate } from '../db/queries';
-import { evaluateGate } from '../services/evaluation';
+import { evaluateGate, extractDossierFields } from '../services/evaluation';
 import { GateSpecResponse, SubmitGateRequest, EvaluationResponse } from '../types/api';
 
 const router = Router();
@@ -85,6 +85,27 @@ router.get('/:gateNumber/evaluation', requireAuth, async (req: Request, res: Res
   };
 
   return res.json(response);
+});
+
+// POST /api/gates/:gateNumber/extract-dossier
+router.post('/:gateNumber/extract-dossier', requireAuth, async (req: Request, res: Response) => {
+  const gateNumber = parseInt(req.params.gateNumber, 10);
+  if (gateNumber !== 1) {
+    return res.status(400).json({ error: 'Dossier extraction is only available for Gate 1' });
+  }
+
+  const { step3Output } = req.body as { step3Output?: unknown };
+  if (!step3Output || typeof step3Output !== 'string' || step3Output.trim().length === 0) {
+    return res.status(400).json({ error: 'step3Output must be a non-empty string' });
+  }
+
+  try {
+    const fields = await extractDossierFields(step3Output);
+    return res.json(fields);
+  } catch (err) {
+    console.error('Dossier extraction failed:', err);
+    return res.status(502).json({ error: 'Extraction service unavailable' });
+  }
 });
 
 export default router;

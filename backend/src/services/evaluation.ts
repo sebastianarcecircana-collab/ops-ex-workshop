@@ -99,3 +99,48 @@ ${JSON.stringify(artifact, null, 2)}`;
     );
   }
 }
+
+interface CoverDossierFields {
+  cover_name?: string;
+  employer?: string;
+  pretext?: string;
+  nationality?: string;
+  background_summary?: string;
+  vulnerability?: string;
+  prepared_response?: string;
+}
+
+export async function extractDossierFields(step3Output: string): Promise<CoverDossierFields> {
+  const systemPrompt = `You are a structured data extractor. Given a block of text describing an undercover operative's cover identity, extract the following fields and return them as a JSON object.
+
+Fields to extract:
+- cover_name: The operative's cover name (full name as a string)
+- employer: The cover employer or organisation
+- pretext: The stated reason for attending the auction
+- nationality: The operative's cover nationality
+- background_summary: A brief professional background summary (1-2 sentences)
+- vulnerability: The main identified weakness in the cover
+- prepared_response: The prepared answer to neutralise the vulnerability
+
+Rules:
+- Return only the JSON object. No preamble, no commentary.
+- If a field is not present in the text, omit it from the JSON (do not return null or empty string).
+- Keep values concise — do not pad or rephrase beyond what the text provides.`;
+
+  const response = await anthropic.messages.create({
+    model: 'claude-haiku-4-5',
+    max_tokens: 512,
+    system: systemPrompt,
+    messages: [{ role: 'user', content: step3Output }],
+  });
+
+  const rawText = response.content
+    .filter((b) => b.type === 'text')
+    .map((b) => (b as { type: 'text'; text: string }).text)
+    .join('');
+
+  const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) throw new Error('No JSON found in extraction response');
+
+  return JSON.parse(jsonMatch[0]) as CoverDossierFields;
+}

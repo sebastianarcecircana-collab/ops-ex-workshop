@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=JetBrains+Mono:wght@300;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --phosphor: #00ffaa;
+            --phosphor-dim: rgba(0, 255, 170, 0.2);
+            --bg: #050705;
+            --crt-glow: rgba(0, 255, 170, 0.05);
+            --danger: #ff3333;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #000;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* SVG FILTERS */
+        .filter-canvas { position: absolute; width: 0; height: 0; }
+
+        /* THE MODAL CONTAINER */
+        #operational-briefing {
+            position: relative;
+            width: 800px;
+            max-width: 90vw;
+            background: var(--bg);
+            border: 1px solid var(--phosphor-dim);
+            padding: 4rem;
+            color: var(--phosphor);
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            box-shadow: 0 0 50px rgba(0, 255, 170, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+            filter: url(#distort);
+        }
+
+        /* INTERFEROMETRIC OVERLAY */
+        #operational-briefing::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: 
+                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
+                linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid var(--phosphor-dim);
+            padding-bottom: 1.5rem;
+        }
+
+        .identity {
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 0.75rem;
+        }
+
+        .status-badge {
+            background: var(--phosphor);
+            color: #000;
+            padding: 0.2rem 0.6rem;
+            font-weight: 900;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            animation: flicker 4s infinite;
+        }
+
+        .mission-title {
+            font-weight: 900;
+            font-size: 3.5rem;
+            line-height: 0.9;
+            text-transform: uppercase;
+            margin: 1rem 0;
+            letter-spacing: -0.02em;
+            text-shadow: 0 0 15px var(--phosphor-dim);
+        }
+
+        .briefing-body {
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1.6;
+            font-size: 0.9rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .data-point {
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .label {
+            display: block;
+            font-size: 0.6rem;
+            color: var(--phosphor-dim);
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+
+        .countdown-container {
+            position: absolute;
+            bottom: 2rem;
+            right: 4rem;
+            text-align: right;
+        }
+
+        .timer-label {
+            font-size: 0.6rem;
+            color: var(--danger);
+            font-weight: bold;
+            letter-spacing: 0.3em;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        #timer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 4rem;
+            font-weight: 300;
+            color: var(--danger);
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* ANIMATIONS */
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+            20%, 24%, 55% { opacity: 0.5; }
+        }
+
+        /* DESTRUCTION PHASE */
+        .self-destruct-active {
+            animation: glitch-out 1.2s forwards cubic-bezier(1, 0, 0, 1) !important;
+        }
+
+        @keyframes glitch-out {
+            0% {
+                transform: scaleY(1) scaleX(1);
+                filter: url(#distort) brightness(1);
+            }
+            20% {
+                transform: scaleY(1.1) scaleX(0.9) skewX(20deg);
+                filter: url(#distort) brightness(3) contrast(2);
+            }
+            40% {
+                transform: scaleY(0.005) scaleX(1.5) skewX(-20deg);
+                filter: url(#distort) brightness(10);
+            }
+            60% {
+                transform: scaleY(0.005) scaleX(2);
+                opacity: 1;
+            }
+            100% {
+                transform: scaleY(0) scaleX(0);
+                opacity: 0;
+            }
+        }
+
+        #decrypt-trigger {
+            background: transparent;
+            border: 1px solid var(--phosphor);
+            color: var(--phosphor);
+            padding: 1rem 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            z-index: 100;
+        }
+
+        #decrypt-trigger:hover {
+            background: var(--phosphor);
+            color: #000;
+            box-shadow: 0 0 20px var(--phosphor);
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <button id="decrypt-trigger">DECRYPT TRANSMISSION</button>
+
+    <div id="operational-briefing" class="hidden">
+        <div class="header-row">
+            <div class="identity">
+                Protocol: Shadow-Net // 992-X<br>
+                Encryption: 8192-bit AES
+            </div>
+            <div class="status-badge">AUTO-DELETE ENABLED</div>
+        </div>
+
+        <div class="mission-title">
+            Project<br>QUICKSILVER
+        </div>
+
+        <div class="briefing-body">
+            <div class="column">
+                <div class="data-point">
+                    <span class="label">Target Coordinates</span>
+                    48.8584° N, 2.2945° E
+                </div>
+                <div class="data-point">
+                    <span class="label">Primary Objective</span>
+                    The Syndicate has acquired Helios — an experimental model we have tracked for eighteen months. They are auctioning it at the Hôtel Hermitage, Monaco, to a buyer we cannot yet identify. Your team is the only one in position.
+                    Work with Cipher to build a cover, gather intel, find a way into the auction and plan the extraction. Helios must be secured at all costs.
+                    
+                </div>
+                <div class="data-point
+As always, should you or any of your team be caught or killed, the Secretary will disavow all knowledge of your actions.
+                </div>
+            </div>
+            <div class="column">
+                <div class="data-point">
+                    <span class="label">SOP</span>
+                    As always, should you or any of your team be caught or killed, the Secretary will disavow all knowledge of your actions.
+                </div>
+                <div class="data-point">
+                    <span class="label">Agent Clearance</span>
+                    LEVEL 7 ONLY
+                </div>
+            </div>
+        </div>
+
+        <div class="countdown-container">
+            <span class="timer-label">TERMINATING IN</span>
+            <div id="timer">20:00</div>
+        </div>
+    </div>
+
+    <!-- SVG Displacement Filters -->
+    <svg class="filter-canvas">
+        <defs>
+            <filter id="distort">
+                <feTurbulence id="turbulence" type="fractalNoise" baseFrequency="0.01 0.0001" numOctaves="3" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" />
+            </filter>
+        </defs>
+    </svg>
+
+    <script>
+        const trigger = document.getElementById('decrypt-trigger');
+        const modal = document.getElementById('operational-briefing');
+        const timerDisplay = document.getElementById('timer');
+        const turb = document.getElementById('turbulence');
+
+        let timeLeft = 2000; // Centiseconds for smoother display
+        let interval;
+
+        // Animate the SVG filter for the "Interferometric" effect
+        let seed = 0;
+        function animateFilter() {
+            seed += 0.5;
+            const freqX = 0.01 + Math.sin(seed * 0.1) * 0.005;
+            const freqY = 0.001 + Math.cos(seed * 0.1) * 0.5;
+            turb.setAttribute('baseFrequency', `${freqX} ${freqY}`);
+            requestAnimationFrame(animateFilter);
+        }
+
+        function startBriefing() {
+            trigger.classList.add('hidden');
+            modal.classList.remove('hidden');
+            animateFilter();
+
+            interval = setInterval(() => {
+                timeLeft -= 1;
+                
+                const seconds = Math.floor(timeLeft / 100);
+                const centiseconds = timeLeft % 100;
+                timerDisplay.textContent = `${seconds.toString().padStart(2, '0')}:${centiseconds.toString().padStart(2, '0')}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    selfDestruct();
+                }
+
+                // Escalating distortion as timer runs out
+                if (timeLeft < 300) {
+                    modal.style.filter = `url(#distort) contrast(${1 + (300 - timeLeft) / 100}) brightness(${1 + (300 - timeLeft) / 200})`;
+                }
+            }, 10);
+        }
+
+        function selfDestruct() {
+            modal.classList.add('self-destruct-active');
+            
+            // Audio-visual feedback
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(150, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(10, ctx.currentTime + 1);
+            
+            gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1);
+            
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            
+            osc.start();
+            osc.stop(ctx.currentTime + 1);
+
+            setTimeout(() => {
+                modal.remove();
+                document.body.innerHTML = `<div style="color:#222; font-family:'JetBrains Mono'; text-transform:uppercase; font-size:0.8rem; letter-spacing:0.5em;">Connection Lost // Transmission Erased</div>`;
+            }, 1200);
+        }
+
+        trigger.addEventListener('click', startBriefing);
+    </script>
+</body>
+</html>

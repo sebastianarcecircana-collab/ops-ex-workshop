@@ -30,28 +30,28 @@ mission:
     - id: build_the_legend
       number: 1
       name: "Build the Legend"
-      skill_focus: "Prompt Chaining + Meta-Prompting"
+      skill_focus: "Meta-Prompting + Chain-of-Thought + Self-Critique"
       briefing: |
-        We need a face for the room. The Hôtel Hermitage auction floor does not
-        admit strangers. Your operative needs a cover that holds under scrutiny —
-        a name, an employer, a reason to be there. Build it properly.
-        Use meta-prompting to write the prompts. Chain the outputs.
-        Each step feeds the next.
+        Three techniques. Bootstrap with meta-prompting. Deepen by forcing the AI
+        to reason. Harden by turning it against your own work. By the end I want
+        a cover that survives a concierge.
       instructions:
-        - "Write a meta-prompt that asks an AI to generate a prompt for creating a believable cover identity in the art finance world."
-        - "Run that generated prompt through Copilot to get a cover identity output."
-        - "Write a second meta-prompt that asks an AI to generate a prompt for deepening the cover backstory and creating a pretext for being at a Monaco auction."
-        - "Run that second generated prompt through Copilot, using the cover identity from Step 1 as input."
-        - "Write a third meta-prompt that generates a prompt to identify the cover's single biggest vulnerability and create a prepared response to neutralise it."
-        - "Run that third prompt through Copilot to complete the chain."
-        - "Complete the Cover Dossier using the outputs of your chain."
+        - "Step 01 — META-PROMPT: Write a meta-prompt asking the AI to produce a prompt for a believable cover identity in the art-finance world. Run the generated prompt. Record all three: your meta-prompt, the generated prompt, and the AI output."
+        - "Step 02 — CHAIN-OF-THOUGHT: Take your Step 01 cover draft. Write a CoT prompt (yourself, no meta layer) that forces the AI to reason step-by-step through operational details before producing a deepened dossier section. Record the prompt and output."
+        - "Step 03 — SELF-CRITIQUE: Take your Step 02 output. Write a prompt that assigns the AI the role of a suspicious concierge with 20 years' experience. Have it identify the three weakest claims and repair them. Record the prompt and output. Then complete the Cover Dossier."
       artifact_schema:
         chain:
           type: array
           items:
             step: integer
+            # step 1 only
             meta_prompt: string
             generated_prompt: string
+            # step 2 only
+            cot_prompt: string
+            # step 3 only
+            critique_prompt: string
+            # all steps
             output: string
         cover_dossier:
           cover_name: string
@@ -69,20 +69,34 @@ mission:
             verify this person exists. Generic art expert covers score low.
             Specific employer with verifiable sector, named credentials, prior relationship
             to the auction world scores high.
-        - dimension: chain_quality
-          weight: 1.5
+        - dimension: technique_distinction
+          weight: 1.0
           description: >
-            Is there genuine chaining? Does each step take the output of the prior step
-            as its input? Did the team use meta-prompting (prompting an AI to write the
-            prompt) rather than just writing prompts themselves? Superficial chain
-            (same data restated) scores low. Deep chain where each step adds meaningful
-            new specificity scores high.
+            Did each step use a meaningfully different technique? Step 01 must show
+            genuine meta-prompting (the participant instructed an AI to write the prompt).
+            Step 02 must show chain-of-thought reasoning instructions — explicit step-by-step
+            directives, not a plain prompt. Step 03 must assign a specific adversarial role
+            with named expertise. Smuggling the same meta-prompt pattern into all three
+            scores near zero.
+        - dimension: composition_quality
+          weight: 1.0
+          description: >
+            Did each step take the prior step's output as genuine input? Step 02 must
+            visibly build on the Step 01 cover identity. Step 03 must visibly critique
+            the Step 02 output. Steps that run in parallel disguised as sequential —
+            or that repeat the same cover from scratch — score low.
         - dimension: pretext_strength
           weight: 1.0
           description: >
             Is the reason to be at the auction specific and plausible?
             "Looking at art" scores near zero. A specific piece, a specific client
             mandate, a named relationship to someone in the room scores high.
+        - dimension: critique_depth
+          weight: 0.75
+          description: >
+            Does the Step 03 self-critique find named, specific weaknesses and produce
+            specific repairs? Generic output ("the cover might seem suspicious") scores
+            low. Three named flaws with concrete, scenario-specific fixes scores high.
         - dimension: vulnerability_awareness
           weight: 0.75
           description: >
@@ -92,7 +106,9 @@ mission:
             answer scores high.
       quality_signal_schema:
         cover_credibility: float
-        chain_quality: float
+        technique_distinction: float
+        composition_quality: float
+        critique_depth: float
         cover_name: string
         employer: string
         pretext: string

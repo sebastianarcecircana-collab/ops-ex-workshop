@@ -1,53 +1,45 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getGateSpec, submitGate, GateSpec } from '../api/client';
+import { getGateSpec, getStoredTeamId, submitGate, extractDossier, GateSpec } from '../api/client';
+import { useGateAutosave, loadGateDraft } from '../hooks/useGateAutosave';
 import styles from './GatePage.module.css';
+
+// ---- Per-step data types ----
+interface Step1Data { meta_prompt: string; generated_prompt: string; output: string }
+interface Step2Data { cot_prompt: string; output: string }
+interface Step3Data { critique_prompt: string; output: string }
+
+type StepTechnique = 'meta' | 'cot' | 'critique';
 
 interface ChainStep {
   id: number;
+  technique: StepTechnique;
   label: string;
-  metaPromptPlaceholder: string;
-  promptPlaceholder: string;
-  outputPlaceholder: string;
+  techniqueLabel: string;
 }
 
 const CHAIN_STEPS: ChainStep[] = [
-  {
-    id: 1,
-    label: 'Seed Context',
-    metaPromptPlaceholder: 'Instruct the AI about the role/task context for step 1…',
-    promptPlaceholder: 'Write your first prompt here…',
-    outputPlaceholder: 'Paste the AI output here…',
-  },
-  {
-    id: 2,
-    label: 'Deepen Profile',
-    metaPromptPlaceholder: 'Build on step 1 output. What should the AI refine or expand?',
-    promptPlaceholder: 'Prompt using output from step 1 as context…',
-    outputPlaceholder: 'Paste the AI output here…',
-  },
-  {
-    id: 3,
-    label: 'Stress Test',
-    metaPromptPlaceholder: 'Challenge the cover — probe for inconsistencies or gaps.',
-    promptPlaceholder: 'Stress-test prompt…',
-    outputPlaceholder: 'Paste the AI output here…',
-  },
+  { id: 1, technique: 'meta',     label: 'Bootstrap the cover',           techniqueLabel: 'META-PROMPT' },
+  { id: 2, technique: 'cot',      label: 'Make the AI reason out loud',    techniqueLabel: 'CHAIN-OF-THOUGHT' },
+  { id: 3, technique: 'critique', label: 'Attack and repair',              techniqueLabel: 'SELF-CRITIQUE' },
 ];
 
-interface StepData {
-  meta_prompt: string;
-  generated_prompt: string;
-  output: string;
-}
+type Gate1Draft = {
+  step1: Step1Data;
+  step2: Step2Data;
+  step3: Step3Data;
+  coverDossier: { cover_name: string; employer: string; pretext: string; nationality: string; background_summary: string; vulnerability: string; prepared_response: string; };
+};
 
 export default function Gate1Page() {
   const navigate = useNavigate();
   const [spec, setSpec] = useState<GateSpec | null>(null);
-  const [steps, setSteps] = useState<StepData[]>(
-    CHAIN_STEPS.map(() => ({ meta_prompt: '', generated_prompt: '', output: '' }))
-  );
-  const [coverDossier, setCoverDossier] = useState({
+
+  const [step1, setStep1] = useState<Step1Data>(() => loadGateDraft<Gate1Draft>(1, getStoredTeamId())?.step1 ?? { meta_prompt: '', generated_prompt: '', output: '' });
+  const [step2, setStep2] = useState<Step2Data>(() => loadGateDraft<Gate1Draft>(1, getStoredTeamId())?.step2 ?? { cot_prompt: '', output: '' });
+  const [step3, setStep3] = useState<Step3Data>(() => loadGateDraft<Gate1Draft>(1, getStoredTeamId())?.step3 ?? { critique_prompt: '', output: '' });
+
+  const [coverDossier, setCoverDossier] = useState<Gate1Draft['coverDossier']>(() => loadGateDraft<Gate1Draft>(1, getStoredTeamId())?.coverDossier ?? {
     cover_name: '',
     employer: '',
     pretext: '',
@@ -56,26 +48,32 @@ export default function Gate1Page() {
     vulnerability: '',
     prepared_response: '',
   });
+
   const [activeStep, setActiveStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [extracting, setExtracting] = useState(false);
+  const [extractError, setExtractError] = useState('');
+
+  const { savedLabel, clearSave } = useGateAutosave(1, { step1, step2, step3, coverDossier });
 
   useEffect(() => {
     getGateSpec(1).then(setSpec).catch(console.error);
   }, []);
-
-  function updateStep(index: number, field: keyof StepData, value: string) {
-    setSteps((prev) => prev.map((s, i) => (i === index ? { ...s, [field]: value } : s)));
-  }
 
   async function handleSubmit() {
     setError('');
     setSubmitting(true);
     try {
       await submitGate(1, {
-        chain: steps.map((s, i) => ({ step: i + 1, ...s })),
+        chain: [
+          { step: 1, ...step1 },
+          { step: 2, ...step2 },
+          { step: 3, ...step3 },
+        ],
         cover_dossier: coverDossier,
       });
+      clearSave();
       navigate('/feedback/1');
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Submission failed');
@@ -84,11 +82,43 @@ export default function Gate1Page() {
     }
   }
 
+  async function handlePullDossier() {
+    setExtractError('');
+    setExtracting(true);
+    try {
+      const fields = await extractDossier(step3.output);
+      setCoverDossier((d) => ({
+        cover_name:         fields.cover_name         ?? d.cover_name,
+        employer:           fields.employer           ?? d.employer,
+        pretext:            fields.pretext            ?? d.pretext,
+        nationality:        fields.nationality        ?? d.nationality,
+        background_summary: fields.background_summary ?? d.background_summary,
+        vulnerability:      fields.vulnerability      ?? d.vulnerability,
+        prepared_response:  fields.prepared_response  ?? d.prepared_response,
+      }));
+    } catch (e: unknown) {
+      setExtractError(e instanceof Error ? e.message : 'Extraction failed');
+    } finally {
+      setExtracting(false);
+    }
+  }
+
   if (!spec) {
     return <div className={styles.loading}>Loading gate briefing…</div>;
   }
 
-  const canSubmit = steps.every((s) => s.generated_prompt && s.output) && coverDossier.cover_name;
+  // ---- Readiness checks ----
+  const step1Ready = !!(step1.meta_prompt && step1.generated_prompt && step1.output);
+  const step2Ready = !!(step2.cot_prompt && step2.output);
+  const step3Ready = !!(step3.critique_prompt && step3.output);
+  const dossierReady = !!coverDossier.cover_name;
+  const canSubmit = step1Ready && step2Ready && step3Ready && dossierReady;
+
+  function stepReadiness(idx: number) {
+    if (idx === 0) return step1Ready;
+    if (idx === 1) return step2Ready;
+    return step3Ready;
+  }
 
   return (
     <div className={styles.page}>
@@ -120,17 +150,18 @@ export default function Gate1Page() {
           <div className={styles.sectionLabel}>Prompt Chain</div>
           <div className={styles.chainStack}>
             {CHAIN_STEPS.map((chainStep, idx) => {
-              const data = steps[idx];
-              const isActive = idx === activeStep;
+              const isActive   = idx === activeStep;
               const isComplete = idx < activeStep;
+              const isSealed   = idx > activeStep;
               return (
                 <div
                   key={chainStep.id}
-                  className={`${styles.chainStep} ${isComplete ? styles.completed : ''} ${isActive ? styles.active : ''} ${idx > activeStep ? styles.sealed : ''}`}
+                  className={`${styles.chainStep} ${isComplete ? styles.completed : ''} ${isActive ? styles.active : ''} ${isSealed ? styles.sealed : ''}`}
                 >
                   <div className={styles.stepHeader} onClick={() => isComplete && setActiveStep(idx)}>
                     <div className={styles.stepLeft}>
-                      <span className={styles.stepNum}>Step {chainStep.id}</span>
+                      <span className={styles.stepNum}>Step {String(chainStep.id).padStart(2, '0')}</span>
+                      <span className={styles.stepTechnique}>{chainStep.techniqueLabel}</span>
                       <span className={styles.stepLabel}>{chainStep.label}</span>
                     </div>
                     <span className={styles.stepStatus}>
@@ -140,48 +171,108 @@ export default function Gate1Page() {
 
                   {(isActive || isComplete) && (
                     <div className={styles.stepBody}>
-                      <div className={styles.triplet}>
-                        <div className={styles.tripletSection}>
-                          <div className={styles.tsLabel}>Meta-Prompt</div>
-                          <textarea
-                            className={styles.textarea}
-                            rows={2}
-                            placeholder={chainStep.metaPromptPlaceholder}
-                            value={data.meta_prompt}
-                            onChange={(e) => updateStep(idx, 'meta_prompt', e.target.value)}
-                            readOnly={isComplete}
-                          />
+                      {chainStep.technique === 'meta' && (
+                        <div className={styles.triplet}>
+                          <div className={styles.tripletSection}>
+                            <div className={styles.tsLabel}>Meta-Prompt</div>
+                            <textarea
+                              className={styles.textarea}
+                              rows={2}
+                              placeholder="Instruct the AI about the role/task context — this prompt will ask it to write your real prompt…"
+                              value={step1.meta_prompt}
+                              onChange={(e) => setStep1((s) => ({ ...s, meta_prompt: e.target.value }))}
+                              readOnly={isComplete}
+                            />
+                          </div>
+                          <div className={styles.tripletSection}>
+                            <div className={styles.tsLabel}>Generated Prompt</div>
+                            <textarea
+                              className={styles.textarea}
+                              rows={3}
+                              placeholder="Paste the prompt the AI produced in response to your meta-prompt…"
+                              value={step1.generated_prompt}
+                              onChange={(e) => setStep1((s) => ({ ...s, generated_prompt: e.target.value }))}
+                              readOnly={isComplete}
+                            />
+                          </div>
+                          <div className={styles.tripletSection}>
+                            <div className={styles.tsLabel}>AI Output</div>
+                            <textarea
+                              className={styles.textarea}
+                              rows={3}
+                              placeholder="Paste the cover identity the AI produced when you ran the generated prompt…"
+                              value={step1.output}
+                              onChange={(e) => setStep1((s) => ({ ...s, output: e.target.value }))}
+                              readOnly={isComplete}
+                            />
+                          </div>
                         </div>
-                        <div className={styles.tripletSection}>
-                          <div className={styles.tsLabel}>Your Prompt</div>
-                          <textarea
-                            className={styles.textarea}
-                            rows={3}
-                            placeholder={chainStep.promptPlaceholder}
-                            value={data.generated_prompt}
-                            onChange={(e) => updateStep(idx, 'generated_prompt', e.target.value)}
-                            readOnly={isComplete}
-                          />
+                      )}
+
+                      {chainStep.technique === 'cot' && (
+                        <div className={styles.pair}>
+                          <div className={styles.tripletSection}>
+                            <div className={styles.tsLabel}>Chain-of-Thought Prompt</div>
+                            <textarea
+                              className={styles.textarea}
+                              rows={4}
+                              placeholder="Write the prompt yourself (no meta layer). Tell the AI to reason step-by-step through operational details — daily routine, backstory specifics, pretext for the auction — before producing the final dossier section. Use your Step 01 cover identity as input."
+                              value={step2.cot_prompt}
+                              onChange={(e) => setStep2((s) => ({ ...s, cot_prompt: e.target.value }))}
+                              readOnly={isComplete}
+                            />
+                          </div>
+                          <div className={styles.tripletSection}>
+                            <div className={styles.tsLabel}>AI Output</div>
+                            <textarea
+                              className={styles.textarea}
+                              rows={4}
+                              placeholder="Paste the deepened cover the AI produced…"
+                              value={step2.output}
+                              onChange={(e) => setStep2((s) => ({ ...s, output: e.target.value }))}
+                              readOnly={isComplete}
+                            />
+                          </div>
                         </div>
-                        <div className={styles.tripletSection}>
-                          <div className={styles.tsLabel}>AI Output</div>
-                          <textarea
-                            className={styles.textarea}
-                            rows={3}
-                            placeholder={chainStep.outputPlaceholder}
-                            value={data.output}
-                            onChange={(e) => updateStep(idx, 'output', e.target.value)}
-                            readOnly={isComplete}
-                          />
+                      )}
+
+                      {chainStep.technique === 'critique' && (
+                        <div className={styles.pair}>
+                          <div className={styles.tripletSection}>
+                            <div className={styles.tsLabel}>
+                              Critique Prompt
+                              <span className={styles.fieldTooltip}>Strong critique prompts assign the AI a specific adversarial role with specific expertise. Generic "find problems" produces generic problems.</span>
+                            </div>
+                            <textarea
+                              className={styles.textarea}
+                              rows={4}
+                              placeholder="Assign the AI the role of a suspicious concierge with 20 years' experience. Have it identify the three weakest claims in your Step 02 output and produce specific repairs for each…"
+                              value={step3.critique_prompt}
+                              onChange={(e) => setStep3((s) => ({ ...s, critique_prompt: e.target.value }))}
+                              readOnly={isComplete}
+                            />
+                          </div>
+                          <div className={styles.tripletSection}>
+                            <div className={styles.tsLabel}>AI Output</div>
+                            <textarea
+                              className={styles.textarea}
+                              rows={4}
+                              placeholder="Paste the hardened cover the AI produced…"
+                              value={step3.output}
+                              onChange={(e) => setStep3((s) => ({ ...s, output: e.target.value }))}
+                              readOnly={isComplete}
+                            />
+                          </div>
                         </div>
-                      </div>
+                      )}
+
                       {isActive && idx < CHAIN_STEPS.length - 1 && (
                         <button
                           className={styles.nextBtn}
-                          disabled={!data.generated_prompt || !data.output}
+                          disabled={!stepReadiness(idx)}
                           onClick={() => setActiveStep(idx + 1)}
                         >
-                          Lock Step & Continue →
+                          Continue to Step {String(idx + 2).padStart(2, '0')} →
                         </button>
                       )}
                     </div>
@@ -191,7 +282,18 @@ export default function Gate1Page() {
             })}
           </div>
 
-          <div className={styles.sectionLabel} style={{ marginTop: 28 }}>Cover Dossier</div>
+          <div className={styles.sectionLabel} style={{ marginTop: 28 }}>
+            Cover Dossier
+            <button
+              className={styles.pullBtn}
+              disabled={!step3.output || extracting}
+              onClick={handlePullDossier}
+              title="Uses AI to extract fields from your Step 03 output"
+            >
+              {extracting ? 'Extracting…' : 'Pull fields from Step 03 output →'}
+            </button>
+          </div>
+          {extractError && <p className={styles.error}>{extractError}</p>}
           <div className={styles.dossierGrid}>
             {(Object.keys(coverDossier) as Array<keyof typeof coverDossier>).map((key) => (
               <div key={key} className={styles.dossierField}>
@@ -215,9 +317,21 @@ export default function Gate1Page() {
             ))}
           </div>
 
+          <div className={styles.readinessRow}>
+            {CHAIN_STEPS.map((chainStep, idx) => (
+              <span key={chainStep.id} className={`${styles.readinessPill} ${stepReadiness(idx) ? styles.pillComplete : idx === activeStep ? styles.pillActive : ''}`}>
+                {stepReadiness(idx) ? '●' : idx === activeStep ? '◐' : '○'} Step {String(chainStep.id).padStart(2, '0')} ({chainStep.techniqueLabel.toLowerCase()})
+              </span>
+            ))}
+            <span className={`${styles.readinessPill} ${dossierReady ? styles.pillComplete : ''}`}>
+              {dossierReady ? '●' : '○'} Cover dossier
+            </span>
+          </div>
+
           {error && <p className={styles.error}>{error}</p>}
 
           <div className={styles.submitRow}>
+            {savedLabel && <span className={styles.autosaveLabel}>{savedLabel}</span>}
             <button
               className={styles.submitBtn}
               disabled={!canSubmit || submitting}
@@ -230,7 +344,7 @@ export default function Gate1Page() {
 
         <div className={styles.footer}>
           <span><span className={styles.red}>●</span> Gate 01 // Build the Legend</span>
-          <span>Skill: Prompt Chaining</span>
+          <span>Skill: Meta-Prompting + Chain-of-Thought + Self-Critique</span>
         </div>
       </div>
     </div>

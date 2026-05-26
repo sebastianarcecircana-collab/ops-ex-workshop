@@ -22,6 +22,15 @@
   position: relative;
 }
 
+.fadeIn {
+  animation: fadeIn 1s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 .scanline {
   position: fixed;
   left: 0; right: 0;

@@ -135,32 +135,60 @@ export async function getEvaluation(gateNumber: number): Promise<EvaluationResul
   return apiFetch<EvaluationResult>(`/gates/${gateNumber}/evaluation`);
 }
 
+// ---- Gate 1 Dossier Extraction ----
+
+export interface CoverDossierFields {
+  cover_name?: string;
+  employer?: string;
+  pretext?: string;
+  nationality?: string;
+  background_summary?: string;
+  vulnerability?: string;
+  prepared_response?: string;
+}
+
+export async function extractDossier(step3Output: string): Promise<CoverDossierFields> {
+  return apiFetch<CoverDossierFields>('/gates/1/extract-dossier', {
+    method: 'POST',
+    body: JSON.stringify({ step3Output }),
+  });
+}
+
 // ---- Assets ----
 
-export interface AssetUrl {
-  url: string;
-  filename: string;
-  label: string;
+// Fetches an asset file from the backend and returns a local Blob URL
+// suitable for use in an <a href download> link.
+async function fetchAssetBlobUrl(assetPath: string): Promise<string> {
+  const token = getToken();
+  const res = await fetch(`${BASE_URL}${assetPath}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({ error: res.statusText }));
+    throw new ApiError(res.status, (body as { error?: string }).error ?? res.statusText);
+  }
+  const blob = await res.blob();
+  return URL.createObjectURL(blob);
 }
 
-export async function getGate3AssetUrl(): Promise<AssetUrl> {
-  return apiFetch<AssetUrl>('/assets/gate3-intercept');
+export async function getGate3AssetUrl(): Promise<string> {
+  return fetchAssetBlobUrl('/assets/gate3-intercept');
 }
 
-export async function getGate2RenouxProfileUrl(): Promise<AssetUrl> {
-  return apiFetch<AssetUrl>('/assets/gate2-renoux-profile');
+export async function getGate2RenouxProfileUrl(): Promise<string> {
+  return fetchAssetBlobUrl('/assets/gate2-renoux-profile');
 }
 
-export async function getGate2AuctionProgrammeUrl(): Promise<AssetUrl> {
-  return apiFetch<AssetUrl>('/assets/gate2-auction-programme');
+export async function getGate2AuctionProgrammeUrl(): Promise<string> {
+  return fetchAssetBlobUrl('/assets/gate2-auction-programme');
 }
 
-export async function getGate2HermitageSchematicUrl(): Promise<AssetUrl> {
-  return apiFetch<AssetUrl>('/assets/gate2-hermitage-schematic');
+export async function getGate2HermitageSchematicUrl(): Promise<string> {
+  return fetchAssetBlobUrl('/assets/gate2-hermitage-schematic');
 }
 
-export async function getGate2InterceptFragmentUrl(): Promise<AssetUrl> {
-  return apiFetch<AssetUrl>('/assets/gate2-intercept-fragment');
+export async function getGate2InterceptFragmentUrl(): Promise<string> {
+  return fetchAssetBlobUrl('/assets/gate2-intercept-fragment');
 }
 
 // ---- Scenario ----

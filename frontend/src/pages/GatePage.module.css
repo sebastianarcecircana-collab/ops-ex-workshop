@@ -334,6 +334,15 @@
   margin-top: 24px;
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
+}
+
+.autosaveLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text-3);
 }
 
 .submitBtn {
@@ -363,3 +372,78 @@
   color: var(--text-3);
 }
 .red { color: var(--accent); margin-right: 4px; }
+
+/* ---- Gate 1 redesign additions ---- */
+
+/* Step header — technique badge between step number and label */
+.stepTechnique {
+  font-family: var(--font-display);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 1px 6px;
+  opacity: 0.85;
+}
+.completed .stepTechnique { color: var(--green); border-color: var(--green); }
+.sealed .stepTechnique { opacity: 0.4; }
+
+/* Two-section layout for Steps 2 & 3 (no meta column) */
+.pair {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* Tooltip hint below a field label */
+.fieldTooltip {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-style: italic;
+  color: var(--text-3);
+  letter-spacing: 0.05em;
+  margin-top: 3px;
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+/* Readiness pill row */
+.readinessRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 24px;
+  margin-bottom: 4px;
+}
+
+.readinessPill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+}
+.readinessPill.pillActive { color: var(--accent); border-color: var(--accent); }
+.readinessPill.pillComplete { color: var(--green); border-color: var(--green); }
+
+/* Pull button — sits inline in the sectionLabel */
+.pullBtn {
+  font-family: var(--font-display);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-left: auto;
+}
+.pullBtn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.pullBtn:disabled { opacity: 0.35; cursor: not-allowed; }

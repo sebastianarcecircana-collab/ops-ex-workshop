@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { getTeamState, TeamState } from '../api/client';
 import styles from './HubPage.module.css';
 
@@ -20,6 +20,8 @@ function gateStatus(gateN: number, currentGate: number, submissions: TeamState['
 
 export default function HubPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const fadeIn = !!(location.state as { fadeIn?: boolean } | null)?.fadeIn;
   const [state, setState] = useState<TeamState | null>(null);
 
   useEffect(() => {
@@ -37,7 +39,7 @@ export default function HubPage() {
   const allComplete = state.submissions.filter((s) => s.status === 'complete').length >= 4;
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page}${fadeIn ? ` ${styles.fadeIn}` : ''}`}>
       <div className={styles.scanline} aria-hidden />
       <div className={styles.frame}>
         <span className={styles.cornerTl} aria-hidden />

@@ -299,7 +299,18 @@
 .used::before { content: '●'; font-size: 8px; }
 .unused::before { content: '○'; font-size: 8px; }
 
-.actions {}
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.autosaveLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text-3);
+}
 
 .submitBtn {
   font-family: var(--font-display); font-size: 12px; font-weight: 500;

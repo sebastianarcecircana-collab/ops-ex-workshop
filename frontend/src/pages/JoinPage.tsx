@@ -17,7 +17,7 @@ export default function JoinPage() {
     try {
       const res = await joinCohort(joinCode.trim().toUpperCase(), callsign.trim().toUpperCase());
       setSession(res.teamId, res.sessionToken);
-      navigate('/briefing');
+      navigate('/opening');
     } catch (err) {
       if (err instanceof ApiError) {
         setError(err.message);

@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  getGateSpec, submitGate, GateSpec,
+  getGateSpec, getStoredTeamId, submitGate, GateSpec,
   getGate2RenouxProfileUrl, getGate2AuctionProgrammeUrl,
   getGate2HermitageSchematicUrl, getGate2InterceptFragmentUrl,
-  AssetUrl,
 } from '../api/client';
+import { useGateAutosave, loadGateDraft } from '../hooks/useGateAutosave';
 import styles from './GatePage.module.css';
 
 const ROLES = [
@@ -27,17 +27,24 @@ interface RoleData {
 
 const emptyRole = (): RoleData => ({ assignee: '', key_detail: '', weakness: '', notes: '', sources: '' });
 
+type Gate2Draft = { roleData: Record<RoleKey, RoleData> };
+
 export default function Gate2Page() {
   const navigate = useNavigate();
   const [spec, setSpec] = useState<GateSpec | null>(null);
-  const [roleData, setRoleData] = useState<Record<RoleKey, RoleData>>({
-    venue: emptyRole(),
-    host: emptyRole(),
-    bidders: emptyRole(),
-    security: emptyRole(),
+  const [roleData, setRoleData] = useState<Record<RoleKey, RoleData>>(() => {
+    const d = loadGateDraft<Gate2Draft>(2, getStoredTeamId());
+    return d?.roleData ?? {
+      venue: emptyRole(),
+      host: emptyRole(),
+      bidders: emptyRole(),
+      security: emptyRole(),
+    };
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+
+  const { savedLabel, clearSave } = useGateAutosave(2, { roleData });
 
   type MaterialKey = 'renoux' | 'programme' | 'schematic' | 'intercept';
   const [materialUrls, setMaterialUrls] = useState<Partial<Record<MaterialKey, string>>>({});
@@ -47,19 +54,19 @@ export default function Gate2Page() {
     key: MaterialKey;
     label: string;
     filename: string;
-    fetch: () => Promise<AssetUrl>;
+    fetch: () => Promise<string>;
   }> = [
-    { key: 'renoux',    label: 'Renoux Intelligence Profile',      filename: 'gate2_renoux_profile.txt',     fetch: getGate2RenouxProfileUrl },
-    { key: 'programme', label: 'Auction Event Programme',           filename: 'gate2_auction_programme.txt',  fetch: getGate2AuctionProgrammeUrl },
+    { key: 'renoux',    label: 'Renoux Intelligence Profile',      filename: 'gate2_renoux_profile.txt',      fetch: getGate2RenouxProfileUrl },
+    { key: 'programme', label: 'Auction Event Programme',           filename: 'gate2_auction_programme.txt',   fetch: getGate2AuctionProgrammeUrl },
     { key: 'schematic', label: 'Venue Schematic — Event Level',     filename: 'gate2_hermitage_schematic.svg', fetch: getGate2HermitageSchematicUrl },
-    { key: 'intercept', label: 'Intercepted Staff Communication',   filename: 'gate2_intercept_fragment.txt', fetch: getGate2InterceptFragmentUrl },
+    { key: 'intercept', label: 'Intercepted Staff Communication',   filename: 'gate2_intercept_fragment.txt',  fetch: getGate2InterceptFragmentUrl },
   ];
 
-  async function fetchMaterial(key: MaterialKey, fetchFn: () => Promise<AssetUrl>) {
+  async function fetchMaterial(key: MaterialKey, fetchFn: () => Promise<string>) {
     setMaterialLoading((prev) => ({ ...prev, [key]: true }));
     try {
-      const asset = await fetchFn();
-      setMaterialUrls((prev) => ({ ...prev, [key]: asset.url }));
+      const blobUrl = await fetchFn();
+      setMaterialUrls((prev) => ({ ...prev, [key]: blobUrl }));
     } catch {
       setError(`Could not retrieve material: ${key}`);
     } finally {
@@ -104,6 +111,7 @@ export default function Gate2Page() {
           sources: roleData.security.sources.split(',').map((s) => s.trim()),
         },
       });
+      clearSave();
       navigate('/feedback/2');
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Submission failed');
@@ -216,6 +224,7 @@ export default function Gate2Page() {
 
           {error && <p className={styles.error}>{error}</p>}
           <div className={styles.submitRow}>
+            {savedLabel && <span className={styles.autosaveLabel}>{savedLabel}</span>}
             <button className={styles.submitBtn} disabled={!canSubmit || submitting} onClick={handleSubmit}>
               {submitting ? 'Transmitting…' : 'Submit Gate 02 →'}
             </button>

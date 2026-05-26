@@ -1,22 +1,30 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getGateSpec, getGate3AssetUrl, submitGate, GateSpec } from '../api/client';
+import { getGateSpec, getGate3AssetUrl, getStoredTeamId, submitGate, GateSpec } from '../api/client';
+import { useGateAutosave, loadGateDraft } from '../hooks/useGateAutosave';
 import styles from './GatePage.module.css';
+
+type Gate3Draft = {
+  finding: string; badgeId: string; timestamp: string; location: string;
+  anomalyDesc: string; reasoning: string; methodology: string;
+};
 
 export default function Gate3Page() {
   const navigate = useNavigate();
   const [spec, setSpec] = useState<GateSpec | null>(null);
   const [csvUrl, setCsvUrl] = useState<string | null>(null);
   const [loadingCsv, setLoadingCsv] = useState(false);
-  const [finding, setFinding] = useState('');
-  const [badgeId, setBadgeId] = useState('');
-  const [timestamp, setTimestamp] = useState('');
-  const [location, setLocation] = useState('');
-  const [anomalyDesc, setAnomalyDesc] = useState('');
-  const [reasoning, setReasoning] = useState('');
-  const [methodology, setMethodology] = useState('');
+  const [finding, setFinding] = useState(() => loadGateDraft<Gate3Draft>(3, getStoredTeamId())?.finding ?? '');
+  const [badgeId, setBadgeId] = useState(() => loadGateDraft<Gate3Draft>(3, getStoredTeamId())?.badgeId ?? '');
+  const [timestamp, setTimestamp] = useState(() => loadGateDraft<Gate3Draft>(3, getStoredTeamId())?.timestamp ?? '');
+  const [location, setLocation] = useState(() => loadGateDraft<Gate3Draft>(3, getStoredTeamId())?.location ?? '');
+  const [anomalyDesc, setAnomalyDesc] = useState(() => loadGateDraft<Gate3Draft>(3, getStoredTeamId())?.anomalyDesc ?? '');
+  const [reasoning, setReasoning] = useState(() => loadGateDraft<Gate3Draft>(3, getStoredTeamId())?.reasoning ?? '');
+  const [methodology, setMethodology] = useState(() => loadGateDraft<Gate3Draft>(3, getStoredTeamId())?.methodology ?? '');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+
+  const { savedLabel, clearSave } = useGateAutosave(3, { finding, badgeId, timestamp, location, anomalyDesc, reasoning, methodology });
 
   useEffect(() => {
     getGateSpec(3).then(setSpec).catch(console.error);
@@ -25,8 +33,8 @@ export default function Gate3Page() {
   async function fetchCsv() {
     setLoadingCsv(true);
     try {
-      const asset = await getGate3AssetUrl();
-      setCsvUrl(asset.url);
+      const blobUrl = await getGate3AssetUrl();
+      setCsvUrl(blobUrl);
     } catch (e) {
       setError('Could not fetch intercept data.');
     } finally {
@@ -47,6 +55,7 @@ export default function Gate3Page() {
         reasoning,
         methodology,
       });
+      clearSave();
       navigate('/feedback/3');
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Submission failed');
@@ -146,6 +155,7 @@ export default function Gate3Page() {
 
           {error && <p className={styles.error}>{error}</p>}
           <div className={styles.submitRow}>
+            {savedLabel && <span className={styles.autosaveLabel}>{savedLabel}</span>}
             <button className={styles.submitBtn} disabled={!canSubmit || submitting} onClick={handleSubmit}>
               {submitting ? 'Transmitting…' : 'Submit Gate 03 →'}
             </button>
