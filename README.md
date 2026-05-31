@@ -39,11 +39,9 @@ Set at least these values in `.env`:
 docker compose up --build -d
 ```
 
-### 3. Apply DB schema
+### 3. (Optional) Seed a known cohort join code
 
-```bash
-docker compose exec app npm run migrate
-```
+The backend now applies the DB schema automatically on startup.
 
 Optional: seed a known cohort join code (`QUICKSILVER`):
 

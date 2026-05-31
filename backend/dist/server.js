@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const helmet_1 = __importDefault(require("helmet"));
 const cors_1 = __importDefault(require("cors"));
 const loadEnv_1 = require("./config/loadEnv");
+const migrate_1 = require("./db/migrate");
 const missionSpec_1 = require("./services/missionSpec");
 const minio_1 = require("./services/minio");
 const cohorts_1 = __importDefault(require("./routes/cohorts"));
@@ -43,6 +44,8 @@ app.use((err, _req, res, _next) => {
     res.status(500).json({ error: 'Internal server error' });
 });
 async function start() {
+    // Ensure schema exists for fresh environments before serving requests.
+    await (0, migrate_1.applyMigrations)();
     // Load mission spec eagerly (fails fast if YAML is missing/invalid)
     (0, missionSpec_1.loadMissionSpec)();
     // Ensure MinIO bucket exists and Gate 3 CSV is uploaded

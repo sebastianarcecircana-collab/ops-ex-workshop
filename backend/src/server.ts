@@ -2,6 +2,7 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import { loadEnv } from './config/loadEnv';
+import { applyMigrations } from './db/migrate';
 
 import { loadMissionSpec } from './services/missionSpec';
 import { ensureBucketAndSeedFiles } from './services/minio';
@@ -49,6 +50,9 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
 });
 
 async function start() {
+  // Ensure schema exists for fresh environments before serving requests.
+  await applyMigrations();
+
   // Load mission spec eagerly (fails fast if YAML is missing/invalid)
   loadMissionSpec();
 

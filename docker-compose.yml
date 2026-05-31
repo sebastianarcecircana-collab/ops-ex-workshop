@@ -1,12 +1,12 @@
 services:
   postgres:
-    image: postgres:16-alpine
+    image: lnx2201.infores.com:8082/bitnamilegacy/postgresql
     environment:
-      POSTGRES_DB: quicksilver
-      POSTGRES_USER: quicksilver
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-quicksilver_dev}
+      POSTGRESQL_DATABASE: quicksilver
+      POSTGRESQL_USERNAME: quicksilver
+      POSTGRESQL_PASSWORD: ${POSTGRES_PASSWORD:-quicksilver_dev}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/bitnami/postgresql
     ports:
       - "5432:5432"
     healthcheck:
@@ -16,18 +16,17 @@ services:
       retries: 10
 
   minio:
-    image: minio/minio:latest
-    command: server /data --console-address ":9001"
+    image: lnx2201.infores.com:8082/bitnamilegacy/minio
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin_dev}
     volumes:
-      - minio_data:/data
+      - minio_data:/bitnami/minio/data
     ports:
       - "9000:9000"
       - "9001:9001"
     healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
+      test: ["CMD-SHELL", "curl -f http://localhost:9000/minio/health/live || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 10
