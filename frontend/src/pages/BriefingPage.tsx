@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import styles from './BriefingPage.module.css';
 
 export default function BriefingPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
@@ -15,14 +17,14 @@ export default function BriefingPage() {
 
         <div className={styles.banner}>
           <span>◢ ◣</span>
-          <span>Incoming Transmission // Encrypted // Priority Alpha</span>
+          <span>{t('briefingPage.bannerTitle')}</span>
           <span>◢ ◣</span>
         </div>
 
         <div className={styles.meta}>
           <span className={styles.recStatus}>
             <span className={styles.dot} />
-            Decrypted · Live
+            {t('briefingPage.statusDecryptedLive')}
           </span>
           <span>FREQ 04.711 MHz</span>
           <span>SOURCE: Cipher</span>
@@ -30,42 +32,42 @@ export default function BriefingPage() {
         </div>
 
         <div className={styles.content}>
-          <div className={styles.missionLabel}>Operation</div>
-          <h1 className={styles.missionName}><span className={styles.accent}>Quicksilver</span></h1>
+          <div className={styles.missionLabel}>{t('briefingPage.missionLabel')}</div>
+          <h1 className={styles.missionName}><span className={styles.accent}>{t('briefingPage.missionName')}</span></h1>
 
           <div className={styles.dossierGrid}>
             <div className={styles.card}>
-              <div className={styles.cardLabel}>Location</div>
-              <div className={styles.cardValue}>Hôtel Hermitage, Monaco</div>
+              <div className={styles.cardLabel}>{t('briefingPage.dossier.location')}</div>
+              <div className={styles.cardValue}>{t('briefingPage.locationValue')}</div>
             </div>
             <div className={styles.card}>
-              <div className={styles.cardLabel}>Antagonist</div>
-              <div className={styles.cardValue}>The Monaco Syndicate</div>
+              <div className={styles.cardLabel}>{t('briefingPage.dossier.antagonist')}</div>
+              <div className={styles.cardValue}>{t('briefingPage.antagonistValue')}</div>
             </div>
             <div className={styles.card}>
-              <div className={styles.cardLabel}>Target Asset</div>
-              <div className={styles.cardValue}>Helios AI Model</div>
+              <div className={styles.cardLabel}>{t('briefingPage.dossier.asset')}</div>
+              <div className={styles.cardValue}>{t('briefingPage.assetValue')}</div>
             </div>
             <div className={styles.card}>
-              <div className={styles.cardLabel}>Time Pressure</div>
-              <div className={styles.cardValue}>72-hour window</div>
+              <div className={styles.cardLabel}>{t('briefingPage.dossier.timePressure')}</div>
+              <div className={styles.cardValue}>{t('briefingPage.timePressureValue')}</div>
             </div>
           </div>
 
           <div className={styles.situation}>
-            <div className={styles.sectionLabel}>Situation Report</div>
-            <p>The Syndicate has acquired <em>Helios</em> — an experimental model we have tracked for eighteen months. They are auctioning it in seventy-two hours at the Hôtel Hermitage to a buyer we cannot yet identify.</p>
-            <p>Your team is the only one in position.</p>
+            <div className={styles.sectionLabel}>{t('briefingPage.situationLabel')}</div>
+            <p>{t('briefingPage.situationText1')}</p>
+            <p>{t('briefingPage.situationText2')}</p>
           </div>
 
           <div className={styles.gatesOverview}>
-            <div className={styles.sectionLabel}>Mission Structure</div>
+            <div className={styles.sectionLabel}>{t('briefingPage.missionStructureLabel')}</div>
             <div className={styles.gates}>
               {[
-                { n: 1, name: 'Build the Legend', desc: 'Construct a deep-cover identity using prompt chaining' },
-                { n: 2, name: 'The Dossier', desc: 'Research targets with role-based AI personas' },
-                { n: 3, name: 'Find the Crack', desc: 'Analyze intercept data to identify the anomaly' },
-                { n: 4, name: 'The Plan', desc: 'Build a mission plan and stress-test it with AI' },
+                { n: 1, name: t('briefingPage.gate.1'), desc: t('briefingPage.gate.1Desc') },
+                { n: 2, name: t('briefingPage.gate.2'), desc: t('briefingPage.gate.2Desc') },
+                { n: 3, name: t('briefingPage.gate.3'), desc: t('briefingPage.gate.3Desc') },
+                { n: 4, name: t('briefingPage.gate.4'), desc: t('briefingPage.gate.4Desc') },
               ].map((g) => (
                 <div key={g.n} className={styles.gate}>
                   <div className={styles.gateNum}>0{g.n}</div>
@@ -79,15 +81,13 @@ export default function BriefingPage() {
           </div>
 
           <div className={styles.acceptance}>
-            <p className={styles.acceptNote}>
-              Acceptance binds your team to operational secrecy under Subsection 4-A of the Charter.
-            </p>
+            <p className={styles.acceptNote}>{t('briefingPage.acceptNote')}</p>
             <div className={styles.actions}>
               <button
                 className={styles.btnAccept}
                 onClick={() => navigate('/opening')}
               >
-                Accept Mission →
+                {t('briefingPage.acceptButton')}
               </button>
             </div>
           </div>

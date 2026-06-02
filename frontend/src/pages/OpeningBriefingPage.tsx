@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import styles from './OpeningBriefingPage.module.css';
 
 type Phase = 'trigger' | 'briefing' | 'destruct' | 'erased';
 
 export default function OpeningBriefingPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [phase, setPhase] = useState<Phase>('trigger');
   const [timeLeft, setTimeLeft] = useState(2000); // centiseconds (20 seconds)
@@ -74,7 +76,7 @@ export default function OpeningBriefingPage() {
   if (phase === 'erased') {
     return (
       <div className={styles.erasedScreen}>
-        <div className={styles.erasedText}>Connection Lost // Transmission Erased</div>
+        <div className={styles.erasedText}>{t('openingBriefingPage.connectionLost')}</div>
       </div>
     );
   }
@@ -98,7 +100,7 @@ export default function OpeningBriefingPage() {
 
       {phase === 'trigger' && (
         <button className={styles.decryptTrigger} onClick={() => setPhase('briefing')}>
-          DECRYPT TRANSMISSION
+          {t('openingBriefingPage.decryptTransmission')}
         </button>
       )}
 
@@ -109,46 +111,39 @@ export default function OpeningBriefingPage() {
         >
           <div className={styles.headerRow}>
             <div className={styles.identity}>
-              Protocol: Shadow-Net // 992-X<br />
-              Encryption: 8192-bit AES
+              {t('openingBriefingPage.protocol')}<br />
+              {t('openingBriefingPage.encryption')}
             </div>
-            <div className={styles.statusBadge}>AUTO-DELETE ENABLED</div>
+            <div className={styles.statusBadge}>{t('openingBriefingPage.autoDelete')}</div>
           </div>
 
-          <div className={styles.missionTitle}>
-            Project<br />QUICKSILVER
-          </div>
+          <div className={styles.missionTitle}>{t('openingBriefingPage.missionTitle')}</div>
 
           <div className={styles.briefingBody}>
             <div className={styles.column}>
               <div className={styles.dataPoint}>
-                <span className={styles.label}>Target Coordinates</span>
+                <span className={styles.label}>{t('openingBriefingPage.targetCoordinates')}</span>
                 48.8584° N, 2.2945° E
               </div>
               <div className={styles.dataPoint}>
-                <span className={styles.label}>Primary Objective</span>
-                The Syndicate has acquired Helios — an experimental model we have tracked for
-                eighteen months. They are auctioning it at the Hôtel Hermitage, Monaco, to a buyer
-                we cannot yet identify. Your team is the only one in position. Work with Cipher to
-                build a cover, gather intel, find a way into the auction and plan the extraction.
-                Helios must be secured at all costs.
+                <span className={styles.label}>{t('openingBriefingPage.primaryObjective')}</span>
+                {t('openingBriefingPage.primaryObjectiveText')}
               </div>
             </div>
             <div className={styles.column}>
               <div className={styles.dataPoint}>
-                <span className={styles.label}>SOP</span>
-                As always, should you or any of your team be caught or killed, the Secretary will
-                disavow all knowledge of your actions.
+                <span className={styles.label}>{t('openingBriefingPage.sopLabel')}</span>
+                {t('openingBriefingPage.sopText')}
               </div>
               <div className={styles.dataPoint}>
-                <span className={styles.label}>Agent Clearance</span>
-                LEVEL 7 ONLY
+                <span className={styles.label}>{t('openingBriefingPage.agentClearance')}</span>
+                {t('openingBriefingPage.agentClearanceValue')}
               </div>
             </div>
           </div>
 
           <div className={styles.countdownContainer}>
-            <span className={styles.timerLabel}>TERMINATING IN</span>
+            <span className={styles.timerLabel}>{t('openingBriefingPage.terminatingIn')}</span>
             <div className={styles.timer}>{timerText}</div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { hasSession } from './api/client';
 
+import LanguageSwitcher from './components/LanguageSwitcher';
 import JoinPage from './pages/JoinPage';
 import BriefingPage from './pages/BriefingPage';
 import OpeningBriefingPage from './pages/OpeningBriefingPage';
@@ -20,6 +21,7 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <BrowserRouter>
+      <LanguageSwitcher />
       <Routes>
         <Route path="/" element={<JoinPage />} />
         <Route path="/briefing" element={<BriefingPage />} />

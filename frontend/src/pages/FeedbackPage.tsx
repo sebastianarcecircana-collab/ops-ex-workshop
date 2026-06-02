@@ -1,16 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { getEvaluation, EvaluationResult } from '../api/client';
 import styles from './FeedbackPage.module.css';
 
-const GATE_NAMES: Record<number, string> = {
-  1: 'Build the Legend',
-  2: 'The Dossier',
-  3: 'Find the Crack',
-  4: 'The Plan',
-};
-
 export default function FeedbackPage() {
+  const { t } = useTranslation();
   const { gateNumber } = useParams<{ gateNumber: string }>();
   const navigate = useNavigate();
   const gateNum = parseInt(gateNumber ?? '1', 10);
@@ -42,7 +37,7 @@ export default function FeedbackPage() {
     }
   }
 
-  const gateName = GATE_NAMES[gateNum] ?? `Gate ${gateNum}`;
+  const gateName = t(`feedbackPage.gates.${gateNum}`);
 
   return (
     <div className={styles.page}>
@@ -55,13 +50,13 @@ export default function FeedbackPage() {
 
         <div className={styles.header}>
           <div className={styles.headerLeft}>
-            <span className={styles.phaseTag}>Gate 0{gateNum} Response</span>
-            <span className={styles.phaseTitle}>Cipher's <span className={styles.accent}>Assessment</span></span>
+            <span className={styles.phaseTag}>{t('feedbackPage.gateResponse', { gate: gateNum })}</span>
+            <span className={styles.phaseTitle}>{t('feedbackPage.assessmentPrefix')}<span className={styles.accent}>{t('feedbackPage.assessment')}</span></span>
           </div>
           <div className={styles.statusPill} data-status={evaluation?.status ?? 'evaluating'}>
             <span className={styles.dot} />
-            {evaluation?.status === 'evaluating' || !evaluation ? 'Evaluating…' :
-             evaluation.status === 'complete' ? 'Transmission Received' : 'Error'}
+            {evaluation?.status === 'evaluating' || !evaluation ? t('feedbackPage.evaluating') :
+             evaluation.status === 'complete' ? t('feedbackPage.transmissionReceived') : t('feedbackPage.error')}
           </div>
         </div>
 
@@ -83,26 +78,26 @@ export default function FeedbackPage() {
                   <div key={i} className={styles.wBar} style={{ animationDelay: `${-i * 0.15}s` }} />
                 ))}
               </div>
-              <p className={styles.waitingLabel}>Cipher is reviewing your work…</p>
+              <p className={styles.waitingLabel}>{t('feedbackPage.reviewing')}</p>
             </div>
           )}
 
           {evaluation?.status === 'error' && (
             <div className={styles.errorBlock}>
-              <p>Cipher's response was lost in transmission. Your submission was recorded — proceed to the next gate.</p>
+              <p>{t('feedbackPage.errorBlock')}</p>
             </div>
           )}
 
           {evaluation?.status === 'complete' && (
             <>
               <div className={styles.cipherBlock}>
-                <div className={styles.cipherLabel}>Cipher</div>
+                <div className={styles.cipherLabel}>{t('feedbackPage.cipherLabel')}</div>
                 <p className={styles.cipherText}>{evaluation.feedbackText}</p>
               </div>
 
               {evaluation.qualitySignals && Object.keys(evaluation.qualitySignals).length > 0 && (
                 <div className={styles.signals}>
-                  <div className={styles.signalsLabel}>Quality Signals</div>
+                  <div className={styles.signalsLabel}>{t('feedbackPage.qualitySignals')}</div>
                   <div className={styles.signalsGrid}>
                     {Object.entries(evaluation.qualitySignals).map(([key, val]) => (
                       <div key={key} className={styles.signalCard}>
@@ -125,16 +120,16 @@ export default function FeedbackPage() {
 
         {(evaluation?.status === 'complete' || evaluation?.status === 'error') && (
           <div className={styles.actions}>
-            <button className={styles.backBtn} onClick={() => navigate('/hub')}>← Return to Hub</button>
+            <button className={styles.backBtn} onClick={() => navigate('/hub')}>{t('feedbackPage.returnToHub')}</button>
             <button className={styles.nextBtn} onClick={handleNext}>
-              {gateNum < 4 ? `Proceed to Gate 0${gateNum + 1} →` : 'Run the Scenario →'}
+              {gateNum < 4 ? t('feedbackPage.proceedToGate', { next: gateNum + 1 }) : t('feedbackPage.runScenario')}
             </button>
           </div>
         )}
 
         <div className={styles.footer}>
           <span><span className={styles.red}>●</span> Classified // IMF Internal</span>
-          <span>Gate 0{gateNum} · Evaluation</span>
+          <span>{t('feedbackPage.footer', { gate: gateNum })}</span>
         </div>
       </div>
     </div>

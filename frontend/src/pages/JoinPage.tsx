@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { joinCohort, setSession, ApiError, type JoinResponse } from '../api/client';
 import styles from './JoinPage.module.css';
 
@@ -28,6 +29,7 @@ const TERMINAL_SCRIPT: TerminalLine[] = [
 ];
 
 export default function JoinPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [callsign, setCallsign] = useState('');
   const [joinCode, setJoinCode] = useState('');
@@ -165,7 +167,7 @@ export default function JoinPage() {
       if (err instanceof ApiError) {
         setError(err.message);
       } else {
-        setError('Connection failed. Try again.');
+        setError(t('joinPage.connectionFailed'));
       }
     } finally {
       setLoading(false);
@@ -188,11 +190,8 @@ export default function JoinPage() {
           </div>
 
           <div className={styles.pitch}>
-            <h1>Enter the secure relay and decrypt your mission packet.</h1>
-            <p>
-              Authenticate your team, confirm your callsign, and establish the channel before the
-              Syndicate notices the tap.
-            </p>
+            <h1>{t('joinPage.title')}</h1>
+            <p>{t('joinPage.subtitle')}</p>
           </div>
 
           <div className={styles.stats}>
@@ -213,18 +212,16 @@ export default function JoinPage() {
 
         <main className={styles.panel}>
           <form className={styles.card} onSubmit={ghost ? undefined : handleSubmit} autoComplete="off">
-            <h2>Sign in to Quicksilver</h2>
-            <p className={styles.sub}>
-              Use your agent callsign and mission password to access the briefing relay.
-            </p>
+            <h2>{t('joinPage.signInTitle')}</h2>
+            <p className={styles.sub}>{t('joinPage.signInSubtitle')}</p>
 
             <div className={styles.field}>
-              <label htmlFor={callsignId}>Agent ID</label>
+              <label htmlFor={callsignId}>{t('joinPage.callsignLabel')}</label>
               <input
                 id={callsignId}
                 name={callsignId}
                 type="text"
-                placeholder="NIGHT ARROW"
+                placeholder={t('joinPage.callsignPlaceholder')}
                 value={callsign}
                 onChange={(event) => setCallsign(event.target.value)}
                 disabled={ghost || formDisabled}
@@ -236,12 +233,12 @@ export default function JoinPage() {
             </div>
 
             <div className={styles.field}>
-              <label htmlFor={joinCodeId}>Password</label>
+              <label htmlFor={joinCodeId}>{t('joinPage.passwordLabel')}</label>
               <input
                 id={joinCodeId}
                 name={joinCodeId}
                 type="password"
-                placeholder="Enter mission password"
+                placeholder={t('joinPage.passwordPlaceholder')}
                 value={joinCode}
                 onChange={(event) => setJoinCode(event.target.value)}
                 disabled={ghost || formDisabled}
@@ -261,9 +258,9 @@ export default function JoinPage() {
             <div className={styles.row}>
               <label className={styles.checkboxRow}>
                 <input type="checkbox" disabled={ghost || formDisabled} tabIndex={ghost ? -1 : undefined} />
-                Remember this device
+                {t('joinPage.rememberDevice')}
               </label>
-              <span className={styles.inlineMeta}>Clearance: Athena-7</span>
+              <span className={styles.inlineMeta}>{t('joinPage.clearanceMeta')}</span>
             </div>
 
             <button
@@ -272,20 +269,18 @@ export default function JoinPage() {
               disabled={ghost || formDisabled}
               tabIndex={ghost ? -1 : undefined}
             >
-              {loading ? 'Authorizing...' : 'Log in'}
+              {loading ? t('joinPage.authorizing') : t('joinPage.logIn')}
             </button>
 
             <div className={styles.divider}>mission relay</div>
 
             <button className={styles.sso} type="button" disabled tabIndex={ghost ? -1 : undefined}>
               <span className={styles.ssoMark}>//</span>
-              End-to-end channel locked by mission control
+              {t('joinPage.ssoLocked')}
             </button>
 
-            <div className={styles.signup}>Credential resets must be approved by command.</div>
-            <div className={styles.hint}>
-              Tip: every legend leaves a trace. Some passwords move faster than others.
-            </div>
+            <div className={styles.signup}>{t('joinPage.credentialReset')}</div>
+            <div className={styles.hint}>{t('joinPage.hint')}</div>
           </form>
         </main>
       </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { getGateSpec, getGate3AssetUrl, getStoredTeamId, submitGate, GateSpec } from '../api/client';
 import { useGateAutosave, loadGateDraft } from '../hooks/useGateAutosave';
 import styles from './GatePage.module.css';
@@ -10,6 +11,7 @@ type Gate3Draft = {
 };
 
 export default function Gate3Page() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [spec, setSpec] = useState<GateSpec | null>(null);
   const [csvUrl, setCsvUrl] = useState<string | null>(null);
@@ -63,7 +65,7 @@ export default function Gate3Page() {
     }
   }
 
-  if (!spec) return <div className={styles.loading}>Loading gate briefing…</div>;
+  if (!spec) return <div className={styles.loading}>{t('gate3Page.loading')}</div>;
 
   const canSubmit = finding && badgeId && anomalyDesc;
 
@@ -77,8 +79,8 @@ export default function Gate3Page() {
         <span className={styles.cornerBr} aria-hidden />
 
         <div className={styles.topBar}>
-          <div className={styles.gateLabel}>Gate 03 — {spec.name}</div>
-          <button className={styles.backBtn} onClick={() => navigate('/hub')}>← Hub</button>
+          <div className={styles.gateLabel}>{t('gate3Page.gateLabel', { name: spec.name })}</div>
+          <button className={styles.backBtn} onClick={() => navigate('/hub')}>{t('gate3Page.backToHub')}</button>
         </div>
 
         <div className={styles.cipherBlock}>
@@ -87,14 +89,14 @@ export default function Gate3Page() {
         </div>
 
         <div className={styles.content}>
-          <div className={styles.sectionLabel}>Mission Instructions</div>
+          <div className={styles.sectionLabel}>{t('gate3Page.missionInstructions')}</div>
           <ul className={styles.instructions}>
             {spec.instructions.map((inst, i) => <li key={i}>{inst}</li>)}
           </ul>
 
           {spec.hasMaterials && (
             <>
-              <div className={styles.sectionLabel}>Intercept Data</div>
+              <div className={styles.sectionLabel}>{t('gate3Page.interceptData')}</div>
               {!csvUrl ? (
                 <div style={{ marginBottom: 16 }}>
                   <button
@@ -103,7 +105,7 @@ export default function Gate3Page() {
                     onClick={fetchCsv}
                     disabled={loadingCsv}
                   >
-                    {loadingCsv ? 'Retrieving…' : '⬇ Download RFID Intercept Log (CSV)'}
+                    {loadingCsv ? t('gate3Page.retrieving') : t('gate3Page.downloadInterceptCsv')}
                   </button>
                 </div>
               ) : (
@@ -113,42 +115,42 @@ export default function Gate3Page() {
                     download="gate3_intercept.csv"
                     style={{ color: 'var(--green)', fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '0.1em' }}
                   >
-                    ✓ gate3_intercept.csv — Click to download
+                    ✓ gate3_intercept.csv — {t('gate3Page.clickToDownload')}
                   </a>
                 </div>
               )}
             </>
           )}
 
-          <div className={styles.sectionLabel}>Analysis Report</div>
+          <div className={styles.sectionLabel}>{t('gate3Page.analysisReport')}</div>
           <div className={styles.dossierGrid}>
             <div className={styles.dossierField} style={{ gridColumn: '1 / -1' }}>
-              <label className={styles.fieldLabel}>Summary Finding</label>
-              <textarea className={styles.textarea} rows={2} value={finding} onChange={(e) => setFinding(e.target.value)} placeholder="One-sentence summary of the anomaly you found" />
+              <label className={styles.fieldLabel}>{t('gate3Page.field.summaryFinding')}</label>
+              <textarea className={styles.textarea} rows={2} value={finding} onChange={(e) => setFinding(e.target.value)} placeholder={t('gate3Page.placeholder.summaryFinding')} />
             </div>
             <div className={styles.dossierField}>
-              <label className={styles.fieldLabel}>Suspicious Badge ID</label>
-              <input className={styles.input} type="text" value={badgeId} onChange={(e) => setBadgeId(e.target.value)} placeholder="e.g. CR-4471" />
+              <label className={styles.fieldLabel}>{t('gate3Page.field.suspiciousBadgeId')}</label>
+              <input className={styles.input} type="text" value={badgeId} onChange={(e) => setBadgeId(e.target.value)} placeholder={t('gate3Page.placeholder.badgeId')} />
             </div>
             <div className={styles.dossierField}>
-              <label className={styles.fieldLabel}>Timestamp of Anomaly</label>
-              <input className={styles.input} type="text" value={timestamp} onChange={(e) => setTimestamp(e.target.value)} placeholder="e.g. 2026-05-19 21:47:03" />
+              <label className={styles.fieldLabel}>{t('gate3Page.field.timestampOfAnomaly')}</label>
+              <input className={styles.input} type="text" value={timestamp} onChange={(e) => setTimestamp(e.target.value)} placeholder={t('gate3Page.placeholder.timestamp')} />
             </div>
             <div className={styles.dossierField}>
-              <label className={styles.fieldLabel}>Location</label>
-              <input className={styles.input} type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. Vault Corridor B" />
+              <label className={styles.fieldLabel}>{t('gate3Page.field.location')}</label>
+              <input className={styles.input} type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder={t('gate3Page.placeholder.location')} />
             </div>
             <div className={styles.dossierField}>
-              <label className={styles.fieldLabel}>Anomaly Description</label>
-              <textarea className={styles.textarea} rows={2} value={anomalyDesc} onChange={(e) => setAnomalyDesc(e.target.value)} placeholder="Why is this suspicious?" />
+              <label className={styles.fieldLabel}>{t('gate3Page.field.anomalyDescription')}</label>
+              <textarea className={styles.textarea} rows={2} value={anomalyDesc} onChange={(e) => setAnomalyDesc(e.target.value)} placeholder={t('gate3Page.placeholder.anomalyDescription')} />
             </div>
             <div className={styles.dossierField} style={{ gridColumn: '1 / -1' }}>
-              <label className={styles.fieldLabel}>Reasoning</label>
-              <textarea className={styles.textarea} rows={3} value={reasoning} onChange={(e) => setReasoning(e.target.value)} placeholder="How did you arrive at this conclusion?" />
+              <label className={styles.fieldLabel}>{t('gate3Page.field.reasoning')}</label>
+              <textarea className={styles.textarea} rows={3} value={reasoning} onChange={(e) => setReasoning(e.target.value)} placeholder={t('gate3Page.placeholder.reasoning')} />
             </div>
             <div className={styles.dossierField} style={{ gridColumn: '1 / -1' }}>
-              <label className={styles.fieldLabel}>Methodology (AI prompts used)</label>
-              <textarea className={styles.textarea} rows={3} value={methodology} onChange={(e) => setMethodology(e.target.value)} placeholder="Describe how you used AI to analyze the data" />
+              <label className={styles.fieldLabel}>{t('gate3Page.field.methodology')}</label>
+              <textarea className={styles.textarea} rows={3} value={methodology} onChange={(e) => setMethodology(e.target.value)} placeholder={t('gate3Page.placeholder.methodology')} />
             </div>
           </div>
 
@@ -156,7 +158,7 @@ export default function Gate3Page() {
           <div className={styles.submitRow}>
             {savedLabel && <span className={styles.autosaveLabel}>{savedLabel}</span>}
             <button className={styles.submitBtn} disabled={!canSubmit || submitting} onClick={handleSubmit}>
-              {submitting ? 'Transmitting…' : 'Submit Gate 03 →'}
+              {submitting ? t('gate3Page.transmitting') : t('gate3Page.submitGate')}
             </button>
           </div>
         </div>

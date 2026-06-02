@@ -1,0 +1,214 @@
+{
+  "language": {
+    "label": "Langue"
+  },
+  "joinPage": {
+    "siteName": "Relais Quicksilver",
+    "title": "Entrez dans le relais sécurisé et déchiffrez votre paquet de mission.",
+    "subtitle": "Authentifiez votre équipe, confirmez votre indicatif et établissez le canal avant que la Confrérie ne détecte l'écoute.",
+    "callsignLabel": "Indicatif",
+    "joinCodeLabel": "Code de Rejoindre",
+    "callsignPlaceholder": "ex. RENOUX",
+    "joinCodePlaceholder": "ex. ALPHA123",
+    "joinButton": "Rejoindre la Mission",
+    "signInTitle": "Connectez-vous à Quicksilver",
+    "signInSubtitle": "Utilisez votre indicatif d'agent et le mot de passe de mission pour accéder au relais de briefing.",
+    "passwordLabel": "Mot de passe",
+    "passwordPlaceholder": "Entrez le mot de passe de la mission",
+    "rememberDevice": "Se souvenir de cet appareil",
+    "clearanceMeta": "Accréditation : Athena-7",
+    "authorizing": "Autorisation...",
+    "logIn": "Connexion",
+    "ssoLocked": "Canal de bout en bout verrouillé par le contrôle de mission",
+    "credentialReset": "Les réinitialisations d'identifiants doivent être approuvées par le commandement.",
+    "hint": "Conseil : chaque légende laisse une trace. Certains mots de passe circulent plus vite que d'autres.",
+    "connectionFailed": "Connexion échouée. Réessayez."
+  },
+  "briefingPage": {
+    "bannerTitle": "Transmission Entrante // Chiffrée // Priorité Alpha",
+    "statusDecryptedLive": "Déchiffré · En Direct",
+    "missionLabel": "Opération",
+    "missionName": "Quicksilver",
+    "dossier": {
+      "location": "Lieu",
+      "antagonist": "Antagoniste",
+      "asset": "Cible",
+      "timePressure": "Pression Temporelle"
+    },
+    "locationValue": "Hôtel Hermitage, Monaco",
+    "antagonistValue": "La Confrérie de Monaco",
+    "assetValue": "Modèle IA Helios",
+    "timePressureValue": "Fenêtre de 72 heures",
+    "situationLabel": "Rapport de Situation",
+    "situationText1": "La Confrérie a acquis Helios — un modèle expérimental que nous suivons depuis dix-huit mois. Ils l’organisent aux enchères dans soixante-douze heures à l’Hôtel Hermitage, Monaco, à un acheteur que nous n’avons pas encore identifié.",
+    "situationText2": "Votre équipe est la seule en position.",
+    "missionStructureLabel": "Structure de la Mission",
+    "gate": {
+      "1": "Construire la Légende",
+      "1Desc": "Construisez une identité sous couverture à l’aide du chaînage d’invite",
+      "2": "Le Dossier",
+      "2Desc": "Recherchez des cibles avec des IA personas rôles",
+      "3": "Trouver la Faille",
+      "3Desc": "Analysez les données d’interception pour identifier l’anomalie",
+      "4": "Le Plan",
+      "4Desc": "Élaborez un plan de mission et testez-le avec l’IA"
+    },
+    "acceptNote": "L’acceptation engage votre équipe à la confidentialité opérationnelle en vertu de la Sous-section 4-A de la Charte.",
+    "acceptButton": "Accepter la Mission →",
+    "footer": {
+      "classified": "Classifié // Interne IMF",
+      "status": "Pré-session · En attente d’acceptation"
+    }
+  },
+  "hubPage": {
+    "operation": "Opération Quicksilver",
+    "channelSecure": "Canal sécurisé",
+    "gateHub": "Hub des Portes",
+    "briefing": "Briefing Opérationnel",
+    "skills": {
+      "1": "Chaînage d’invite",
+      "2": "Rôles persona",
+      "3": "Analyse de données",
+      "4": "Partenariat IA"
+    },
+    "status": {
+      "complete": "Terminé",
+      "active": "En cours",
+      "locked": "Scellé"
+    },
+    "enterGate": "Entrer dans la Porte →",
+    "review": "Revoir",
+    "allCompleteText": "Toutes les portes terminées. La fin de partie attend.",
+    "runScenario": "Lancer le Scénario →",
+    "footerClassified": "Classifié // Interne IMF",
+    "footerSession": "Session {{id}}",
+    "briefingLine1": "Briefing",
+    "briefingLine2": "Opérationnel"
+  },
+  "feedbackPage": {
+    "gateResponse": "Réponse Porte {{gate}}",
+    "assessmentPrefix": "Évaluation du ",
+    "assessment": "Cipher",
+    "evaluating": "Évaluation…",
+    "transmissionReceived": "Transmission Reçue",
+    "error": "Erreur",
+    "reviewing": "Le Cipher examine votre travail…",
+    "errorBlock": "La réponse du Cipher a été perdue en transmission. Votre soumission a été enregistrée — passez à la porte suivante.",
+    "qualitySignals": "Signaux de Qualité",
+    "cipherLabel": "Cipher",
+    "yes": "Oui",
+    "no": "Non",
+    "returnToHub": "← Retour au Hub",
+    "proceedToGate": "Passer à la Porte {{next}} →",
+    "runScenario": "Lancer le Scénario →",
+    "footer": "Porte {{gate}} · Évaluation",
+    "gates": {
+      "1": "Construire la Légende",
+      "2": "Le Dossier",
+      "3": "Trouver la Faille",
+      "4": "Le Plan"
+    }
+  },
+  "openingBriefingPage": {
+    "decryptTransmission": "DÉCHIFFRER LA TRANSMISSION",
+    "protocol": "Protocole : Shadow-Net // 992-X",
+    "encryption": "Chiffrement : AES 8192 bits",
+    "autoDelete": "AUTO-DÉSTRUCTION ACTIVÉE",
+    "missionTitle": "Projet QUICKSILVER",
+    "targetCoordinates": "Coordonnées Cibles",
+    "primaryObjective": "Objectif Principal",
+    "primaryObjectiveText": "La Confrérie a acquis Helios — un modèle expérimental que nous suivons depuis dix-huit mois. Ils l’organisent aux enchères à l’Hôtel Hermitage, Monaco, à un acheteur que nous ne pouvons pas encore identifier. Votre équipe est la seule en position. Travaillez avec Cipher pour construire une couverture, rassembler des renseignements, trouver un moyen d’accéder à l’enchère et planifier l’extraction. Helios doit être sécurisé à tout prix.",
+    "sopLabel": "SOP",
+    "sopText": "Comme toujours, si vous ou un membre de votre équipe êtes capturés ou tués, le Secrétaire reniera toute connaissance de vos actions.",
+    "agentClearance": "Autorisation Agent",
+    "agentClearanceValue": "NIVEAU 7 SEULEMENT",
+    "terminatingIn": "TERMINATION DANS",
+    "connectionLost": "Connexion Perdue // Transmission Effacée"
+  },
+  "gate2Page": {
+    "gateLabel": "Porte 02 — {{name}}",
+    "backToHub": "← Hub",
+    "cipherLabel": "Cipher",
+    "missionInstructions": "Instructions de mission",
+    "intelligenceMaterials": "Matériaux de renseignement",
+    "retrieving": "Récupération…",
+    "clickToDownload": "Cliquez pour télécharger",
+    "teamIntelligenceRoles": "Rôles d’intelligence d’équipe",
+    "material": {
+      "renoux": "Profil d’intelligence Renoux",
+      "programme": "Programme de l’événement d’enchères",
+      "schematic": "Schéma du lieu — niveau événement",
+      "intercept": "Communication du personnel interceptée"
+    },
+    "role": {
+      "venue": "Analyste du lieu",
+      "host": "Profil de l’hôte",
+      "bidders": "Renseignements sur les enchérisseurs",
+      "security": "Audit de sécurité"
+    },
+    "field": {
+      "assignee": "Responsable",
+      "keyFinding": "Constat clé",
+      "keyTimingWindow": "Fenêtre de moment clé",
+      "weaknessExploit": "Faiblesse / Exploit",
+      "notes": "Notes",
+      "sources": "Sources"
+    },
+    "footerLabel": "Porte 02 // Renseignement du Personnel",
+    "footerSkill": "Compétence : Rôles de Personas",
+    "loading": "Chargement du briefing de la porte…",
+    "transmitting": "Transmission…",
+    "submitGate": "Soumettre la Porte 02 →"
+  },
+  "gate3Page": {
+    "loading": "Chargement du briefing de la porte…",
+    "gateLabel": "Porte 03 — {{name}}",
+    "backToHub": "← Hub",
+    "missionInstructions": "Instructions de mission",
+    "interceptData": "Données d’interception",
+    "retrieving": "Récupération…",
+    "downloadInterceptCsv": "⬇ Télécharger le journal d’interception RFID (CSV)",
+    "clickToDownload": "Cliquez pour télécharger",
+    "analysisReport": "Rapport d’analyse",
+    "field": {
+      "summaryFinding": "Conclusion sommaire",
+      "suspiciousBadgeId": "Identifiant de badge suspect",
+      "timestampOfAnomaly": "Horodatage de l’anomalie",
+      "location": "Emplacement",
+      "anomalyDescription": "Description de l’anomalie",
+      "reasoning": "Raisonnement",
+      "methodology": "Méthodologie (invites IA utilisées)"
+    },
+    "placeholder": {
+      "summaryFinding": "Résumé en une phrase de l’anomalie que vous avez trouvée",
+      "badgeId": "ex. CR-4471",
+      "timestamp": "ex. 2026-05-19 21:47:03",
+      "location": "ex. Couloir du coffre B",
+      "anomalyDescription": "Pourquoi cela est-il suspect ?",
+      "reasoning": "Comment en êtes-vous arrivé à cette conclusion ?",
+      "methodology": "Décrivez comment vous avez utilisé l’IA pour analyser les données"
+    },
+    "transmitting": "Transmission…",
+    "submitGate": "Soumettre la Porte 03 →"
+  },
+  "scenarioPage": {
+    "outcomeTag": "Opération Quicksilver // Résultat",
+    "outcomeTitle": "Résultat de la Mission",
+    "outcomeTitlePart1": "Résultat",
+    "outcomeTitlePart2": "de la Mission",
+    "transmissionComplete": "Transmission Complète",
+    "transmitting": "Transmission…",
+    "cipherGeneratingScenario": "Le Cipher génère le scénario…",
+    "incoming": "Entrant…",
+    "outcomeLabel": "Résultat",
+    "pending": "En attente",
+    "acts": "Actes",
+    "generating": "Génération",
+    "missionHub": "← Hub de Mission",
+    "classified": "Classifié // Usage interne uniquement",
+    "outcomeReveal": "Opération Quicksilver // Révélation du Résultat",
+    "cleanSuccess": "Succès Total",
+    "partialSuccess": "Succès Partiel",
+    "failure": "Échec de la Mission"
+  }
+}

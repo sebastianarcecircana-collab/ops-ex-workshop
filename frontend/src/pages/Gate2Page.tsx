@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   getGateSpec, getStoredTeamId, submitGate, GateSpec,
   getGate2RenouxProfileUrl, getGate2AuctionProgrammeUrl,
@@ -9,10 +10,10 @@ import { useGateAutosave, loadGateDraft } from '../hooks/useGateAutosave';
 import styles from './GatePage.module.css';
 
 const ROLES = [
-  { key: 'venue', label: 'Venue Analyst', color: 'var(--amber)' },
-  { key: 'host', label: 'Host Profile', color: 'var(--accent)' },
-  { key: 'bidders', label: 'Bidder Intel', color: 'var(--green)' },
-  { key: 'security', label: 'Security Audit', color: '#6ba3e0' },
+  { key: 'venue', color: 'var(--amber)' },
+  { key: 'host', color: 'var(--accent)' },
+  { key: 'bidders', color: 'var(--green)' },
+  { key: 'security', color: '#6ba3e0' },
 ];
 
 type RoleKey = 'venue' | 'host' | 'bidders' | 'security';
@@ -30,6 +31,7 @@ const emptyRole = (): RoleData => ({ assignee: '', key_detail: '', weakness: '',
 type Gate2Draft = { roleData: Record<RoleKey, RoleData> };
 
 export default function Gate2Page() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [spec, setSpec] = useState<GateSpec | null>(null);
   const [roleData, setRoleData] = useState<Record<RoleKey, RoleData>>(() => {
@@ -52,14 +54,13 @@ export default function Gate2Page() {
 
   const materialDefs: Array<{
     key: MaterialKey;
-    label: string;
     filename: string;
     fetch: () => Promise<string>;
   }> = [
-    { key: 'renoux',    label: 'Renoux Intelligence Profile',      filename: 'gate2_renoux_profile.txt',      fetch: getGate2RenouxProfileUrl },
-    { key: 'programme', label: 'Auction Event Programme',           filename: 'gate2_auction_programme.txt',   fetch: getGate2AuctionProgrammeUrl },
-    { key: 'schematic', label: 'Venue Schematic — Event Level',     filename: 'gate2_hermitage_schematic.svg', fetch: getGate2HermitageSchematicUrl },
-    { key: 'intercept', label: 'Intercepted Staff Communication',   filename: 'gate2_intercept_fragment.txt',  fetch: getGate2InterceptFragmentUrl },
+    { key: 'renoux',    filename: 'gate2_renoux_profile.txt',      fetch: getGate2RenouxProfileUrl },
+    { key: 'programme', filename: 'gate2_auction_programme.txt',   fetch: getGate2AuctionProgrammeUrl },
+    { key: 'schematic', filename: 'gate2_hermitage_schematic.svg', fetch: getGate2HermitageSchematicUrl },
+    { key: 'intercept', filename: 'gate2_intercept_fragment.txt',  fetch: getGate2InterceptFragmentUrl },
   ];
 
   async function fetchMaterial(key: MaterialKey, fetchFn: () => Promise<string>) {
@@ -119,7 +120,7 @@ export default function Gate2Page() {
     }
   }
 
-  if (!spec) return <div className={styles.loading}>Loading gate briefing…</div>;
+  if (!spec) return <div className={styles.loading}>{t('gate2Page.loading')}</div>;
 
   const canSubmit = ROLES.every((r) => roleData[r.key as RoleKey].key_detail);
 
@@ -133,24 +134,24 @@ export default function Gate2Page() {
         <span className={styles.cornerBr} aria-hidden />
 
         <div className={styles.topBar}>
-          <div className={styles.gateLabel}>Gate 02 — {spec.name}</div>
-          <button className={styles.backBtn} onClick={() => navigate('/hub')}>← Hub</button>
+            <div className={styles.gateLabel}>{t('gate2Page.gateLabel', { name: spec.name })}</div>
+            <button className={styles.backBtn} onClick={() => navigate('/hub')}>{t('gate2Page.backToHub')}</button>
         </div>
 
         <div className={styles.cipherBlock}>
-          <div className={styles.cipherLabel}>Cipher</div>
+          <div className={styles.cipherLabel}>{t('gate2Page.cipherLabel')}</div>
           <p className={styles.cipherText}>{spec.briefing}</p>
         </div>
 
         <div className={styles.content}>
-          <div className={styles.sectionLabel}>Mission Instructions</div>
+          <div className={styles.sectionLabel}>{t('gate2Page.missionInstructions')}</div>
           <ul className={styles.instructions}>
             {spec.instructions.map((inst, i) => <li key={i}>{inst}</li>)}
           </ul>
 
-          <div className={styles.sectionLabel}>Intelligence Materials</div>
+          <div className={styles.sectionLabel}>{t('gate2Page.intelligenceMaterials')}</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 28 }}>
-            {materialDefs.map(({ key, label, filename, fetch }) => (
+            {materialDefs.map(({ key, filename, fetch }) => (
               <div key={key} style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                 {!materialUrls[key] ? (
                   <button
@@ -159,7 +160,7 @@ export default function Gate2Page() {
                     onClick={() => fetchMaterial(key, fetch)}
                     disabled={materialLoading[key]}
                   >
-                    {materialLoading[key] ? 'Retrieving…' : `⬇ ${label}`}
+                    {materialLoading[key] ? t('gate2Page.retrieving') : `⬇ ${t(`gate2Page.material.${key}`)}`}
                   </button>
                 ) : (
                   <a
@@ -167,32 +168,32 @@ export default function Gate2Page() {
                     download={filename}
                     style={{ color: 'var(--green)', fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '0.1em' }}
                   >
-                    ✓ {filename} — Click to download
+                    ✓ {filename} — {t('gate2Page.clickToDownload')}
                   </a>
                 )}
               </div>
             ))}
           </div>
 
-          <div className={styles.sectionLabel}>Team Intelligence Roles</div>
+          <div className={styles.sectionLabel}>{t('gate2Page.teamIntelligenceRoles')}</div>
           <div className={styles.rolesGrid}>
             {ROLES.map((role) => {
               const data = roleData[role.key as RoleKey];
               const fields: { key: keyof RoleData; label: string; rows?: number }[] = [
-                { key: 'assignee', label: 'Team Member Assigned' },
-                { key: 'key_detail', label: 'Key Finding', rows: 2 },
+                { key: 'assignee', label: t('gate2Page.field.assignee') },
+                { key: 'key_detail', label: t('gate2Page.field.keyFinding'), rows: 2 },
                 {
                   key: 'weakness',
-                  label: role.key === 'venue' ? 'Key Timing Window' : 'Weakness / Exploit',
+                  label: role.key === 'venue' ? t('gate2Page.field.keyTimingWindow') : t('gate2Page.field.weaknessExploit'),
                   rows: 2,
                 },
-                { key: 'notes', label: 'Notes', rows: 2 },
-                { key: 'sources', label: 'Sources (comma-separated)' },
+                { key: 'notes', label: t('gate2Page.field.notes'), rows: 2 },
+                { key: 'sources', label: t('gate2Page.field.sources') },
               ];
               return (
                 <div key={role.key} className={styles.roleCard} style={{ borderLeftColor: role.color }}>
                   <div className={styles.roleCardHeader}>
-                    <span className={styles.roleTitle} style={{ color: role.color }}>{role.label}</span>
+                    <span className={styles.roleTitle} style={{ color: role.color }}>{t(`gate2Page.role.${role.key}`)}</span>
                   </div>
                   <div className={styles.roleBody}>
                     {fields.map((f) => (
@@ -225,14 +226,14 @@ export default function Gate2Page() {
           <div className={styles.submitRow}>
             {savedLabel && <span className={styles.autosaveLabel}>{savedLabel}</span>}
             <button className={styles.submitBtn} disabled={!canSubmit || submitting} onClick={handleSubmit}>
-              {submitting ? 'Transmitting…' : 'Submit Gate 02 →'}
+              {submitting ? t('gate2Page.transmitting') : t('gate2Page.submitGate')}
             </button>
           </div>
         </div>
 
         <div className={styles.footer}>
-          <span><span className={styles.red}>●</span> Gate 02 // The Dossier</span>
-          <span>Skill: Persona Roles</span>
+          <span><span className={styles.red}>●</span> {t('gate2Page.footerLabel')}</span>
+          <span>{t('gate2Page.footerSkill')}</span>
         </div>
       </div>
     </div>
