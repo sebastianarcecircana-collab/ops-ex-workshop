@@ -1,0 +1,214 @@
+{
+  "language": {
+    "label": "Lingua"
+  },
+  "joinPage": {
+    "siteName": "Quicksilver Relay",
+    "title": "Enter the secure relay and decrypt your mission packet.",
+    "subtitle": "Authenticate your team, confirm your callsign, and establish the channel before the Syndicate notices the tap.",
+    "callsignLabel": "Callsign",
+    "joinCodeLabel": "Join Code",
+    "callsignPlaceholder": "e.g. RENOUX",
+    "joinCodePlaceholder": "e.g. ALPHA123",
+    "joinButton": "Join Mission",
+    "signInTitle": "Sign in to Quicksilver",
+    "signInSubtitle": "Use your agent callsign and mission password to access the briefing relay.",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter mission password",
+    "rememberDevice": "Remember this device",
+    "clearanceMeta": "Clearance: Athena-7",
+    "authorizing": "Authorizing...",
+    "logIn": "Log in",
+    "ssoLocked": "End-to-end channel locked by mission control",
+    "credentialReset": "Credential resets must be approved by command.",
+    "hint": "Tip: every legend leaves a trace. Some passwords move faster than others.",
+    "connectionFailed": "Connection failed. Try again."
+  },
+  "briefingPage": {
+    "bannerTitle": "Incoming Transmission // Encrypted // Priority Alpha",
+    "statusDecryptedLive": "Decrypted · Live",
+    "missionLabel": "Operation",
+    "missionName": "Quicksilver",
+    "dossier": {
+      "location": "Location",
+      "antagonist": "Antagonist",
+      "asset": "Target Asset",
+      "timePressure": "Time Pressure"
+    },
+    "locationValue": "Hôtel Hermitage, Monaco",
+    "antagonistValue": "The Monaco Syndicate",
+    "assetValue": "Helios AI Model",
+    "timePressureValue": "72-hour window",
+    "situationLabel": "Situation Report",
+    "situationText1": "The Syndicate has acquired Helios — an experimental model we have tracked for eighteen months. They are auctioning it in seventy-two hours at the Hôtel Hermitage to a buyer we cannot yet identify.",
+    "situationText2": "Your team is the only one in position.",
+    "missionStructureLabel": "Mission Structure",
+    "gate": {
+      "1": "Build the Legend",
+      "1Desc": "Construct a deep-cover identity using prompt chaining",
+      "2": "The Dossier",
+      "2Desc": "Research targets with role-based AI personas",
+      "3": "Find the Crack",
+      "3Desc": "Analyze intercept data to identify the anomaly",
+      "4": "The Plan",
+      "4Desc": "Build a mission plan and stress-test it with AI"
+    },
+    "acceptNote": "Acceptance binds your team to operational secrecy under Subsection 4-A of the Charter.",
+    "acceptButton": "Accept Mission →",
+    "footer": {
+      "classified": "Classified // IMF Internal",
+      "status": "Pre-Session · Awaiting Acceptance"
+    }
+  },
+  "hubPage": {
+    "operation": "Operation Quicksilver",
+    "channelSecure": "Channel Secure",
+    "gateHub": "Gate Hub",
+    "briefing": "Operational Briefing",
+    "skills": {
+      "1": "Prompt Chaining",
+      "2": "Persona Roles",
+      "3": "Data Analysis",
+      "4": "AI Partnership"
+    },
+    "status": {
+      "complete": "Complete",
+      "active": "In Progress",
+      "locked": "Sealed"
+    },
+    "enterGate": "Enter Gate →",
+    "review": "Review",
+    "allCompleteText": "All gates complete. The endgame awaits.",
+    "runScenario": "Run the Scenario →",
+    "footerClassified": "Classified // IMF Internal",
+    "footerSession": "Session {{id}}",
+    "briefingLine1": "Operational",
+    "briefingLine2": "Briefing"
+  },
+  "feedbackPage": {
+    "gateResponse": "Gate {{gate}} Response",
+    "assessmentPrefix": "Cipher's ",
+    "assessment": "Assessment",
+    "evaluating": "Evaluating…",
+    "transmissionReceived": "Transmission Received",
+    "error": "Error",
+    "reviewing": "Cipher is reviewing your work…",
+    "errorBlock": "Cipher's response was lost in transmission. Your submission was recorded — proceed to the next gate.",
+    "qualitySignals": "Quality Signals",
+    "cipherLabel": "Cipher",
+    "yes": "Yes",
+    "no": "No",
+    "returnToHub": "← Return to Hub",
+    "proceedToGate": "Proceed to Gate {{next}} →",
+    "runScenario": "Run the Scenario →",
+    "footer": "Gate {{gate}} · Evaluation",
+    "gates": {
+      "1": "Build the Legend",
+      "2": "The Dossier",
+      "3": "Find the Crack",
+      "4": "The Plan"
+    }
+  },
+  "openingBriefingPage": {
+    "decryptTransmission": "DECRYPT TRANSMISSION",
+    "protocol": "Protocol: Shadow-Net // 992-X",
+    "encryption": "Encryption: 8192-bit AES",
+    "autoDelete": "AUTO-DELETE ENABLED",
+    "missionTitle": "Project QUICKSILVER",
+    "targetCoordinates": "Target Coordinates",
+    "primaryObjective": "Primary Objective",
+    "primaryObjectiveText": "The Syndicate has acquired Helios — an experimental model we have tracked for eighteen months. They are auctioning it at the Hôtel Hermitage, Monaco, to a buyer we cannot yet identify. Your team is the only one in position. Work with Cipher to build a cover, gather intel, find a way into the auction and plan the extraction. Helios must be secured at all costs.",
+    "sopLabel": "SOP",
+    "sopText": "As always, should you or any of your team be caught or killed, the Secretary will disavow all knowledge of your actions.",
+    "agentClearance": "Agent Clearance",
+    "agentClearanceValue": "LEVEL 7 ONLY",
+    "terminatingIn": "TERMINATING IN",
+    "connectionLost": "Connection Lost // Transmission Erased"
+  },
+  "gate2Page": {
+    "gateLabel": "Gate 02 — {{name}}",
+    "backToHub": "← Hub",
+    "cipherLabel": "Cipher",
+    "missionInstructions": "Mission Instructions",
+    "intelligenceMaterials": "Intelligence Materials",
+    "retrieving": "Retrieving…",
+    "clickToDownload": "Click to download",
+    "teamIntelligenceRoles": "Team Intelligence Roles",
+    "material": {
+      "renoux": "Renoux Intelligence Profile",
+      "programme": "Auction Event Programme",
+      "schematic": "Venue Schematic — Event Level",
+      "intercept": "Intercepted Staff Communication"
+    },
+    "role": {
+      "venue": "Venue Analyst",
+      "host": "Host Profile",
+      "bidders": "Bidder Intel",
+      "security": "Security Audit"
+    },
+    "field": {
+      "assignee": "Assignee",
+      "keyFinding": "Key Finding",
+      "keyTimingWindow": "Key Timing Window",
+      "weaknessExploit": "Weakness / Exploit",
+      "notes": "Notes",
+      "sources": "Sources"
+    },
+    "footerLabel": "Gate 02 // Staff Intelligence",
+    "footerSkill": "Skill: Persona Roles",
+    "loading": "Loading gate briefing…",
+    "transmitting": "Transmitting…",
+    "submitGate": "Submit Gate 02 →"
+  },
+  "gate3Page": {
+    "loading": "Loading gate briefing…",
+    "gateLabel": "Gate 03 — {{name}}",
+    "backToHub": "← Hub",
+    "missionInstructions": "Mission Instructions",
+    "interceptData": "Intercept Data",
+    "retrieving": "Retrieving…",
+    "downloadInterceptCsv": "⬇ Download RFID Intercept Log (CSV)",
+    "clickToDownload": "Click to download",
+    "analysisReport": "Analysis Report",
+    "field": {
+      "summaryFinding": "Summary Finding",
+      "suspiciousBadgeId": "Suspicious Badge ID",
+      "timestampOfAnomaly": "Timestamp of Anomaly",
+      "location": "Location",
+      "anomalyDescription": "Anomaly Description",
+      "reasoning": "Reasoning",
+      "methodology": "Methodology (AI prompts used)"
+    },
+    "placeholder": {
+      "summaryFinding": "One-sentence summary of the anomaly you found",
+      "badgeId": "e.g. CR-4471",
+      "timestamp": "e.g. 2026-05-19 21:47:03",
+      "location": "e.g. Vault Corridor B",
+      "anomalyDescription": "Why is this suspicious?",
+      "reasoning": "How did you arrive at this conclusion?",
+      "methodology": "Describe how you used AI to analyze the data"
+    },
+    "transmitting": "Transmitting…",
+    "submitGate": "Submit Gate 03 →"
+  },
+  "scenarioPage": {
+    "outcomeTag": "Operation Quicksilver // Outcome",
+    "outcomeTitle": "Mission Outcome",
+    "outcomeTitlePart1": "Mission",
+    "outcomeTitlePart2": "Outcome",
+    "transmissionComplete": "Transmission Complete",
+    "transmitting": "Transmitting…",
+    "cipherGeneratingScenario": "Cipher is generating the scenario…",
+    "incoming": "Incoming…",
+    "outcomeLabel": "Outcome",
+    "pending": "Pending",
+    "acts": "Acts",
+    "generating": "Generating",
+    "missionHub": "← Mission Hub",
+    "classified": "Classified // Internal Use Only",
+    "outcomeReveal": "Operation Quicksilver // Outcome Reveal",
+    "cleanSuccess": "Clean Success",
+    "partialSuccess": "Partial Success",
+    "failure": "Mission Failure"
+  }
+}

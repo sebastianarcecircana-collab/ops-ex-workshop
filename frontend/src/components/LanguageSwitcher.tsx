@@ -4,6 +4,9 @@ import { setAppLanguage } from '../i18n';
 const LANGUAGES = [
   { code: 'en', label: 'English' },
   { code: 'fr', label: 'Français' },
+  { code: 'it', label: 'Italiano' },
+  { code: 'de', label: 'Deutsch' },
+  { code: 'es', label: 'Español' },
 ];
 
 export default function LanguageSwitcher() {
