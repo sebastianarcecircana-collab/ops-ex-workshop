@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getGateSpec, getStoredTeamId, getTeamState, submitGate, GateSpec, TeamState } from '../api/client';
 import { useGateAutosave, loadGateDraft } from '../hooks/useGateAutosave';
+import { useTranslation } from 'react-i18next';
 import styles from './Gate4Page.module.css';
 
 interface SeqRow { time: string; step: string; owner: string; }
@@ -54,6 +55,7 @@ type Gate4Draft = {
 
 export default function Gate4Page() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [spec, setSpec] = useState<GateSpec | null>(null);
   const [teamState, setTeamState] = useState<TeamState | null>(null);
 
@@ -135,24 +137,28 @@ export default function Gate4Page() {
 
         <div className={styles.header}>
           <div className={styles.headerLeft}>
-            <button className={styles.breadcrumb} onClick={() => navigate('/hub')}>Mission Hub</button>
+            <button className={styles.breadcrumb} onClick={() => navigate('/hub')}>
+              {t('gate4Page.missionHub')}
+            </button>
             <div>
-              <div className={styles.phaseTag}>Phase 04 · Final</div>
-              <div className={styles.phaseTitle}>The <span className={styles.accent}>Plan</span></div>
+              <div className={styles.phaseTag}>{t('gate4Page.phaseTag')}</div>
+              <div className={styles.phaseTitle}>
+                {t('gate4Page.phaseTitleStart')} <span className={styles.accent}>{t('gate4Page.phaseTitleAccent')}</span>
+              </div>
             </div>
           </div>
           <div className={styles.headerRight}>
             <div className={styles.statusPill}>
               <span className={styles.dot} />
-              Final Phase
+              <div className={styles.statusPill}>{t('gate4Page.finalPhase')}</div>
             </div>
           </div>
         </div>
 
         <div className={styles.transmission}>
           <div className={styles.txHeader}>
-            <span>Transmission</span><span>//</span>
-            <span className={styles.from}>From Cipher</span>
+            <span>{t('gate4Page.transmission')}</span><span>//</span>
+            <span className={styles.from}>{t('gate4Page.fromCipher')}</span>
           </div>
           <p className={styles.cipherMsg}>
             {spec.briefing}
@@ -162,13 +168,17 @@ export default function Gate4Page() {
         <div className={styles.briefcase}>
           {/* Assets rail */}
           <div className={styles.assetsRail}>
-            <div className={styles.railHeading}>Operational Assets</div>
-            <div className={styles.railSub}>Everything your team recovered. A strong plan uses all of them.</div>
+            <div className={styles.railHeading}>{t('gate4Page.railHeading')}</div>
+            <div className={styles.railSub}>{t('gate4Page.railSub')}</div>
 
             {['p1', 'p2', 'p3'].map((priority) => {
               const group = assets.filter((a) => a.priority === priority);
               if (group.length === 0) return null;
-              const groupLabel = priority === 'p1' ? 'Cover Identity' : priority === 'p2' ? 'Intel' : 'The Finding';
+              const groupLabel = priority === 'p1'
+                ? t('gate4Page.assetGroup.coverIdentity')
+                : priority === 'p2'
+                  ? t('gate4Page.assetGroup.intel')
+                  : t('gate4Page.assetGroup.finding');
               return (
                 <div key={priority} className={styles.assetGroup}>
                   <div className={styles.agLabel}>
@@ -187,21 +197,21 @@ export default function Gate4Page() {
             })}
 
             {assets.length === 0 && (
-              <p className={styles.noAssets}>Complete Gates 1-3 first to populate assets.</p>
+              <p className={styles.noAssets}>{t('gate4Page.noAssets')}</p>
             )}
           </div>
 
           {/* Plan builder */}
           <div className={styles.planBuilder}>
-            <div className={styles.sectionLabel}>Operation Plan <span className={styles.badge}>Submission Manifest</span></div>
+            <div className={styles.sectionLabel}>{t('gate4Page.operationPlan')} <span className={styles.badge}>{t('gate4Page.submissionManifest')}</span></div>
 
             <div className={styles.planMeta}>
               <div>
-                <div className={styles.fieldLabel}>Objective <span className={styles.req}>Required</span></div>
+                <div className={styles.fieldLabel}>{t('gate4Page.field.objective')} <span className={styles.req}>{t('gate4Page.required')}</span></div>
                 <input className={styles.fieldInput} type="text" value={objective} onChange={(e) => setObjective(e.target.value)} placeholder="What does success look like?" />
               </div>
               <div>
-                <div className={styles.fieldLabel}>Approach <span className={styles.req}>Required</span></div>
+                <div className={styles.fieldLabel}>{t('gate4Page.field.approach')} <span className={styles.req}>{t('gate4Page.required')}</span></div>
                 <input className={styles.fieldInput} type="text" value={approach} onChange={(e) => setApproach(e.target.value)} placeholder="One line — your core tactic" />
               </div>
             </div>
@@ -209,18 +219,18 @@ export default function Gate4Page() {
             {/* Sequence */}
             <div className={styles.planModule}>
               <div className={styles.pmHeader}>
-                <span className={styles.pmTitle}><span className={styles.pmNum}>01</span>Sequence</span>
+                <span className={styles.pmTitle}><span className={styles.pmNum}>01</span>{t('gate4Page.sequence')}</span>
               </div>
               <div className={styles.pmBody}>
                 {sequence.map((row, i) => (
                   <div key={i} className={styles.seqRow}>
-                    <input className={styles.seqTime} value={row.time} onChange={(e) => updateSeq(i, 'time', e.target.value)} placeholder="HH:MM" />
-                    <input className={styles.seqStep} value={row.step} onChange={(e) => updateSeq(i, 'step', e.target.value)} placeholder="Step description" />
-                    <input className={styles.seqOwner} value={row.owner} onChange={(e) => updateSeq(i, 'owner', e.target.value)} placeholder="Agent" />
+                    <input className={styles.seqTime} value={row.time} onChange={(e) => updateSeq(i, 'time', e.target.value)} placeholder={t('gate4Page.placeholder.time')} />
+                    <input className={styles.seqStep} value={row.step} onChange={(e) => updateSeq(i, 'step', e.target.value)} placeholder={t('gate4Page.placeholder.stepDescription')} />
+                    <input className={styles.seqOwner} value={row.owner} onChange={(e) => updateSeq(i, 'owner', e.target.value)} placeholder={t('gate4Page.placeholder.agent')} />
                   </div>
                 ))}
                 <button className={styles.addRow} onClick={() => setSequence((prev) => [...prev, { time: '', step: '', owner: '' }])}>
-                  Add Step
+                  {t('gate4Page.addStep')}
                 </button>
               </div>
             </div>
@@ -228,17 +238,17 @@ export default function Gate4Page() {
             {/* Roles */}
             <div className={styles.planModule}>
               <div className={styles.pmHeader}>
-                <span className={styles.pmTitle}><span className={styles.pmNum}>02</span>Roles</span>
+                <span className={styles.pmTitle}><span className={styles.pmNum}>02</span>{t('gate4Page.roles')}</span>
               </div>
               <div className={styles.pmBody}>
                 {roles.map((row, i) => (
                   <div key={i} className={styles.seqRow} style={{ gridTemplateColumns: '130px 1fr' }}>
-                    <input className={styles.seqOwner} style={{ textAlign: 'left' }} value={row.agent} onChange={(e) => updateRole(i, 'agent', e.target.value)} placeholder="Callsign" />
-                    <input className={styles.seqStep} value={row.role} onChange={(e) => updateRole(i, 'role', e.target.value)} placeholder="Responsibilities" />
+                    <input className={styles.seqOwner} style={{ textAlign: 'left' }} value={row.agent} onChange={(e) => updateRole(i, 'agent', e.target.value)} placeholder={t('gate4Page.placeholder.callsign')} />
+                    <input className={styles.seqStep} value={row.role} onChange={(e) => updateRole(i, 'role', e.target.value)} placeholder={t('gate4Page.placeholder.responsibilities')} />
                   </div>
                 ))}
                 <button className={styles.addRow} onClick={() => setRoles((prev) => [...prev, { agent: '', role: '' }])}>
-                  Add Agent
+                  {t('gate4Page.addAgent')}
                 </button>
               </div>
             </div>
@@ -246,29 +256,29 @@ export default function Gate4Page() {
             {/* Contingencies */}
             <div className={styles.planModule}>
               <div className={styles.pmHeader}>
-                <span className={styles.pmTitle}><span className={styles.pmNum}>03</span>Contingencies</span>
+                <span className={styles.pmTitle}><span className={styles.pmNum}>03</span>{t('gate4Page.contingencies')}</span>
               </div>
               <div className={styles.pmBody}>
                 {contingencies.map((row, i) => (
                   <div key={i} className={styles.contRow}>
                     <div>
-                      <div className={`${styles.contLabel} ${styles.fail}`}>If this fails</div>
-                      <textarea className={styles.contTextarea} value={row.failure} onChange={(e) => updateCont(i, 'failure', e.target.value)} placeholder="What breaks?" />
+                      <div className={`${styles.contLabel} ${styles.fail}`}>{t('gate4Page.contingency.ifFails')}</div>
+                      <textarea className={styles.contTextarea} value={row.failure} onChange={(e) => updateCont(i, 'failure', e.target.value)} placeholder={t('gate4Page.contingency.placeholder.failure')} />
                     </div>
                     <div>
-                      <div className={`${styles.contLabel} ${styles.resp}`}>We respond</div>
-                      <textarea className={styles.contTextarea} value={row.response} onChange={(e) => updateCont(i, 'response', e.target.value)} placeholder="Our response" />
+                      <div className={`${styles.contLabel} ${styles.resp}`}>{t('gate4Page.contingency.weRespond')}</div>
+                      <textarea className={styles.contTextarea} value={row.response} onChange={(e) => updateCont(i, 'response', e.target.value)} placeholder={t('gate4Page.contingency.placeholder.response')} />
                     </div>
                   </div>
                 ))}
                 <button className={styles.addRow} onClick={() => setContingencies((prev) => [...prev, { failure: '', response: '' }])}>
-                  Add Contingency
+                  {t('gate4Page.addContingency')}
                 </button>
 
                 {biggestRisk && (
                   <div className={styles.selfRiskNote}>
                     <span className={styles.selfRiskLabel}>⚑ Your Named Risk</span>
-                    You flagged <strong>"{biggestRisk}"</strong> as your operation's biggest exposure. Cipher will be watching whether your plan accounts for it.
+                    {t('gate4Page.selfRiskNote', { risk: biggestRisk })}
                   </div>
                 )}
               </div>
@@ -277,36 +287,36 @@ export default function Gate4Page() {
             {/* Exfil */}
             <div className={styles.planModule}>
               <div className={styles.pmHeader}>
-                <span className={styles.pmTitle}><span className={styles.pmNum}>04</span>Exfil</span>
+                <span className={styles.pmTitle}><span className={styles.pmNum}>04</span>{t('gate4Page.exfil')}</span>
               </div>
               <div className={styles.pmBody}>
-                <textarea className={styles.fieldTextarea} value={exfil} onChange={(e) => setExfil(e.target.value)} placeholder="Extraction route and method" />
+                <textarea className={styles.fieldTextarea} value={exfil} onChange={(e) => setExfil(e.target.value)} placeholder={t('gate4Page.placeholder.exfil')} />
               </div>
             </div>
 
             {/* Biggest risk */}
             <div className={styles.planModule}>
               <div className={styles.pmHeader}>
-                <span className={styles.pmTitle}><span className={styles.pmNum}>05</span>Biggest Risk</span>
+                <span className={styles.pmTitle}><span className={styles.pmNum}>05</span>{t('gate4Page.biggestRisk')}</span>
               </div>
               <div className={styles.pmBody}>
-                <input className={styles.fieldInput} type="text" value={biggestRisk} onChange={(e) => setBiggestRisk(e.target.value)} placeholder="Name the single greatest threat to this operation" />
+                <input className={styles.fieldInput} type="text" value={biggestRisk} onChange={(e) => setBiggestRisk(e.target.value)} placeholder={t('gate4Page.placeholder.biggestRisk')} />
               </div>
             </div>
 
             {/* AI Partnership */}
             <div className={styles.sectionLabel} style={{ marginTop: 26 }}>
-              Strategic Log <span className={styles.badge}>Required</span>
+              {t('gate4Page.strategicLog')} <span className={styles.badge}>{t('gate4Page.required')}</span>
             </div>
             <div className={styles.partnershipBlock}>
               <div className={styles.fieldLabel}>
-                How AI Stress-Tested This Plan <span className={styles.req}>Required</span>
+                {t('gate4Page.field.aiPartnership')} <span className={styles.req}>{t('gate4Page.required')}</span>
               </div>
               <textarea
                 className={styles.pbTextarea}
                 value={aiPartnership}
                 onChange={(e) => setAiPartnership(e.target.value)}
-                placeholder="Don't paste the plan AI wrote for you. Show how you used AI to challenge it — what risks it surfaced, what assumptions it questioned, what you changed as a result, and what you chose to override."
+                placeholder={t('gate4Page.placeholder.aiPartnership')}
                 rows={5}
               />
             </div>
@@ -317,9 +327,13 @@ export default function Gate4Page() {
 
         <div className={styles.actionsBar}>
           <div className={styles.integrationStatus}>
-            Asset Integration
+            {t('gate4Page.assetIntegration')}
             <div className={styles.intPills}>
-              {['Cover', 'Intel', 'Finding'].map((label) => (
+              {[
+                t('gate4Page.assetPill.cover'),
+                t('gate4Page.assetPill.intel'),
+                t('gate4Page.assetPill.finding'),
+              ].map((label) => (
                 <span key={label} className={`${styles.intPill} ${assets.length > 0 ? styles.used : styles.unused}`}>
                   {label}
                 </span>
@@ -329,15 +343,15 @@ export default function Gate4Page() {
           <div className={styles.actions}>
             {savedLabel && <span className={styles.autosaveLabel}>{savedLabel}</span>}
             <button className={styles.submitBtn} disabled={!canSubmit || submitting} onClick={handleSubmit}>
-              {submitting ? 'Transmitting…' : 'Transmit Final Plan →'}
+              {submitting ? t('gate4Page.transmitting') : t('gate4Page.submitButton')}
             </button>
           </div>
         </div>
 
         <div className={styles.footer}>
-          <span><span className={styles.red}>●</span> Classified // Internal Use Only</span>
-          <span>Phase 04 · Final</span>
-          <span>End-to-End Encrypted</span>
+          <span><span className={styles.red}>●</span> {t('gate4Page.footer.classified')}</span>
+          <span>{t('gate4Page.footer.phase')}</span>
+          <span>{t('gate4Page.footer.encrypted')}</span>
         </div>
       </div>
     </div>
