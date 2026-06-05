@@ -225,6 +225,7 @@
     "cotPromptLabel": "Invite COT",
     "cotOutputLabel": "Sortie COT",
     "critiquePromptLabel": "Invite de critique",
+    "critiqueTooltip": "Les invites de critique solides assignent à l'IA un rôle adversarial spécifique avec une expertise particulière. Les demandes génériques 'trouvez les problèmes' produisent des problèmes génériques.",
     "critiqueOutputLabel": "Sortie de critique",
     "placeholder": {
       "metaPrompt": "Écrire une meta-invite initiale",
@@ -247,8 +248,58 @@
     "coverDossier": "Dossier de couverture",
     "submitGate": "Soumettre la Porte 01 →",
     "transmitting": "Transmission…",
-    "footerLabel": "Pied de page Porte 01",
-    "footerSkill": "Compétence : Chaînage d'invite"
+    "footerLabel": "Porte 01 // Identité sous couverture profonde",
+    "footerSkill": "Compétence : Chaînage d'invite",
+    "field": {
+      "cover_name": "Nom de couverture",
+      "employer": "Employeur",
+      "pretext": "Prétexte / Rôle",
+      "nationality": "Nationalité",
+      "background_summary": "Résumé des antécédents",
+      "vulnerability": "Vulnérabilité",
+      "prepared_response": "Réponse préparée"
+    },
+    "chainSteps": {
+      "step1": {
+        "label": "Amorcer la couverture",
+        "technique": "MÉTA-INVITE",
+        "title": "Méta-création d'invites",
+        "summary": "La méta-création d'invites signifie inviter le modèle à concevoir ou affiner une autre invite avant de l'utiliser pour la vraie tâche.",
+        "details": [
+          "Utilisez-la quand la première invite est difficile à structurer et que vous voulez que le modèle aide à définir les rôles, les contraintes et le format de sortie.",
+          "Une forte méta-invite nomme généralement le public, le travail à faire, les sections requises et le ton que vous voulez dans l'invite finale.",
+          "Cela fonctionne bien pour les tâches répétables car vous pouvez enregistrer l'invite générée comme un modèle réutilisable au lieu de la reconstruire à chaque fois."
+        ],
+        "exampleLabel": "Exemple : créer une invite d'aide à l'étude",
+        "example": "Demandez au modèle : 'Écrivez une invite que je peux réutiliser pour enseigner la photosynthèse à un enfant de 10 ans. Incluez une analogie, un quiz de trois questions et un résumé d'une phrase.' L'invite générée est alors ce que vous exécutez pour la vraie leçon."
+      },
+      "step2": {
+        "label": "Faire raisonner l'IA à voix haute",
+        "technique": "CHAÎNAGE DE PENSÉE",
+        "title": "Création d'invites avec chaînage de pensée",
+        "summary": "La création d'invites avec chaînage de pensée demande au modèle de travailler à travers un problème par étapes ordonnées pour que la sortie soit plus délibérée et moins saccadée.",
+        "details": [
+          "Utilisez-la quand la tâche dépend de la comparaison de facteurs, de la séquence de décisions ou de la démonstration de comment une conclusion a été atteinte.",
+          "C'est très utile quand vous voulez que le modèle soulève des points de contrôle tels que les hypothèses, les compromis ou les critères avant de donner la réponse finale.",
+          "Les bonnes invites gardent les étapes délimitées. Demandez une courte séquence de raisonnement ou une liste de contrôle plutôt qu'une vague instruction 'pensez plus fort'."
+        ],
+        "exampleLabel": "Exemple : choisir un vélo navetteur",
+        "example": "Demandez au modèle : 'Comparez trois vélos navetteurs. D'abord énumérez les critères que vous utiliserez, puis notez chaque vélo pour le confort, l'entretien et le prix, et enfin recommandez-en un pour une navette de 5 miles en ville.' La valeur vient de la comparaison ordonnée avant la recommandation."
+      },
+      "step3": {
+        "label": "Attaquer et réparer",
+        "technique": "AUTO-CRITIQUE",
+        "title": "Création d'invites d'auto-critique",
+        "summary": "Les invites d'auto-critique ont le modèle passant en revue un brouillon, identifiant les faiblesses contre des critères clairs, puis améliorant le brouillon en fonction de cette revue.",
+        "details": [
+          "Utilisez-la après avoir déjà une première passe et vouloir que le modèle change les rôles de créateur à réviseur.",
+          "La critique est meilleure quand vous définissez la lentille, comme la clarté, l'exactitude, l'accessibilité, le ton ou l'exhaustivité.",
+          "Ce motif est utile car il sépare la génération de l'évaluation, ce qui produit souvent des révisions plus spécifiques qu'une demande de 'meilleure version' en un seul coup."
+        ],
+        "exampleLabel": "Exemple : réviser une lettre d'information communautaire",
+        "example": "Demandez au modèle : 'Passez en revue cette annonce de lettre d'information de quartier en tant qu'éditeur. Identifiez les trois phrases les plus faibles pour la clarté et l'accessibilité, expliquez pourquoi chacune est faible, puis récrivez l'annonce.' La révision finale bénéficie de l'étape de critique explicite."
+      }
+    }
   },
 
   "gate4Page": {

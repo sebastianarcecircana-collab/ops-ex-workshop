@@ -225,6 +225,7 @@
     "cotPromptLabel": "COT Prompt",
     "cotOutputLabel": "COT Output",
     "critiquePromptLabel": "Critique Prompt",
+    "critiqueTooltip": "Strong critique prompts assign the AI a specific adversarial role with specific expertise. Generic \"find problems\" produces generic problems.",
     "critiqueOutputLabel": "Critique Output",
     "placeholder": {
       "metaPrompt": "Write an initial meta-prompt",
@@ -247,8 +248,58 @@
     "coverDossier": "Cover Dossier",
     "submitGate": "Submit Gate 01 →",
     "transmitting": "Transmitting…",
-    "footerLabel": "Gate 01 Footer",
-    "footerSkill": "Skill: Prompt Chaining"
+    "footerLabel": "Gate 01 // Deep Cover Identity",
+    "footerSkill": "Skill: Prompt Chaining",
+    "field": {
+      "cover_name": "Cover Name",
+      "employer": "Employer",
+      "pretext": "Pretext / Role",
+      "nationality": "Nationality",
+      "background_summary": "Background Summary",
+      "vulnerability": "Vulnerability",
+      "prepared_response": "Prepared Response"
+    },
+    "chainSteps": {
+      "step1": {
+        "label": "Bootstrap the cover",
+        "technique": "META-PROMPT",
+        "title": "Meta-prompting",
+        "summary": "Meta-prompting means prompting the model to design or refine another prompt before you use it for the real task.",
+        "details": [
+          "Use it when the first prompt is hard to structure and you want the model to help define roles, constraints, and output format.",
+          "A strong meta-prompt usually names the audience, the job to be done, the required sections, and the tone you want in the final prompt.",
+          "This works well for repeatable tasks because you can save the generated prompt as a reusable template instead of rebuilding it each time."
+        ],
+        "exampleLabel": "Example: building a study helper prompt",
+        "example": "Ask the model: \"Write a prompt I can reuse to teach photosynthesis to a 10-year-old. Include an analogy, a three-question quiz, and a one-sentence recap.\" The generated prompt is then what you run for the actual lesson."
+      },
+      "step2": {
+        "label": "Make the AI reason out loud",
+        "technique": "CHAIN-OF-THOUGHT",
+        "title": "Chain-of-thought prompting",
+        "summary": "Chain-of-thought prompting asks the model to work through a problem in ordered steps so the output is more deliberate and less jumpy.",
+        "details": [
+          "Use it when the task depends on comparing factors, sequencing decisions, or showing how a conclusion was reached.",
+          "It is most useful when you want the model to surface checkpoints such as assumptions, tradeoffs, or criteria before it gives the final answer.",
+          "Good prompts keep the steps bounded. Ask for a short reasoning sequence or checklist rather than a vague \"think harder\" instruction."
+        ],
+        "exampleLabel": "Example: choosing a commuter bike",
+        "example": "Ask the model: \"Compare three commuter bikes. First list the criteria you will use, then score each bike for comfort, maintenance, and price, and finally recommend one for a 5-mile city commute.\" The value comes from seeing the ordered comparison before the recommendation."
+      },
+      "step3": {
+        "label": "Attack and repair",
+        "technique": "SELF-CRITIQUE",
+        "title": "Self-critique prompting",
+        "summary": "Self-critique prompts have the model review a draft, identify weaknesses against clear criteria, and then improve the draft based on that review.",
+        "details": [
+          "Use it after you already have a first pass and want the model to switch roles from creator to reviewer.",
+          "The critique is better when you define the lens, such as clarity, accuracy, accessibility, tone, or completeness.",
+          "This pattern is useful because it separates generation from evaluation, which often produces more specific revisions than asking for \"a better version\" in one shot."
+        ],
+        "exampleLabel": "Example: revising a community newsletter",
+        "example": "Ask the model: \"Review this neighborhood newsletter announcement as an editor. Identify the three weakest sentences for clarity and accessibility, explain why each is weak, then rewrite the announcement.\" The final revision benefits from the explicit critique stage."
+      }
+    }
   },
 
   "gate4Page": {

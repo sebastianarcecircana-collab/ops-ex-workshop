@@ -225,6 +225,7 @@
     "cotPromptLabel": "Prompt COT",
     "cotOutputLabel": "Salida COT",
     "critiquePromptLabel": "Prompt de crítica",
+    "critiqueTooltip": "Los prompts de crítica sólidos asignan a la IA un papel adversarial específico con experiencia específica. Los prompts genéricos 'encuentra problemas' producen problemas genéricos.",
     "critiqueOutputLabel": "Salida de crítica",
     "placeholder": {
       "metaPrompt": "Escribe un meta-prompt inicial",
@@ -247,8 +248,58 @@
     "coverDossier": "Expediente de cobertura",
     "submitGate": "Enviar Puerta 01 →",
     "transmitting": "Transmitiendo…",
-    "footerLabel": "Pie de página Puerta 01",
-    "footerSkill": "Habilidad: Cadena de prompts"
+    "footerLabel": "Puerta 01 // Identidad de Cobertura Profunda",
+    "footerSkill": "Habilidad: Cadena de prompts",
+    "field": {
+      "cover_name": "Nombre de cobertura",
+      "employer": "Empleador",
+      "pretext": "Pretexto / Rol",
+      "nationality": "Nacionalidad",
+      "background_summary": "Resumen del trasfondo",
+      "vulnerability": "Vulnerabilidad",
+      "prepared_response": "Respuesta preparada"
+    },
+    "chainSteps": {
+      "step1": {
+        "label": "Iniciar la cobertura",
+        "technique": "META-PROMPT",
+        "title": "Meta-prompting",
+        "summary": "Meta-prompting significa pedir al modelo que diseñe o refine otro prompt antes de usarlo para la tarea real.",
+        "details": [
+          "Úsalo cuando el primer prompt sea difícil de estructurar y quieras que el modelo ayude a definir roles, restricciones y formato de salida.",
+          "Un meta-prompt fuerte generalmente nombra la audiencia, el trabajo a realizar, las secciones requeridas y el tono que deseas en el prompt final.",
+          "Funciona bien para tareas repetibles porque puedes guardar el prompt generado como una plantilla reutilizable en lugar de reconstruirlo cada vez."
+        ],
+        "exampleLabel": "Ejemplo: construir un prompt de ayuda al estudio",
+        "example": "Pídele al modelo: 'Escribe un prompt que pueda reutilizar para enseñar fotosíntesis a un niño de 10 años. Incluye una analogía, un cuestionario de tres preguntas y un resumen de una oración.' El prompt generado es lo que ejecutas para la lección real."
+      },
+      "step2": {
+        "label": "Hacer que la IA razone en voz alta",
+        "technique": "CADENA DE PENSAMIENTO",
+        "title": "Prompting de cadena de pensamiento",
+        "summary": "El prompting de cadena de pensamiento pide al modelo que trabaje a través de un problema en pasos ordenados para que la salida sea más deliberada y menos inestable.",
+        "details": [
+          "Úsalo cuando la tarea dependa de comparar factores, secuenciar decisiones o mostrar cómo se llegó a una conclusión.",
+          "Es más útil cuando quieres que el modelo señale puntos de control como supuestos, compensaciones o criterios antes de dar la respuesta final.",
+          "Los buenos prompts mantienen los pasos acotados. Pide una secuencia de razonamiento breve o una lista de verificación en lugar de una instrucción vaga 'piensa más'."
+        ],
+        "exampleLabel": "Ejemplo: elegir una bicicleta de cercanías",
+        "example": "Pídele al modelo: 'Compara tres bicicletas de cercanías. Primero enumera los criterios que usarás, luego califica cada bicicleta por comodidad, mantenimiento y precio, y finalmente recomienda una para un desplazamiento de 5 millas en la ciudad.' El valor viene de ver la comparación ordenada antes de la recomendación."
+      },
+      "step3": {
+        "label": "Atacar y reparar",
+        "technique": "AUTO-CRÍTICA",
+        "title": "Prompting de auto-crítica",
+        "summary": "Los prompts de auto-crítica tienen el modelo revisando un borrador, identificando debilidades contra criterios claros, y luego mejorando el borrador en base a esa revisión.",
+        "details": [
+          "Úsalo después de tener ya un primer borrador y querer que el modelo cambie roles de creador a revisor.",
+          "La crítica es mejor cuando defines la lente, como claridad, exactitud, accesibilidad, tono o integridad.",
+          "Este patrón es útil porque separa la generación de la evaluación, que a menudo produce revisiones más específicas que pedir una 'versión mejor' en un solo paso."
+        ],
+        "exampleLabel": "Ejemplo: revisar un boletín comunitario",
+        "example": "Pídele al modelo: 'Revisa este anuncio de boletín de barrio como editor. Identifica las tres oraciones más débiles por claridad y accesibilidad, explica por qué cada una es débil, y luego reescribe el anuncio.' La revisión final se beneficia de la fase de crítica explícita."
+      }
+    }
   },
 
   "gate4Page": {

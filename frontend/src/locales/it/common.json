@@ -225,6 +225,7 @@
     "cotPromptLabel": "Prompt COT",
     "cotOutputLabel": "Output COT",
     "critiquePromptLabel": "Prompt di critica",
+    "critiqueTooltip": "I forti prompt di critica assegnano al modello un ruolo specificamente avversariale con competenza specifica. I prompt generici 'trova i problemi' producono problemi generici.",
     "critiqueOutputLabel": "Output di critica",
     "placeholder": {
       "metaPrompt": "Scrivi un meta-prompt iniziale",
@@ -247,8 +248,58 @@
     "coverDossier": "Dossier di copertura",
     "submitGate": "Invia Porta 01 →",
     "transmitting": "Trasmissione in corso…",
-    "footerLabel": "Piè di pagina Porta 01",
-    "footerSkill": "Abilità: Catena di prompt"
+    "footerLabel": "Porta 01 // Identità di copertura profonda",
+    "footerSkill": "Abilità: Catena di prompt",
+    "field": {
+      "cover_name": "Nome di copertura",
+      "employer": "Datore di lavoro",
+      "pretext": "Pretesto / Ruolo",
+      "nationality": "Nazionalità",
+      "background_summary": "Riassunto dello sfondo",
+      "vulnerability": "Vulnerabilità",
+      "prepared_response": "Risposta preparata"
+    },
+    "chainSteps": {
+      "step1": {
+        "label": "Avviare la copertura",
+        "technique": "META-PROMPT",
+        "title": "Meta-prompting",
+        "summary": "Meta-prompting significa chiedere al modello di progettare o perfezionare un altro prompt prima di usarlo per il compito vero.",
+        "details": [
+          "Usalo quando il primo prompt è difficile da strutturare e vuoi che il modello aiuti a definire ruoli, vincoli e formato di output.",
+          "Un forte meta-prompt di solito nomina il pubblico, il lavoro da fare, le sezioni richieste e il tono che desideri nel prompt finale.",
+          "Funziona bene per i compiti ripetibili perché puoi salvare il prompt generato come un modello riutilizzabile invece di ricostruirlo ogni volta."
+        ],
+        "exampleLabel": "Esempio: costruire un prompt di aiuto allo studio",
+        "example": "Chiedi al modello: 'Scrivi un prompt che posso riutilizzare per insegnare la fotosintesi a un bambino di 10 anni. Includi un'analogia, un quiz di tre domande e un riassunto di una frase.' Il prompt generato è quello che esegui per la vera lezione."
+      },
+      "step2": {
+        "label": "Far ragionare l'IA a voce alta",
+        "technique": "CATENA DI PENSIERO",
+        "title": "Prompting con catena di pensiero",
+        "summary": "Il prompting con catena di pensiero chiede al modello di lavorare attraverso un problema in passaggi ordinati in modo che l'output sia più deliberato e meno frammentario.",
+        "details": [
+          "Usalo quando il compito dipende dal confronto di fattori, dalla sequenza di decisioni o dal mostrare come è stata raggiunta una conclusione.",
+          "È più utile quando vuoi che il modello evidenzi punti di controllo come ipotesi, compromessi o criteri prima di dare la risposta finale.",
+          "I buoni prompt mantengono i passaggi delimitati. Chiedi una breve sequenza di ragionamento o una lista di controllo piuttosto che un'istruzione vaga 'pensa di più'."
+        ],
+        "exampleLabel": "Esempio: scegliere una bicicletta da pendolare",
+        "example": "Chiedi al modello: 'Confronta tre biciclette da pendolare. Prima elenca i criteri che utilizzerai, quindi valuta ogni bicicletta per comfort, manutenzione e prezzo, e infine consiglia uno per un tragitto di 5 miglia in città.' Il valore viene dal vedere il confronto ordinato prima della raccomandazione."
+      },
+      "step3": {
+        "label": "Attaccare e riparare",
+        "technique": "AUTO-CRITICA",
+        "title": "Prompting di auto-critica",
+        "summary": "I prompt di auto-critica fanno sì che il modello esamini una bozza, identifichi i punti deboli rispetto a criteri chiari, e quindi migliori la bozza in base a quella revisione.",
+        "details": [
+          "Usalo dopo aver già una prima versione e voler che il modello cambi ruoli da creatore a revisore.",
+          "La critica è migliore quando definisci la prospettiva, come chiarezza, accuratezza, accessibilità, tono o completezza.",
+          "Questo modello è utile perché separa la generazione dalla valutazione, il che spesso produce revisioni più specifiche che chiedere una 'versione migliore' in un colpo solo."
+        ],
+        "exampleLabel": "Esempio: revisionare un bollettino comunitario",
+        "example": "Chiedi al modello: 'Esamina questo annuncio del bollettino del quartiere come redattore. Identifica le tre frasi più deboli per chiarezza e accessibilità, spiega perché ciascuna è debole, quindi riscrivi l'annuncio.' La revisione finale beneficia dalla fase di critica esplicita."
+      }
+    }
   },
 
   "gate4Page": {

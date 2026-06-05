@@ -225,6 +225,7 @@
     "cotPromptLabel": "COT-Prompt",
     "cotOutputLabel": "COT-Ausgabe",
     "critiquePromptLabel": "Kritik-Prompt",
+    "critiqueTooltip": "Starke Kritik-Prompts weisen der KI eine spezifische konträre Rolle mit spezifischer Expertise zu. Generische 'Finde Probleme'-Anweisungen produzieren generische Probleme.",
     "critiqueOutputLabel": "Kritik-Ausgabe",
     "placeholder": {
       "metaPrompt": "Schreibe ein initiales Meta-Prompt",
@@ -247,8 +248,58 @@
     "coverDossier": "Deckdossier",
     "submitGate": "Tor 01 einreichen →",
     "transmitting": "Übertragung…",
-    "footerLabel": "Tor 01 Fußzeile",
-    "footerSkill": "Fähigkeit: Prompt-Kettung"
+    "footerLabel": "Tor 01 // Tiefe Deckidentität",
+    "footerSkill": "Fähigkeit: Prompt-Kettung",
+    "field": {
+      "cover_name": "Deckname",
+      "employer": "Arbeitgeber",
+      "pretext": "Vorwand / Rolle",
+      "nationality": "Nationalität",
+      "background_summary": "Hintergrundübersicht",
+      "vulnerability": "Anfälligkeit",
+      "prepared_response": "Vorbereitete Antwort"
+    },
+    "chainSteps": {
+      "step1": {
+        "label": "Die Abdeckung starten",
+        "technique": "META-PROMPT",
+        "title": "Meta-Prompting",
+        "summary": "Meta-Prompting bedeutet, das Modell aufzufordern, einen anderen Prompt zu entwerfen oder zu verfeinern, bevor Sie ihn für die eigentliche Aufgabe verwenden.",
+        "details": [
+          "Verwenden Sie es, wenn der erste Prompt schwer zu strukturieren ist und Sie möchten, dass das Modell hilft, Rollen, Einschränkungen und Ausgabeformat zu definieren.",
+          "Ein starker Meta-Prompt benennt normalerweise die Zielgruppe, die zu erledigende Aufgabe, die erforderlichen Abschnitte und den Ton, den Sie im endgültigen Prompt wünschen.",
+          "Dies funktioniert gut für wiederholbare Aufgaben, da Sie den generierten Prompt als wiederverwendbare Vorlage speichern können, anstatt ihn jedes Mal neu aufzubauen."
+        ],
+        "exampleLabel": "Beispiel: Erstellen eines Studienhelfer-Prompts",
+        "example": "Bitten Sie das Modell: 'Schreiben Sie einen Prompt, den ich wiederverwenden kann, um Photosynthese für einen 10-Jährigen zu unterrichten. Fügen Sie eine Analogie, ein Drei-Fragen-Quiz und eine einsätzige Zusammenfassung hinzu.' Der generierte Prompt ist dann das, was Sie für die eigentliche Lektion ausführen."
+      },
+      "step2": {
+        "label": "Die KI laut zum Denken bringen",
+        "technique": "GEDANKENKETTE",
+        "title": "Gedankenketten-Prompting",
+        "summary": "Gedankenketten-Prompting fordert das Modell auf, ein Problem in geordneten Schritten zu durcharbeiten, damit die Ausgabe bewusster und weniger sprunghaft ist.",
+        "details": [
+          "Verwenden Sie es, wenn die Aufgabe vom Vergleich von Faktoren, der Abfolge von Entscheidungen oder der Demonstration abhängt, wie eine Schlussfolgerung erreicht wurde.",
+          "Es ist besonders nützlich, wenn Sie möchten, dass das Modell Kontrollpunkte wie Annahmen, Kompromisse oder Kriterien anspricht, bevor es die endgültige Antwort gibt.",
+          "Gute Prompts halten die Schritte begrenzt. Fordern Sie eine kurze Begründungssequenz oder Checkliste an, anstatt eine vage 'denken Sie intensiver'-Anweisung zu geben."
+        ],
+        "exampleLabel": "Beispiel: Wahl eines Pendlerfahrrads",
+        "example": "Bitten Sie das Modell: 'Vergleichen Sie drei Pendlerfahrräder. Nennen Sie zunächst die Kriterien, die Sie verwenden werden, bewerten Sie dann jedes Fahrrad auf Komfort, Wartung und Preis und empfehlen Sie schließlich eines für einen 5-Meilen-Pendelweg in der Stadt.' Der Wert liegt im geordneten Vergleich vor der Empfehlung."
+      },
+      "step3": {
+        "label": "Angreifen und reparieren",
+        "technique": "SELBSTKRITIK",
+        "title": "Selbstkritik-Prompting",
+        "summary": "Selbstkritik-Prompts bewirken, dass das Modell einen Entwurf überprüft, Schwächen gegen klare Kriterien identifiziert und dann den Entwurf basierend auf dieser Überprüfung verbessert.",
+        "details": [
+          "Verwenden Sie es, nachdem Sie bereits einen ersten Durchgang haben und möchten, dass das Modell die Rollen vom Ersteller zum Rezensenten wechselt.",
+          "Die Kritik ist besser, wenn Sie die Linse definieren, z. B. Klarheit, Genauigkeit, Zugänglichkeit, Ton oder Vollständigkeit.",
+          "Dieses Muster ist nützlich, da es die Generierung von der Bewertung trennt, was oft zu spezifischeren Überarbeitungen führt als die Anfrage einer 'besseren Version' in einem Durchgang."
+        ],
+        "exampleLabel": "Beispiel: Überarbeitung eines Gemeinschaftsnewsletters",
+        "example": "Bitten Sie das Modell: 'Überprüfen Sie diese Nachbarschafts-Newsletter-Ankündigung als Redakteur. Identifizieren Sie die drei schwächsten Sätze für Klarheit und Zugänglichkeit, erklären Sie, warum jeder schwach ist, und schreiben Sie dann die Ankündigung neu.' Die endgültige Überarbeitung profitiert von der expliziten Kritik-Phase."
+      }
+    }
   },
 
   "gate4Page": {

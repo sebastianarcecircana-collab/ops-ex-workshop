@@ -24,53 +24,44 @@ interface ChainStep {
   infoExample: string;
 }
 
-const CHAIN_STEPS: ChainStep[] = [
-  {
-    id: 1,
-    technique: 'meta',
-    label: 'Bootstrap the cover',
-    techniqueLabel: 'META-PROMPT',
-    infoTitle: 'Meta-prompting',
-    infoSummary: 'Meta-prompting means prompting the model to design or refine another prompt before you use it for the real task.',
-    infoDetails: [
-      'Use it when the first prompt is hard to structure and you want the model to help define roles, constraints, and output format.',
-      'A strong meta-prompt usually names the audience, the job to be done, the required sections, and the tone you want in the final prompt.',
-      'This works well for repeatable tasks because you can save the generated prompt as a reusable template instead of rebuilding it each time.',
-    ],
-    infoExampleLabel: 'Example: building a study helper prompt',
-    infoExample: 'Ask the model: "Write a prompt I can reuse to teach photosynthesis to a 10-year-old. Include an analogy, a three-question quiz, and a one-sentence recap." The generated prompt is then what you run for the actual lesson.',
-  },
-  {
-    id: 2,
-    technique: 'cot',
-    label: 'Make the AI reason out loud',
-    techniqueLabel: 'CHAIN-OF-THOUGHT',
-    infoTitle: 'Chain-of-thought prompting',
-    infoSummary: 'Chain-of-thought prompting asks the model to work through a problem in ordered steps so the output is more deliberate and less jumpy.',
-    infoDetails: [
-      'Use it when the task depends on comparing factors, sequencing decisions, or showing how a conclusion was reached.',
-      'It is most useful when you want the model to surface checkpoints such as assumptions, tradeoffs, or criteria before it gives the final answer.',
-      'Good prompts keep the steps bounded. Ask for a short reasoning sequence or checklist rather than a vague "think harder" instruction.',
-    ],
-    infoExampleLabel: 'Example: choosing a commuter bike',
-    infoExample: 'Ask the model: "Compare three commuter bikes. First list the criteria you will use, then score each bike for comfort, maintenance, and price, and finally recommend one for a 5-mile city commute." The value comes from seeing the ordered comparison before the recommendation.',
-  },
-  {
-    id: 3,
-    technique: 'critique',
-    label: 'Attack and repair',
-    techniqueLabel: 'SELF-CRITIQUE',
-    infoTitle: 'Self-critique prompting',
-    infoSummary: 'Self-critique prompts have the model review a draft, identify weaknesses against clear criteria, and then improve the draft based on that review.',
-    infoDetails: [
-      'Use it after you already have a first pass and want the model to switch roles from creator to reviewer.',
-      'The critique is better when you define the lens, such as clarity, accuracy, accessibility, tone, or completeness.',
-      'This pattern is useful because it separates generation from evaluation, which often produces more specific revisions than asking for "a better version" in one shot.',
-    ],
-    infoExampleLabel: 'Example: revising a community newsletter',
-    infoExample: 'Ask the model: "Review this neighborhood newsletter announcement as an editor. Identify the three weakest sentences for clarity and accessibility, explain why each is weak, then rewrite the announcement." The final revision benefits from the explicit critique stage.',
-  },
-];
+function buildChainSteps(t: any): ChainStep[] {
+  const steps = t('gate1Page.chainSteps', { returnObjects: true });
+  return [
+    {
+      id: 1,
+      technique: 'meta',
+      label: steps.step1.label,
+      techniqueLabel: steps.step1.technique,
+      infoTitle: steps.step1.title,
+      infoSummary: steps.step1.summary,
+      infoDetails: steps.step1.details,
+      infoExampleLabel: steps.step1.exampleLabel,
+      infoExample: steps.step1.example,
+    },
+    {
+      id: 2,
+      technique: 'cot',
+      label: steps.step2.label,
+      techniqueLabel: steps.step2.technique,
+      infoTitle: steps.step2.title,
+      infoSummary: steps.step2.summary,
+      infoDetails: steps.step2.details,
+      infoExampleLabel: steps.step2.exampleLabel,
+      infoExample: steps.step2.example,
+    },
+    {
+      id: 3,
+      technique: 'critique',
+      label: steps.step3.label,
+      techniqueLabel: steps.step3.technique,
+      infoTitle: steps.step3.title,
+      infoSummary: steps.step3.summary,
+      infoDetails: steps.step3.details,
+      infoExampleLabel: steps.step3.exampleLabel,
+      infoExample: steps.step3.example,
+    },
+  ];
+}
 
 type Gate1Draft = {
   step1: Step1Data;
@@ -82,6 +73,7 @@ type Gate1Draft = {
 export default function Gate1Page() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const CHAIN_STEPS = buildChainSteps(t);
   const [spec, setSpec] = useState<GateSpec | null>(null);
 
   const [step1, setStep1] = useState<Step1Data>(() => loadGateDraft<Gate1Draft>(1, getStoredTeamId())?.step1 ?? { meta_prompt: '', generated_prompt: '', output: '' });
@@ -317,7 +309,7 @@ export default function Gate1Page() {
                         <div className={styles.pair}>
                           <div className={styles.tripletSection}>
                               <div className={styles.tsLabel}>{t('gate1Page.critiquePromptLabel')}
-                              <span className={styles.fieldTooltip}>Strong critique prompts assign the AI a specific adversarial role with specific expertise. Generic "find problems" produces generic problems.</span>
+                              <span className={styles.fieldTooltip}>{t('gate1Page.critiqueTooltip')}</span>
                             </div>
                             <textarea
                               className={styles.textarea}
