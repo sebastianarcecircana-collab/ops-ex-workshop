@@ -211,4 +211,110 @@
     "partialSuccess": "Teilweiser Erfolg",
     "failure": "Missionsfehler"
   }
+
+  ,"gate1Page": {
+    "loading": "Lade…",
+    "gateLabel": "Tor 01: {{name}}",
+    "backToHub": "← Zurück zum Hub",
+    "cipherLabel": "Cipher-Briefing",
+    "missionInstructions": "Missionsanweisungen",
+    "promptChain": "Prompt-Kette",
+    "metaPromptLabel": "Meta-Prompt",
+    "generatedPromptLabel": "Generierter Prompt",
+    "aiOutputLabel": "KI-Ausgabe",
+    "cotPromptLabel": "COT-Prompt",
+    "cotOutputLabel": "COT-Ausgabe",
+    "critiquePromptLabel": "Kritik-Prompt",
+    "critiqueOutputLabel": "Kritik-Ausgabe",
+    "placeholder": {
+      "metaPrompt": "Schreibe ein initiales Meta-Prompt",
+      "generatedPrompt": "Der generierte Prompt erscheint hier",
+      "aiOutput": "Antwort der KI",
+      "cotPrompt": "Prompt für lautes Denken",
+      "cotOutput": "Kette-des-Denkens Ausgabe",
+      "critiquePrompt": "Prompt, der um Kritik bittet",
+      "critiqueOutput": "Kritikausgabe"
+    },
+    "continueToStep": "Weiter zu Schritt {{step}} →",
+    "pullFields": "Felder aus KI-Ausgabe ziehen",
+    "extracting": "Extrahiere…",
+    "status": {
+      "active": "In Arbeit",
+      "complete": "Abgeschlossen",
+      "sealed": "Versiegelt"
+    },
+    "step": "Schritt",
+    "coverDossier": "Deckdossier",
+    "submitGate": "Tor 01 einreichen →",
+    "transmitting": "Übertragung…",
+    "footerLabel": "Tor 01 Fußzeile",
+    "footerSkill": "Fähigkeit: Prompt-Kettung"
+  },
+
+  "gate4Page": {
+    "missionHub": "← Missionshub",
+    "phaseTag": "Endphase",
+    "phaseTitleStart": "Der",
+    "phaseTitleAccent": "Plan",
+    "finalPhase": "Endphase",
+    "transmission": "Übertragung",
+    "fromCipher": "Von Cipher",
+    "railHeading": "Assets",
+    "railSub": "Aus früheren Toren gesammelt",
+    "assetGroup": {
+      "coverIdentity": "Deckidentität",
+      "intel": "Intel",
+      "finding": "Die Entdeckung"
+    },
+    "noAssets": "Keine Assets eingereicht",
+    "operationPlan": "Operationsplan",
+    "submissionManifest": "Einreichungsmanifest",
+    "field": {
+      "objective": "Ziel",
+      "approach": "Ansatz",
+      "aiPartnership": "KI-Partnerschaft"
+    },
+    "required": "Erforderlich",
+    "placeholder": {
+      "time": "HH:MM",
+      "stepDescription": "Beschreibe den Schritt",
+      "agent": "Agentenname",
+      "callsign": "z. B. RENOUX",
+      "responsibilities": "Verantwortlichkeiten",
+      "aiPartnership": "Beschreibe die Rolle der KI",
+      "exfil": "Exfiltrationsroute und -methode",
+      "biggestRisk": "Nenne die größte Bedrohung"
+    },
+    "sequence": "Sequenz",
+    "addStep": "Schritt hinzufügen",
+    "roles": "Rollen",
+    "addAgent": "Agent hinzufügen",
+    "contingencies": "Notfallpläne",
+    "contingency": {
+      "ifFails": "Wenn dies fehlschlägt",
+      "weRespond": "Wir reagieren",
+      "placeholder": {
+        "failure": "Was bricht?",
+        "response": "Unsere Reaktion"
+      }
+    },
+    "addContingency": "Notfall hinzufügen",
+    "selfRiskNote": "⚑ Dein benannter Risikofaktor: {{risk}}",
+    "exfil": "Exfiltration",
+    "biggestRisk": "Größtes Risiko",
+    "strategicLog": "Strategisches Protokoll",
+    "assetIntegration": "Asset-Integration",
+    "assetPill": {
+      "cover": "Deckung",
+      "intel": "Intel",
+      "finding": "Entdeckung"
+    },
+    "submitButton": "Plan einreichen →",
+    "transmitting": "Übertragung…",
+    "footer": {
+      "classified": "Klassifiziert // Nur interne Nutzung",
+      "phase": "Phase: Final",
+      "encrypted": "Verschlüsselt"
+    }
+  }
 }

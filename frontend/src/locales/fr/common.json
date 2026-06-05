@@ -211,4 +211,110 @@
     "partialSuccess": "Succès Partiel",
     "failure": "Échec de la Mission"
   }
+
+  ,"gate1Page": {
+    "loading": "Chargement…",
+    "gateLabel": "Porte 01 : {{name}}",
+    "backToHub": "← Retour au Hub",
+    "cipherLabel": "Brève du Cipher",
+    "missionInstructions": "Instructions de mission",
+    "promptChain": "Chaîne d'invite",
+    "metaPromptLabel": "Meta-invite",
+    "generatedPromptLabel": "Invite générée",
+    "aiOutputLabel": "Sortie IA",
+    "cotPromptLabel": "Invite COT",
+    "cotOutputLabel": "Sortie COT",
+    "critiquePromptLabel": "Invite de critique",
+    "critiqueOutputLabel": "Sortie de critique",
+    "placeholder": {
+      "metaPrompt": "Écrire une meta-invite initiale",
+      "generatedPrompt": "L'invite générée apparaîtra ici",
+      "aiOutput": "Réponse de l'IA",
+      "cotPrompt": "Invite pour faire raisonner à voix haute",
+      "cotOutput": "Sortie de chaîne-de-pensée",
+      "critiquePrompt": "Invite demandant une critique",
+      "critiqueOutput": "Sortie de la critique"
+    },
+    "continueToStep": "Continuer à l'étape {{step}} →",
+    "pullFields": "Extraire les champs depuis la sortie IA",
+    "extracting": "Extraction…",
+    "status": {
+      "active": "En cours",
+      "complete": "Terminé",
+      "sealed": "Scellé"
+    },
+    "step": "Étape",
+    "coverDossier": "Dossier de couverture",
+    "submitGate": "Soumettre la Porte 01 →",
+    "transmitting": "Transmission…",
+    "footerLabel": "Pied de page Porte 01",
+    "footerSkill": "Compétence : Chaînage d'invite"
+  },
+
+  "gate4Page": {
+    "missionHub": "← Hub de Mission",
+    "phaseTag": "Phase finale",
+    "phaseTitleStart": "Le",
+    "phaseTitleAccent": "Plan",
+    "finalPhase": "Phase finale",
+    "transmission": "Transmission",
+    "fromCipher": "Du Cipher",
+    "railHeading": "Actifs",
+    "railSub": "Collectés aux portes précédentes",
+    "assetGroup": {
+      "coverIdentity": "Identité de couverture",
+      "intel": "Renseignements",
+      "finding": "La découverte"
+    },
+    "noAssets": "Aucun actif soumis",
+    "operationPlan": "Plan d'opération",
+    "submissionManifest": "Manifeste de soumission",
+    "field": {
+      "objective": "Objectif",
+      "approach": "Approche",
+      "aiPartnership": "Partenariat IA"
+    },
+    "required": "Requis",
+    "placeholder": {
+      "time": "HH:MM",
+      "stepDescription": "Décrire l'étape",
+      "agent": "Nom de l'agent",
+      "callsign": "ex. RENOUX",
+      "responsibilities": "Responsabilités",
+      "aiPartnership": "Décrire le rôle de l'IA",
+      "exfil": "Route et méthode d'exfiltration",
+      "biggestRisk": "Nommer la plus grande menace"
+    },
+    "sequence": "Séquence",
+    "addStep": "Ajouter une étape",
+    "roles": "Rôles",
+    "addAgent": "Ajouter un agent",
+    "contingencies": "Contingences",
+    "contingency": {
+      "ifFails": "Si cela échoue",
+      "weRespond": "Nous répondons",
+      "placeholder": {
+        "failure": "Que se passe-t-il ?",
+        "response": "Notre réponse"
+      }
+    },
+    "addContingency": "Ajouter une contingence",
+    "selfRiskNote": "⚑ Votre risque nommé : {{risk}}",
+    "exfil": "Exfiltration",
+    "biggestRisk": "Plus grand risque",
+    "strategicLog": "Journal stratégique",
+    "assetIntegration": "Intégration des actifs",
+    "assetPill": {
+      "cover": "Couverture",
+      "intel": "Renseignements",
+      "finding": "Découverte"
+    },
+    "submitButton": "Soumettre le plan →",
+    "transmitting": "Transmission…",
+    "footer": {
+      "classified": "Classifié // Usage interne",
+      "phase": "Phase : Finale",
+      "encrypted": "Chiffré"
+    }
+  }
 }

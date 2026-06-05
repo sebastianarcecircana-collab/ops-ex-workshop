@@ -211,4 +211,110 @@
     "partialSuccess": "Partial Success",
     "failure": "Mission Failure"
   }
+
+  ,"gate1Page": {
+    "loading": "Loading briefing…",
+    "gateLabel": "Gate 01: {{name}}",
+    "backToHub": "← Back to Hub",
+    "cipherLabel": "Cipher Briefing",
+    "missionInstructions": "Mission Instructions",
+    "promptChain": "Prompt Chain",
+    "metaPromptLabel": "Meta Prompt",
+    "generatedPromptLabel": "Generated Prompt",
+    "aiOutputLabel": "AI Output",
+    "cotPromptLabel": "COT Prompt",
+    "cotOutputLabel": "COT Output",
+    "critiquePromptLabel": "Critique Prompt",
+    "critiqueOutputLabel": "Critique Output",
+    "placeholder": {
+      "metaPrompt": "Write an initial meta-prompt",
+      "generatedPrompt": "Generated prompt will appear here",
+      "aiOutput": "AI's response appears here",
+      "cotPrompt": "Prompt to ask the model to think out loud",
+      "cotOutput": "Model's chain-of-thought output",
+      "critiquePrompt": "Prompt asking for critique",
+      "critiqueOutput": "Model critique output"
+    },
+    "continueToStep": "Continue to step {{step}} →",
+    "pullFields": "Pull fields from AI output",
+    "extracting": "Extracting…",
+    "status": {
+      "active": "In Progress",
+      "complete": "Complete",
+      "sealed": "Sealed"
+    },
+    "step": "Step",
+    "coverDossier": "Cover Dossier",
+    "submitGate": "Submit Gate 01 →",
+    "transmitting": "Transmitting…",
+    "footerLabel": "Gate 01 Footer",
+    "footerSkill": "Skill: Prompt Chaining"
+  },
+
+  "gate4Page": {
+    "missionHub": "← Mission Hub",
+    "phaseTag": "Final Phase",
+    "phaseTitleStart": "The",
+    "phaseTitleAccent": "Plan",
+    "finalPhase": "Final Phase",
+    "transmission": "Transmission",
+    "fromCipher": "From Cipher",
+    "railHeading": "Assets",
+    "railSub": "Collected from prior gates",
+    "assetGroup": {
+      "coverIdentity": "Cover Identity",
+      "intel": "Intel",
+      "finding": "The Finding"
+    },
+    "noAssets": "No assets submitted yet",
+    "operationPlan": "Operation Plan",
+    "submissionManifest": "Submission Manifest",
+    "field": {
+      "objective": "Objective",
+      "approach": "Approach",
+      "aiPartnership": "AI Partnership"
+    },
+    "required": "Required",
+    "placeholder": {
+      "time": "HH:MM",
+      "stepDescription": "Describe the step",
+      "agent": "Agent name",
+      "callsign": "e.g. RENOUX",
+      "responsibilities": "Responsibilities",
+      "aiPartnership": "Describe AI's role",
+      "exfil": "Extraction route and method",
+      "biggestRisk": "Name the single greatest threat to this operation"
+    },
+    "sequence": "Sequence",
+    "addStep": "Add step",
+    "roles": "Roles",
+    "addAgent": "Add agent",
+    "contingencies": "Contingencies",
+    "contingency": {
+      "ifFails": "If this fails",
+      "weRespond": "We respond",
+      "placeholder": {
+        "failure": "What breaks?",
+        "response": "Our response"
+      }
+    },
+    "addContingency": "Add contingency",
+    "selfRiskNote": "⚑ Your Named Risk: {{risk}}",
+    "exfil": "Exfiltration",
+    "biggestRisk": "Biggest Risk",
+    "strategicLog": "Strategic Log",
+    "assetIntegration": "Asset Integration",
+    "assetPill": {
+      "cover": "Cover",
+      "intel": "Intel",
+      "finding": "Finding"
+    },
+    "submitButton": "Submit Plan →",
+    "transmitting": "Transmitting…",
+    "footer": {
+      "classified": "Classified // Internal Use Only",
+      "phase": "Phase: Final",
+      "encrypted": "Encrypted"
+    }
+  }
 }

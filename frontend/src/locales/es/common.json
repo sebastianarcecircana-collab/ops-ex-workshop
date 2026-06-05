@@ -211,4 +211,110 @@
     "partialSuccess": "Éxito parcial",
     "failure": "Fracaso de la misión"
   }
+
+  ,"gate1Page": {
+    "loading": "Cargando…",
+    "gateLabel": "Puerta 01: {{name}}",
+    "backToHub": "← Volver al Hub",
+    "cipherLabel": "Resumen del Cipher",
+    "missionInstructions": "Instrucciones de la misión",
+    "promptChain": "Cadena de prompts",
+    "metaPromptLabel": "Meta-prompt",
+    "generatedPromptLabel": "Prompt generado",
+    "aiOutputLabel": "Salida IA",
+    "cotPromptLabel": "Prompt COT",
+    "cotOutputLabel": "Salida COT",
+    "critiquePromptLabel": "Prompt de crítica",
+    "critiqueOutputLabel": "Salida de crítica",
+    "placeholder": {
+      "metaPrompt": "Escribe un meta-prompt inicial",
+      "generatedPrompt": "El prompt generado aparecerá aquí",
+      "aiOutput": "Respuesta de la IA",
+      "cotPrompt": "Prompt para razonamiento en voz alta",
+      "cotOutput": "Salida de cadena de pensamiento",
+      "critiquePrompt": "Prompt solicitando crítica",
+      "critiqueOutput": "Salida de la crítica"
+    },
+    "continueToStep": "Continuar al paso {{step}} →",
+    "pullFields": "Extraer campos de la salida IA",
+    "extracting": "Extrayendo…",
+    "status": {
+      "active": "En progreso",
+      "complete": "Completado",
+      "sealed": "Sellado"
+    },
+    "step": "Paso",
+    "coverDossier": "Expediente de cobertura",
+    "submitGate": "Enviar Puerta 01 →",
+    "transmitting": "Transmitiendo…",
+    "footerLabel": "Pie de página Puerta 01",
+    "footerSkill": "Habilidad: Cadena de prompts"
+  },
+
+  "gate4Page": {
+    "missionHub": "← Centro de misión",
+    "phaseTag": "Fase final",
+    "phaseTitleStart": "El",
+    "phaseTitleAccent": "Plan",
+    "finalPhase": "Fase final",
+    "transmission": "Transmisión",
+    "fromCipher": "Desde Cipher",
+    "railHeading": "Activos",
+    "railSub": "Recopilados de puertas anteriores",
+    "assetGroup": {
+      "coverIdentity": "Identidad de cubierta",
+      "intel": "Inteligencia",
+      "finding": "El hallazgo"
+    },
+    "noAssets": "No hay activos enviados",
+    "operationPlan": "Plan de Operación",
+    "submissionManifest": "Manifiesto de envío",
+    "field": {
+      "objective": "Objetivo",
+      "approach": "Enfoque",
+      "aiPartnership": "Colaboración IA"
+    },
+    "required": "Requerido",
+    "placeholder": {
+      "time": "HH:MM",
+      "stepDescription": "Describe el paso",
+      "agent": "Nombre del agente",
+      "callsign": "p. ej. RENOUX",
+      "responsibilities": "Responsabilidades",
+      "aiPartnership": "Describe el papel de la IA",
+      "exfil": "Ruta y método de extracción",
+      "biggestRisk": "Nombra la mayor amenaza"
+    },
+    "sequence": "Secuencia",
+    "addStep": "Agregar paso",
+    "roles": "Roles",
+    "addAgent": "Agregar agente",
+    "contingencies": "Contingencias",
+    "contingency": {
+      "ifFails": "Si esto falla",
+      "weRespond": "Respondemos",
+      "placeholder": {
+        "failure": "¿Qué falla?",
+        "response": "Nuestra respuesta"
+      }
+    },
+    "addContingency": "Agregar contingencia",
+    "selfRiskNote": "⚑ Tu riesgo nombrado: {{risk}}",
+    "exfil": "Exfiltración",
+    "biggestRisk": "Mayor riesgo",
+    "strategicLog": "Registro estratégico",
+    "assetIntegration": "Integración de activos",
+    "assetPill": {
+      "cover": "Cobertura",
+      "intel": "Intel",
+      "finding": "Hallazgo"
+    },
+    "submitButton": "Enviar plan →",
+    "transmitting": "Transmitiendo…",
+    "footer": {
+      "classified": "Clasificado // Solo uso interno",
+      "phase": "Fase: Final",
+      "encrypted": "Cifrado"
+    }
+  }
 }

@@ -211,4 +211,110 @@
     "partialSuccess": "Successo Parziale",
     "failure": "Fallimento della Missione"
   }
+
+  ,"gate1Page": {
+    "loading": "Caricamento…",
+    "gateLabel": "Porta 01: {{name}}",
+    "backToHub": "← Torna all'Hub",
+    "cipherLabel": "Briefing del Cipher",
+    "missionInstructions": "Istruzioni della missione",
+    "promptChain": "Catena di prompt",
+    "metaPromptLabel": "Meta-prompt",
+    "generatedPromptLabel": "Prompt generato",
+    "aiOutputLabel": "Output IA",
+    "cotPromptLabel": "Prompt COT",
+    "cotOutputLabel": "Output COT",
+    "critiquePromptLabel": "Prompt di critica",
+    "critiqueOutputLabel": "Output di critica",
+    "placeholder": {
+      "metaPrompt": "Scrivi un meta-prompt iniziale",
+      "generatedPrompt": "Il prompt generato apparirà qui",
+      "aiOutput": "Risposta dell'IA",
+      "cotPrompt": "Prompt per il ragionamento a voce alta",
+      "cotOutput": "Output della catena di pensiero",
+      "critiquePrompt": "Prompt che richiede una critica",
+      "critiqueOutput": "Output della critica"
+    },
+    "continueToStep": "Continua al passo {{step}} →",
+    "pullFields": "Estrai campi dall'output IA",
+    "extracting": "Estrazione…",
+    "status": {
+      "active": "In corso",
+      "complete": "Completato",
+      "sealed": "Sigillato"
+    },
+    "step": "Passo",
+    "coverDossier": "Dossier di copertura",
+    "submitGate": "Invia Porta 01 →",
+    "transmitting": "Trasmissione in corso…",
+    "footerLabel": "Piè di pagina Porta 01",
+    "footerSkill": "Abilità: Catena di prompt"
+  },
+
+  "gate4Page": {
+    "missionHub": "← Hub della Missione",
+    "phaseTag": "Fase finale",
+    "phaseTitleStart": "Il",
+    "phaseTitleAccent": "Piano",
+    "finalPhase": "Fase finale",
+    "transmission": "Trasmissione",
+    "fromCipher": "Da Cipher",
+    "railHeading": "Asset",
+    "railSub": "Raccolti dalle porte precedenti",
+    "assetGroup": {
+      "coverIdentity": "Identità di copertura",
+      "intel": "Intelligence",
+      "finding": "La scoperta"
+    },
+    "noAssets": "Nessun asset inviato",
+    "operationPlan": "Piano d'operazione",
+    "submissionManifest": "Manifesto di invio",
+    "field": {
+      "objective": "Obiettivo",
+      "approach": "Approccio",
+      "aiPartnership": "Partenariato IA"
+    },
+    "required": "Richiesto",
+    "placeholder": {
+      "time": "HH:MM",
+      "stepDescription": "Descrivi il passo",
+      "agent": "Nome dell'agente",
+      "callsign": "es. RENOUX",
+      "responsibilities": "Responsabilità",
+      "aiPartnership": "Descrivi il ruolo dell'IA",
+      "exfil": "Rotta e metodo di estrazione",
+      "biggestRisk": "Indica la minaccia principale"
+    },
+    "sequence": "Sequenza",
+    "addStep": "Aggiungi passo",
+    "roles": "Ruoli",
+    "addAgent": "Aggiungi agente",
+    "contingencies": "Contingenze",
+    "contingency": {
+      "ifFails": "Se questo fallisce",
+      "weRespond": "Noi rispondiamo",
+      "placeholder": {
+        "failure": "Cosa si rompe?",
+        "response": "La nostra risposta"
+      }
+    },
+    "addContingency": "Aggiungi contingenza",
+    "selfRiskNote": "⚑ Il tuo rischio nominato: {{risk}}",
+    "exfil": "Esfiltrazione",
+    "biggestRisk": "Rischio maggiore",
+    "strategicLog": "Registro strategico",
+    "assetIntegration": "Integrazione asset",
+    "assetPill": {
+      "cover": "Copertura",
+      "intel": "Intel",
+      "finding": "Scoperta"
+    },
+    "submitButton": "Invia piano →",
+    "transmitting": "Trasmissione in corso…",
+    "footer": {
+      "classified": "Classificato // Uso interno",
+      "phase": "Fase: Finale",
+      "encrypted": "Crittografato"
+    }
+  }
 }
