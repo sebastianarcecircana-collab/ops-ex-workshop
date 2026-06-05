@@ -24,45 +24,6 @@ interface ChainStep {
   infoExample: string;
 }
 
-function buildChainSteps(t: any): ChainStep[] {
-  const steps = t('gate1Page.chainSteps', { returnObjects: true });
-  return [
-    {
-      id: 1,
-      technique: 'meta',
-      label: steps.step1.label,
-      techniqueLabel: steps.step1.technique,
-      infoTitle: steps.step1.title,
-      infoSummary: steps.step1.summary,
-      infoDetails: steps.step1.details,
-      infoExampleLabel: steps.step1.exampleLabel,
-      infoExample: steps.step1.example,
-    },
-    {
-      id: 2,
-      technique: 'cot',
-      label: steps.step2.label,
-      techniqueLabel: steps.step2.technique,
-      infoTitle: steps.step2.title,
-      infoSummary: steps.step2.summary,
-      infoDetails: steps.step2.details,
-      infoExampleLabel: steps.step2.exampleLabel,
-      infoExample: steps.step2.example,
-    },
-    {
-      id: 3,
-      technique: 'critique',
-      label: steps.step3.label,
-      techniqueLabel: steps.step3.technique,
-      infoTitle: steps.step3.title,
-      infoSummary: steps.step3.summary,
-      infoDetails: steps.step3.details,
-      infoExampleLabel: steps.step3.exampleLabel,
-      infoExample: steps.step3.example,
-    },
-  ];
-}
-
 type Gate1Draft = {
   step1: Step1Data;
   step2: Step2Data;
